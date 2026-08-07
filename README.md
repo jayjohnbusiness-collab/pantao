@@ -120,9 +120,11 @@ The real transactions happen in the Shopify theme; the sandbox is for feel and f
 ## Design notes
 
 - **Type:** Inter (UI / micro-labels) · Cormorant Garamond italic (display / letters)
-- **Palette:** dark ground for the hero + footer, warm paper for the body, a single
-  restrained oxblood accent for *closed*. Swap the CSS custom properties at the top of
-  `styles.css` to re-skin everything.
+- **Palette:** a single dark, cinematic "vitrine" tone throughout — warm near-black
+  ground, bone text, and a restrained **gold** accent (kickers, datelines, selected
+  states). The whole site reads like the flagship: a dark case that sets off the
+  garments and whatever the wearer brings to them. Swap the CSS custom properties at
+  the top of `styles.css` to re-skin everything.
 - Respects `prefers-reduced-motion`, keyboard-navigable, mobile-first responsive.
 
 ---
