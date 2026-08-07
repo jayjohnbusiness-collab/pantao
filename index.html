@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PANTAO — Immortal Peach</title>
+  <meta name="description" content="PANTAO. A streetwear house that ripens once a year. Limited quantities, then never again." />
+  <meta name="theme-color" content="#0d0b0a" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="PANTAO — Immortal Peach" />
+  <meta property="og:description" content="One drop a year. Limited quantities, then never again." />
+  <meta property="og:type" content="website" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Space+Grotesk:wght@300..700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8D%91%3C/text%3E%3C/svg%3E" />
+</head>
+<body data-phase="live">
+
+  <!-- ============ PRELOADER ============ -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="preloader__mark">蟠桃</div>
+    <div class="preloader__bar"><span></span></div>
+    <div class="preloader__pct" id="preloaderPct">00</div>
+  </div>
+
+  <!-- ============ GRAIN / VIGNETTE OVERLAY ============ -->
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- ============ TICKER ============ -->
+  <div class="ticker" id="ticker" aria-hidden="true">
+    <div class="ticker__track" id="tickerTrack"></div>
+  </div>
+
+  <!-- ============ NAV ============ -->
+  <header class="nav" id="nav">
+    <a href="#top" class="nav__brand" aria-label="PANTAO home">
+      <span class="nav__glyph">蟠桃</span>
+      <span class="nav__word">PANTAO</span>
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#drop" data-shop-link>The Drop</a>
+      <a href="#lookbook">Lookbook</a>
+      <a href="#story">Mythology</a>
+    </nav>
+    <div class="nav__right">
+      <button class="nav__cart" id="cartToggle" aria-label="Open cart">
+        Bag <span class="nav__cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="hero">
+      <div class="hero__orchard" aria-hidden="true">
+        <div class="hero__peach" style="--i:0"></div>
+        <div class="hero__peach" style="--i:1"></div>
+        <div class="hero__peach" style="--i:2"></div>
+        <div class="hero__peach" style="--i:3"></div>
+        <div class="hero__peach" style="--i:4"></div>
+      </div>
+
+      <div class="hero__inner">
+        <p class="hero__eyebrow" data-reveal>
+          <span data-config="season"></span> · COLLECTION <span data-config="collectionNo"></span>
+        </p>
+        <h1 class="hero__title" data-reveal>
+          <span class="hero__title-line">IMMORTAL</span>
+          <span class="hero__title-line hero__title-line--serif">Peach</span>
+        </h1>
+        <p class="hero__lede" data-reveal>
+          The orchard ripens once a year. When the fruit falls, it is gone.
+          A limited run of pieces, cut once and never again.
+        </p>
+
+        <!-- TEASER mode: countdown -->
+        <div class="hero__countdown" id="countdown" data-reveal>
+          <div class="cd">
+            <span class="cd__num" id="cdDays">00</span><span class="cd__label">Days</span>
+          </div>
+          <div class="cd">
+            <span class="cd__num" id="cdHours">00</span><span class="cd__label">Hrs</span>
+          </div>
+          <div class="cd">
+            <span class="cd__num" id="cdMins">00</span><span class="cd__label">Min</span>
+          </div>
+          <div class="cd">
+            <span class="cd__num" id="cdSecs">00</span><span class="cd__label">Sec</span>
+          </div>
+        </div>
+
+        <div class="hero__cta" data-reveal>
+          <!-- LIVE mode -->
+          <a href="#drop" class="btn btn--solid" data-when="live" data-shop-link>Enter the Orchard</a>
+          <!-- TEASER mode -->
+          <button class="btn btn--solid" data-when="teaser" id="waitlistOpen">Join the Waitlist</button>
+          <!-- SOLD mode -->
+          <button class="btn btn--solid" data-when="sold" id="waitlistOpenSold">Notify Me Next Year</button>
+          <a href="#story" class="btn btn--ghost">The Mythology</a>
+        </div>
+      </div>
+
+      <div class="hero__scroll" aria-hidden="true">
+        <span>SCROLL</span>
+        <div class="hero__scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ============ MARQUEE STATEMENT ============ -->
+    <section class="statement" aria-label="Brand statement">
+      <div class="statement__marquee">
+        <div class="statement__track">
+          <span>ONE DROP A YEAR —</span><span>LIMITED FOREVER —</span>
+          <span>ONE DROP A YEAR —</span><span>LIMITED FOREVER —</span>
+          <span>ONE DROP A YEAR —</span><span>LIMITED FOREVER —</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ THE DROP (LIVE / SOLD) ============ -->
+    <section class="drop" id="drop">
+      <div class="section-head">
+        <p class="section-head__kicker">The Drop</p>
+        <h2 class="section-head__title" data-config="collectionName">Immortal Peach</h2>
+        <p class="section-head__meta" id="dropMeta">Loading the orchard…</p>
+      </div>
+
+      <div class="drop__grid" id="productGrid" aria-live="polite"></div>
+
+      <p class="drop__foot">
+        Every piece is numbered and made in a single run.
+        When it sells through, it is retired to the archive.
+      </p>
+    </section>
+
+    <!-- ============ LOOKBOOK ============ -->
+    <section class="lookbook" id="lookbook">
+      <div class="section-head section-head--left">
+        <p class="section-head__kicker">Lookbook</p>
+        <h2 class="section-head__title">Worn In</h2>
+      </div>
+      <div class="lookbook__grid" id="lookbookGrid"></div>
+    </section>
+
+    <!-- ============ MYTHOLOGY / STORY ============ -->
+    <section class="story" id="story">
+      <div class="story__glyph" aria-hidden="true">蟠桃</div>
+      <div class="story__inner">
+        <p class="section-head__kicker">The Mythology</p>
+        <h2 class="story__title">The peaches that<br />ripen once<br />in a lifetime.</h2>
+        <div class="story__cols">
+          <p>
+            In the old stories the <em>pántáo</em> — the immortal peaches — grow in the
+            orchard of the Queen Mother of the West. The trees flower for three thousand
+            years and take three thousand more to fruit. To eat one is to step outside of time.
+          </p>
+          <p>
+            We build the same way. One collection a year, cut in a single limited run.
+            No restocks. No repeats. When the orchard is bare, the season is closed and
+            the pieces pass into the archive — worn by whoever moved fast enough to catch them.
+          </p>
+        </div>
+        <div class="story__stats">
+          <div class="stat"><span class="stat__num">1</span><span class="stat__label">Drop / Year</span></div>
+          <div class="stat"><span class="stat__num">∞</span><span class="stat__label">Resale, Never Restock</span></div>
+          <div class="stat"><span class="stat__num" data-config="collectionNo">001</span><span class="stat__label">This Season</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WAITLIST / SIGNUP ============ -->
+    <section class="signup" id="signup">
+      <div class="signup__inner">
+        <h2 class="signup__title">Don't miss the fall.</h2>
+        <p class="signup__lede">
+          The orchard opens to the list first. Get the drop time, early access,
+          and the archive before anyone else.
+        </p>
+        <form class="signup__form" id="signupForm" novalidate>
+          <input type="email" name="email" id="signupEmail" placeholder="your@email.com"
+                 autocomplete="email" required aria-label="Email address" />
+          <button type="submit" class="btn btn--solid">Join</button>
+        </form>
+        <p class="signup__msg" id="signupMsg" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <span class="footer__glyph">蟠桃</span>
+        <span class="footer__word">PANTAO</span>
+      </div>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="#drop" data-shop-link>The Drop</a>
+        <a href="#lookbook">Lookbook</a>
+        <a href="#story">Mythology</a>
+        <a href="#signup">Waitlist</a>
+      </nav>
+      <div class="footer__social" id="footerSocial"></div>
+    </div>
+    <div class="footer__bottom">
+      <span>© <span id="year"></span> PANTAO STUDIO</span>
+      <span>ONE DROP A YEAR · LIMITED FOREVER</span>
+    </div>
+  </footer>
+
+  <!-- ============ CART DRAWER ============ -->
+  <div class="drawer-scrim" id="scrim"></div>
+  <aside class="cart" id="cart" aria-label="Shopping bag" aria-hidden="true">
+    <div class="cart__head">
+      <h3>Your Bag <span id="cartHeadCount">(0)</span></h3>
+      <button class="cart__close" id="cartClose" aria-label="Close bag">✕</button>
+    </div>
+    <div class="cart__body" id="cartBody"></div>
+    <div class="cart__foot" id="cartFoot">
+      <div class="cart__row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">$0</span>
+      </div>
+      <p class="cart__note">Shipping &amp; taxes calculated at checkout.</p>
+      <button class="btn btn--solid btn--block" id="checkoutBtn">Checkout</button>
+      <button class="cart__keep" id="cartKeep">Keep looking</button>
+    </div>
+  </aside>
+
+  <!-- ============ PRODUCT QUICKVIEW MODAL ============ -->
+  <div class="modal" id="quickview" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="qvName">
+    <div class="modal__scrim" id="qvScrim"></div>
+    <div class="modal__panel" role="document">
+      <button class="modal__close" id="qvClose" aria-label="Close">✕</button>
+      <div class="modal__media" id="qvMedia"></div>
+      <div class="modal__info">
+        <p class="modal__no" id="qvNo"></p>
+        <h3 class="modal__name" id="qvName"></h3>
+        <p class="modal__sub" id="qvSub"></p>
+        <p class="modal__price" id="qvPrice"></p>
+        <p class="modal__story" id="qvStory"></p>
+        <div class="modal__sizes" id="qvSizes"></div>
+        <p class="modal__stock" id="qvStock"></p>
+        <button class="btn btn--solid btn--block" id="qvAdd">Add to Bag</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TOAST ============ -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/store.js"></script>
+</body>
+</html>
