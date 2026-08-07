@@ -135,11 +135,39 @@ button { font-family: inherit; cursor: pointer; color: inherit; background: none
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
   opacity: 0.06; mix-blend-mode: screen;
 }
+/* slow warm-gold light drift — gives the negative space life */
+.arrival__field::before {
+  content: ""; position: absolute; inset: -25%; z-index: 0;
+  background: radial-gradient(38% 38% at 50% 50%, rgba(201,168,106,0.13), transparent 70%);
+  animation: drift 24s ease-in-out infinite; will-change: transform;
+}
+@keyframes drift {
+  0%   { transform: translate(-9%, 7%)  scale(1);    }
+  50%  { transform: translate(13%, -9%) scale(1.28); }
+  100% { transform: translate(-9%, 7%)  scale(1);    }
+}
+/* giant ghosted edition numeral — anchors the right, balances the type */
+.arrival__mark {
+  position: absolute; right: -3vw; bottom: -9vh; z-index: 1;
+  font-family: var(--serif); font-style: italic; font-weight: 500;
+  font-size: 76vh; line-height: 0.72; color: rgba(243,241,234,0.038);
+  pointer-events: none; user-select: none;
+}
 .arrival__inner { position: relative; z-index: 2; max-width: 860px; }
 .arrival__eyebrow { font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--gold); margin-bottom: 30px; }
-.arrival__title { font-family: var(--serif); font-weight: 500; line-height: 0.92; font-size: clamp(56px, 12vw, 168px); letter-spacing: -0.01em; }
+.arrival__title { font-family: var(--serif); font-weight: 500; line-height: 0.92; font-size: clamp(56px, 12vw, 168px); letter-spacing: -0.01em; transform: none; }
 .arrival__title span { display: block; }
 .arrival__title--em { font-style: italic; font-weight: 400; }
+/* masked line-by-line entrance */
+.arrival__title .tline { overflow: hidden; }
+.arrival__title .tline__i { transform: translateY(115%); transition: transform 1.05s var(--ease); }
+.arrival__title.in .tline:nth-child(1) .tline__i { transition-delay: 0.02s; }
+.arrival__title.in .tline:nth-child(2) .tline__i { transition-delay: 0.14s; }
+.arrival__title.in .tline__i { transform: none; }
+/* staggered entrance for the rest of the hero */
+.arrival__lede    { transition-delay: 0.16s; }
+.arrival__counter { transition-delay: 0.22s; }
+.arrival__cta     { transition-delay: 0.28s; }
 .arrival__lede { max-width: 460px; color: var(--bone-dim); font-size: clamp(15px, 1.5vw, 18px); margin-top: 30px; }
 .arrival__counter { display: flex; gap: clamp(20px, 4vw, 44px); margin-top: 40px; }
 .ct { display: flex; flex-direction: column; }
