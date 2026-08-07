@@ -514,4 +514,49 @@
     --button-color: var(--color-foreground);
     --button-background-color: transparent;
   }
+  /* ------------------------------------------------------------------
+     PANTAO — light/clean search bar (input + icons/buttons).
+     ------------------------------------------------------------------ */
+  .search-modal .predictive-search-form__header-inner {
+    border-width: 1px;
+    padding-inline: var(--padding-sm);
+  }
+
+  .search-modal input.search-input {
+    font-size: var(--font-size--lg);
+    letter-spacing: 0.01em;
+    padding-block: var(--padding-md);
+  }
+
+  .search-modal input.search-input::placeholder {
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-size: var(--font-size--xs);
+    opacity: 0.45;
+  }
+
+  .search-modal .predictive-search__icon {
+    opacity: 0.5;
+  }
+
+  .search-modal .predictive-search__reset-button {
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: var(--font-size--2xs);
+    opacity: 0.6;
+    transition: opacity 0.25s ease;
+  }
+
+  .search-modal .predictive-search__reset-button:hover {
+    opacity: 1;
+  }
+
+  .search-modal .predictive-search__close-modal-button {
+    opacity: 0.55;
+    transition: opacity 0.25s ease;
+  }
+
+  .search-modal .predictive-search__close-modal-button:hover {
+    opacity: 1;
+  }
 {% endstylesheet %}
