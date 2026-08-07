@@ -120,11 +120,15 @@ The real transactions happen in the Shopify theme; the sandbox is for feel and f
 ## Design notes
 
 - **Type:** Inter (UI / micro-labels) · Cormorant Garamond italic (display / letters)
-- **Palette:** a single dark, cinematic "vitrine" tone throughout — warm near-black
-  ground, bone text, and a restrained **gold** accent (kickers, datelines, selected
-  states). The whole site reads like the flagship: a dark case that sets off the
-  garments and whatever the wearer brings to them. Swap the CSS custom properties at
-  the top of `styles.css` to re-skin everything.
+- **Palette:** light and clean — a cool near-white ground, cool near-black text, and a
+  restrained **steel** micro-label accent. Airy and editorial, in the world of overcast
+  daylight, private aviation, and hypercars. Two deliberate dark moments punctuate it:
+  the flagship **feature** and the **footer**. Swap the CSS custom properties at the top
+  of `styles.css` to re-skin everything.
+- **Hero image:** the landing hero is a full-bleed campaign photo set by
+  `config.heroImage` (default `assets/img/hero.jpg`). Drop your photo at that path and
+  it appears automatically; until then a clean overcast placeholder shows. A left- and
+  bottom-biased scrim keeps the headline legible over any image.
 - Respects `prefers-reduced-motion`, keyboard-navigable, mobile-first responsive.
 
 ---

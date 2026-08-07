@@ -22,6 +22,11 @@ window.PANTAO_CONFIG = {
    * ISO 8601 — include your timezone offset.                          */
   opensAt: "2026-11-11T11:00:00+08:00",
 
+  /* Hero campaign image — full-bleed behind the landing headline.      *
+   * Drop your photo at this path (or change it). Until the file exists, *
+   * the hero shows a clean overcast placeholder.                        */
+  heroImage: "assets/img/hero.jpg",
+
   /* House identity ------------------------------------------------- */
   city: "MANILA",
   edition: "V",              // roman numeral

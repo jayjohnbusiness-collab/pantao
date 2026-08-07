@@ -59,6 +59,14 @@
     var yr = $("#year"); if (yr) yr.textContent = new Date().getFullYear();
     var ne = $("#navEdition"); if (ne) ne.textContent = CFG.editionLabel || "";
 
+    // hero campaign image — only paint if the file actually loads, else keep placeholder
+    var photo = $("#arrivalPhoto");
+    if (photo && CFG.heroImage) {
+      var probe = new Image();
+      probe.onload = function () { photo.style.backgroundImage = "url(" + CFG.heroImage + ")"; };
+      probe.src = CFG.heroImage;
+    }
+
     var fs = $("#footerSocial"); var s = CFG.social || {};
     if (fs) {
       var links = [];
