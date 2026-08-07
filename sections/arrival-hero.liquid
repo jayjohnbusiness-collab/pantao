@@ -14,8 +14,6 @@
 
 {%- liquid
   assign s = section.settings
-  assign edition = s.edition_label | default: 'EDITION V'
-  assign year = s.year_roman | default: 'MMXXVI'
 -%}
 
 <div
@@ -60,6 +58,9 @@
       </div>
     {%- endif -%}
 
+    {%- comment -%} directional scrim — keeps the type legible over any photo {%- endcomment -%}
+    <div class="arrival-hero__scrim" aria-hidden="true"></div>
+
     {%- if s.show_overlay -%}
       <div class="arrival-hero__overlay" style="--overlay-opacity: {{ s.overlay_opacity | divided_by: 100.0 }};"></div>
     {%- endif -%}
@@ -71,16 +72,25 @@
         <p class="arrival-hero__eyebrow">{{ s.eyebrow | escape }}</p>
       {%- endif -%}
 
-      {%- if s.heading != blank -%}
-        <h1 class="arrival-hero__heading">{{ s.heading }}</h1>
+      {%- if s.heading_line_1 != blank or s.heading_line_2 != blank -%}
+        <h1 class="arrival-hero__title">
+          {%- if s.heading_line_1 != blank -%}
+            <span class="arrival-hero__tline"><span class="arrival-hero__tline-i">{{ s.heading_line_1 | escape }}</span></span>
+          {%- endif -%}
+          {%- if s.heading_line_2 != blank -%}
+            <span class="arrival-hero__tline"><span class="arrival-hero__tline-i arrival-hero__tline-i--em">{{ s.heading_line_2 | escape }}</span></span>
+          {%- endif -%}
+        </h1>
       {%- endif -%}
 
-      {%- if s.show_meta -%}
-        <p class="arrival-hero__meta">
-          <span>{{ edition }}</span>
-          <span class="arrival-hero__meta-divider">·</span>
-          <span>{{ year }}</span>
-        </p>
+      {%- if s.lede != blank -%}
+        <p class="arrival-hero__lede">{{ s.lede | escape }}</p>
+      {%- endif -%}
+
+      {%- if s.cta_label != blank -%}
+        <div class="arrival-hero__cta">
+          <a class="arrival-hero__btn" href="{{ s.cta_link | default: '#' }}">{{ s.cta_label | escape }}</a>
+        </div>
       {%- endif -%}
     </div>
   </div>
@@ -147,6 +157,18 @@
     pointer-events: none;
   }
 
+  /* directional scrim: darker top (nav), left (type), and bottom (headline) */
+  .arrival-hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, rgba(12,14,17,0.42) 0%, rgba(12,14,17,0.05) 26%,
+        rgba(12,14,17,0.08) 50%, rgba(12,14,17,0.72) 100%),
+      linear-gradient(90deg, rgba(12,14,17,0.5) 0%, rgba(12,14,17,0.14) 42%, transparent 72%);
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .arrival-hero__video {
       display: none;
@@ -204,11 +226,14 @@
     text-align: center;
   }
 
+  /* content sits over the photo — light, fixed, scheme-independent */
   .arrival-hero__inner {
-    max-width: 36rem;
+    max-width: 54rem;
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    align-items: flex-start;
+    gap: 0;
+    color: #f4f5f5;
   }
 
   .arrival-hero__eyebrow {
@@ -216,40 +241,93 @@
     font-size: var(--font-size--3xs);
     letter-spacing: 0.32em;
     text-transform: uppercase;
-    margin: 0;
-    opacity: 0.85;
+    margin: 0 0 1.9rem 0;
+    color: rgba(245, 246, 245, 0.9);
+    text-shadow: 0 1px 20px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    animation: arrival-fade 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.05s forwards;
   }
 
-  .arrival-hero__heading {
-    font-family: var(--font-heading--family);
-    font-weight: var(--font-heading--weight);
-    font-size: clamp(2rem, 4vw + 0.5rem, 4rem);
-    line-height: 1.05;
+  .arrival-hero__title {
+    font-family: var(--font-accent--family);
+    font-style: var(--font-accent--style, normal);
+    font-weight: var(--font-accent--weight, 500);
+    font-size: clamp(3rem, 10vw, 9rem);
+    line-height: 0.92;
     letter-spacing: -0.01em;
     margin: 0;
-    text-wrap: balance;
+    text-shadow: 0 1px 16px rgba(0, 0, 0, 0.18);
   }
 
-  .arrival-hero__meta {
+  .arrival-hero__tline {
+    display: block;
+    overflow: hidden;
+  }
+
+  .arrival-hero__tline-i {
+    display: block;
+    transform: translateY(115%);
+    animation: arrival-rise 1.05s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .arrival-hero__tline:nth-child(1) .arrival-hero__tline-i { animation-delay: 0.14s; }
+  .arrival-hero__tline:nth-child(2) .arrival-hero__tline-i { animation-delay: 0.26s; }
+
+  .arrival-hero__tline-i--em {
+    font-style: italic;
+    font-weight: 400;
+  }
+
+  .arrival-hero__lede {
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--md);
+    line-height: 1.6;
+    max-width: 30rem;
+    margin: 2rem 0 0 0;
+    color: rgba(245, 246, 245, 0.82);
+    text-shadow: 0 1px 18px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    animation: arrival-fade 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.42s forwards;
+  }
+
+  .arrival-hero__cta {
+    margin-top: 2.4rem;
+    opacity: 0;
+    animation: arrival-fade 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.54s forwards;
+  }
+
+  .arrival-hero__btn {
+    display: inline-flex;
+    align-items: center;
     font-family: var(--font-body--family);
     font-size: var(--font-size--3xs);
-    letter-spacing: 0.32em;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    margin: 0;
-    opacity: 0.7;
-    display: inline-flex;
-    gap: 0.5em;
-    align-items: center;
+    color: #f4f5f5;
+    text-decoration: none;
+    padding: 1rem 2.1rem;
+    border: 1px solid rgba(245, 246, 245, 0.5);
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
   }
 
-  .arrival-hero__content--top-center .arrival-hero__meta,
-  .arrival-hero__content--center .arrival-hero__meta,
-  .arrival-hero__content--bottom-center .arrival-hero__meta {
-    justify-content: center;
+  .arrival-hero__btn:hover {
+    background: #f4f5f5;
+    color: #14161a;
+    border-color: #f4f5f5;
   }
 
-  .arrival-hero__meta-divider {
-    opacity: 0.4;
+  @keyframes arrival-rise { to { transform: none; } }
+  @keyframes arrival-fade { to { opacity: 1; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arrival-hero__tline-i,
+    .arrival-hero__eyebrow,
+    .arrival-hero__lede,
+    .arrival-hero__cta {
+      animation: none;
+      transform: none;
+      opacity: 1;
+    }
   }
 
   /* ---------- Scroll hint ---------- */
@@ -455,31 +533,38 @@
       "type": "text",
       "id": "eyebrow",
       "label": "Eyebrow",
-      "default": "The doors are open."
+      "info": "Small line above the headline.",
+      "default": "EDITION V · MMXXVI · MANILA"
     },
     {
       "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "Edition V."
-    },
-    {
-      "type": "checkbox",
-      "id": "show_meta",
-      "label": "Show edition + year line",
-      "default": true
+      "id": "heading_line_1",
+      "label": "Headline line 1",
+      "default": "The doors"
     },
     {
       "type": "text",
-      "id": "edition_label",
-      "label": "Edition label",
-      "default": "EDITION V"
+      "id": "heading_line_2",
+      "label": "Headline line 2 (italic)",
+      "default": "are open."
+    },
+    {
+      "type": "textarea",
+      "id": "lede",
+      "label": "Lede",
+      "default": "Pantao opens once a year. A single edition, made in numbers small enough to know each piece by hand — then the doors close until the next."
     },
     {
       "type": "text",
-      "id": "year_roman",
-      "label": "Year",
-      "default": "MMXXVI"
+      "id": "cta_label",
+      "label": "Button label",
+      "info": "Leave blank to hide the button.",
+      "default": "Enter the edition"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "Button link"
     },
 
     {
