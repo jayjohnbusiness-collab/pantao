@@ -334,7 +334,34 @@
   ],
   "presets": [
     {
-      "name": "The piece"
+      "name": "The piece",
+      "blocks": {
+        "piece-variant-picker": {
+          "type": "variant-picker",
+          "static": true
+        },
+        "piece-buy-buttons": {
+          "type": "buy-buttons",
+          "static": true,
+          "blocks": {
+            "quantity": {
+              "type": "quantity",
+              "static": true
+            },
+            "add-to-cart": {
+              "type": "add-to-cart",
+              "static": true,
+              "settings": {
+                "style_class": "button-secondary"
+              }
+            },
+            "accelerated-checkout": {
+              "type": "accelerated-checkout",
+              "static": true
+            }
+          }
+        }
+      }
     }
   ]
 }
