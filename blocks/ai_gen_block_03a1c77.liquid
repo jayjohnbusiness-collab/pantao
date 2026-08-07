@@ -1,0 +1,775 @@
+{% doc %}
+  @prompt
+    Generate a one row product collection menu in button style. Include button adjustment settings such as button edges, height, width, hover color, outline color, fill color, and fill color transparency toggle option. Include menu settings for padding, theme, background color, transparency. Include settings to link collections for each button and Menu should include menu wrapping settings.. Menu actions: Scroll left or right when a button is selected., Include menu stacking option for mobile. It should have the option to scroll or stack.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collection-menu-{{ ai_gen_id }} {
+    background-color: {% if block.settings.background_transparency %}rgba({{ block.settings.background_color | color_extract: 'red' }}, {{ block.settings.background_color | color_extract: 'green' }}, {{ block.settings.background_color | color_extract: 'blue' }}, {{ block.settings.background_opacity }}){% else %}{{ block.settings.background_color }}{% endif %};
+    padding: {{ block.settings.menu_padding }}px;
+    border-radius: {{ block.settings.menu_border_radius }}px;
+    overflow: hidden;
+  }
+
+  .ai-collection-menu__container-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+  }
+
+  .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.button_spacing }}px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    {% if block.settings.menu_wrap %}
+      flex-wrap: wrap;
+    {% else %}
+      flex-wrap: nowrap;
+    {% endif %}
+  }
+
+  .ai-collection-menu__wrapper-{{ ai_gen_id }}::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: {{ block.settings.button_width }}px;
+    height: {{ block.settings.button_height }}px;
+    padding: 0 16px;
+    background-color: {% if block.settings.fill_transparency %}rgba({{ block.settings.fill_color | color_extract: 'red' }}, {{ block.settings.fill_color | color_extract: 'green' }}, {{ block.settings.fill_color | color_extract: 'blue' }}, {{ block.settings.fill_opacity }}){% else %}{{ block.settings.fill_color }}{% endif %};
+    color: {{ block.settings.text_color }};
+    border: {{ block.settings.outline_width }}px solid {{ block.settings.outline_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    text-decoration: none;
+    font-size: {{ block.settings.text_size }}px;
+    font-weight: {{ block.settings.text_weight }};
+    text-transform: {% if block.settings.text_uppercase %}uppercase{% else %}none{% endif %};
+    cursor: pointer;
+    transition: all0.3s ease;
+    white-space: nowrap;
+    flex-shrink: 0;}
+
+  .ai-collection-menu__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.hover_color }};
+    color: {{ block.settings.hover_text_color }};
+    border-color: {{ block.settings.hover_outline_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }}.active {
+    background-color: {{ block.settings.active_color }};
+    color: {{ block.settings.active_text_color }};
+    border-color: {{ block.settings.active_outline_color }};
+  }
+
+  .ai-collection-menu__nav-button-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width:40px;
+    height: 40px;
+    background-color: {{ block.settings.nav_button_color }};
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-collection-menu__nav-button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.nav_button_hover_color }};
+  }
+
+  .ai-collection-menu__nav-button-{{ ai_gen_id }}.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .ai-collection-menu__nav-button--left-{{ ai_gen_id }} {
+    left: 10px;
+  }
+
+  .ai-collection-menu__nav-button--right-{{ ai_gen_id }} {
+    right: 10px;
+  }
+
+  .ai-collection-menu__nav-button-{{ ai_gen_id }} svg {
+    width: 20px;
+    height: 20px;
+    fill: {{ block.settings.nav_button_icon_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-collection-menu-{{ ai_gen_id }} {
+      padding: {{ block.settings.menu_padding | times: 0.7 }}px;
+    }
+
+    .ai-collection-menu__button-{{ ai_gen_id }} {
+      min-width: {{ block.settings.mobile_button_width }}px;
+      height: {{ block.settings.mobile_button_height }}px;
+      font-size: {{ block.settings.mobile_text_size }}px;
+    }
+
+    {% if block.settings.mobile_layout == 'stack' %}
+      .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+        flex-direction: column;
+        overflow-x: visible;
+        align-items: {% if block.settings.mobile_alignment == 'left' %}flex-start{% elsif block.settings.mobile_alignment == 'center' %}center{% else %}flex-end{% endif %};
+      }
+
+      .ai-collection-menu__button-{{ ai_gen_id }} {
+        width: {% if block.settings.mobile_button_full_width %}100%{% else %}auto{% endif %};
+        flex-shrink: 1;
+      }
+
+      .ai-collection-menu__nav-button-{{ ai_gen_id }} {
+        display: none;
+      }
+    {% elsif block.settings.mobile_layout == 'scroll' %}
+      .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+      }
+
+      .ai-collection-menu__button-{{ ai_gen_id }} {
+        flex-shrink: 0;
+      }
+    {% endif %}
+
+    {% if block.settings.mobile_layout == 'grid' %}
+      .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+        display: grid;
+        grid-template-columns: repeat({{ block.settings.mobile_columns }}, 1fr);
+        gap: {{ block.settings.button_spacing | times: 0.7 }}px;
+        overflow-x: visible;
+      }
+
+      .ai-collection-menu__button-{{ ai_gen_id }} {
+        min-width: auto;
+        width: 100%;
+        flex-shrink: 1;
+      }
+
+      .ai-collection-menu__nav-button-{{ ai_gen_id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+{% endstyle %}
+
+<collection-menu-{{ ai_gen_id }}
+  class="ai-collection-menu-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-collection-menu__container-{{ ai_gen_id }}">
+    {% unless block.settings.menu_wrap %}
+      <button
+        class="ai-collection-menu__nav-button-{{ ai_gen_id }} ai-collection-menu__nav-button--left-{{ ai_gen_id }}"
+        aria-label="Scroll left"
+        data-direction="left"
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
+
+      <button
+        class="ai-collection-menu__nav-button-{{ ai_gen_id }} ai-collection-menu__nav-button--right-{{ ai_gen_id }}"
+        aria-label="Scroll right"
+        data-direction="right"
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+    {% endunless %}
+
+    <div class="ai-collection-menu__wrapper-{{ ai_gen_id }}">
+      {% for i in (1..8) %}
+        {% liquid
+          assign collection_key = 'collection_' | append: i
+          assign label_key = 'collection_' | append: i | append: '_label'
+          assign collection = block.settings[collection_key]
+          assign label = block.settings[label_key]
+        %}
+
+        {% if collection != blank %}
+          <a
+            href="{{ collection.url }}"
+            class="ai-collection-menu__button-{{ ai_gen_id }}"
+            data-collection-id="{{ collection.id }}"
+          >
+            {% if label != blank %}
+              {{ label }}
+            {% else %}
+              {{ collection.title }}
+            {% endif %}
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</collection-menu-{{ ai_gen_id }}><script>
+  (function() {
+    class CollectionMenu{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.wrapper = this.querySelector('.ai-collection-menu__wrapper-{{ ai_gen_id }}');
+        this.leftButton = this.querySelector('.ai-collection-menu__nav-button--left-{{ ai_gen_id }}');
+        this.rightButton = this.querySelector('.ai-collection-menu__nav-button--right-{{ ai_gen_id }}');
+        this.buttons = this.querySelectorAll('.ai-collection-menu__button-{{ ai_gen_id }}');
+      }
+
+      connectedCallback() {
+        this.setupNavigation();
+        this.updateNavButtons();
+        this.setActiveButton();
+        this.handleResize();
+        window.addEventListener('resize', () => this.handleResize());
+      }
+
+      setupNavigation() {
+        if (this.leftButton && this.rightButton) {
+          this.leftButton.addEventListener('click', () => this.scroll('left'));
+          this.rightButton.addEventListener('click', () => this.scroll('right'));
+          this.wrapper.addEventListener('scroll', () => this.updateNavButtons());
+        }
+
+        this.buttons.forEach(button => {
+          button.addEventListener('click', (e) => {
+            this.setActiveButton(button);
+            this.scrollToButton(button);
+          });
+        });
+      }
+
+      handleResize() {
+        setTimeout(() => {
+          this.updateNavButtons();
+        }, 100);
+      }
+
+      scroll(direction) {
+        const scrollAmount = 200;
+        const currentScroll = this.wrapper.scrollLeft;
+        
+        if (direction === 'left') {
+          this.wrapper.scrollTo({
+            left: currentScroll - scrollAmount,
+            behavior: 'smooth'
+          });
+        } else {
+          this.wrapper.scrollTo({
+            left: currentScroll + scrollAmount,
+            behavior: 'smooth'
+          });
+        }
+      }
+
+      scrollToButton(button) {
+        if (window.innerWidth <= 749) {
+          const mobileLayout = '{{ block.settings.mobile_layout }}';
+          if (mobileLayout === 'stack' || mobileLayout === 'grid') {
+            return;
+          }
+        }
+
+        const buttonRect = button.getBoundingClientRect();
+        const wrapperRect = this.wrapper.getBoundingClientRect();
+        const scrollLeft = this.wrapper.scrollLeft;
+        
+        const buttonLeft = buttonRect.left - wrapperRect.left + scrollLeft;
+        const buttonCenter = buttonLeft + (buttonRect.width / 2);
+        const wrapperCenter = this.wrapper.offsetWidth / 2;
+        
+        this.wrapper.scrollTo({
+          left: buttonCenter - wrapperCenter,
+          behavior: 'smooth'
+        });
+      }
+
+      updateNavButtons() {
+        if (!this.leftButton || !this.rightButton) return;
+
+        if (window.innerWidth <= 749) {
+          const mobileLayout = '{{ block.settings.mobile_layout }}';
+          if (mobileLayout === 'stack' || mobileLayout === 'grid') {
+            this.leftButton.style.display = 'none';
+            this.rightButton.style.display = 'none';
+            return;
+          } else {
+            this.leftButton.style.display = 'flex';
+            this.rightButton.style.display = 'flex';
+          }
+        }
+
+        const isAtStart = this.wrapper.scrollLeft <= 0;
+        const isAtEnd = this.wrapper.scrollLeft >= this.wrapper.scrollWidth - this.wrapper.offsetWidth;
+
+        this.leftButton.classList.toggle('hidden', isAtStart);
+        this.rightButton.classList.toggle('hidden', isAtEnd);
+      }
+
+      setActiveButton(clickedButton = null) {
+        this.buttons.forEach(button => button.classList.remove('active'));
+        if (clickedButton) {
+          clickedButton.classList.add('active');
+        } else {
+          const currentPath = window.location.pathname;
+          this.buttons.forEach(button => {
+            if (button.getAttribute('href') === currentPath) {
+              button.classList.add('active');
+            }
+          });
+        }
+      }
+    }
+
+    customElements.define('collection-menu-{{ ai_gen_id }}', CollectionMenu{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection menu",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Menu settings"
+    },
+    {
+      "type": "range",
+      "id": "menu_padding",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Menu padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "menu_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Menu border radius",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "checkbox",
+      "id": "background_transparency",
+      "label": "Enable background transparency",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "background_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Background opacity",
+      "default": 0.9
+    },
+    {
+      "type": "checkbox",
+      "id": "menu_wrap",
+      "label": "Allow menu wrapping",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "button_spacing",
+      "min": 4,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Button spacing",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "range",
+      "id": "button_width",
+      "min": 80,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Button minimum width",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "button_height",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Button height",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 6
+    },
+    {
+      "type": "color",
+      "id": "fill_color",
+      "label": "Fill color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "fill_transparency",
+      "label": "Enable fill transparency",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "fill_opacity",
+      "min": 0,
+      "max": 1,
+      "step": 0.1,
+      "label": "Fill opacity",
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "outline_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Outline width",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "outline_color",
+      "label": "Outline color",
+      "default": "#e6e6e6"
+    },
+    {
+      "type": "header",
+      "content": "Button text"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "text_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "text_weight",
+      "label": "Text weight",
+      "options": [
+        {"value": "300", "label": "Light"},
+        {"value": "400", "label": "Normal"},
+        {"value": "500", "label": "Medium"},
+        {"value": "600", "label": "Semibold"},
+        {"value": "700", "label": "Bold"}
+      ],
+      "default": "500"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_uppercase",
+      "label": "Uppercase text",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Hover states"
+    },
+    {
+      "type": "color",
+      "id": "hover_color",
+      "label": "Hover fill color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "hover_outline_color",
+      "label": "Hover outline color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Active states"
+    },
+    {
+      "type": "color",
+      "id": "active_color",
+      "label": "Active fill color",
+      "default": "#000f9f"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Active text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "active_outline_color",
+      "label": "Active outline color",
+      "default": "#000f9f"
+    },
+    {
+      "type": "header",
+      "content": "Navigation buttons"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_color",
+      "label": "Navigation button color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_hover_color",
+      "label": "Navigation button hover color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_icon_color",
+      "label": "Navigation icon color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        {"value": "scroll", "label": "Scroll horizontally"},
+        {"value": "stack", "label": "Stack vertically"},
+        {"value": "grid", "label": "Grid layout"}
+      ],
+      "default": "scroll"
+    },
+    {
+      "type": "select",
+      "id": "mobile_columns",
+      "label": "Mobile columns",
+      "options": [
+        {"value": "1", "label": "1"},
+        {"value": "2", "label": "2"}
+      ],
+      "default": "2"
+    },
+    {
+      "type": "select",
+      "id": "mobile_alignment",
+      "label": "Mobile alignment",
+      "options": [
+        {"value": "left", "label": "Left"},
+        {"value": "center", "label": "Center"},
+        {"value": "right", "label": "Right"}
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_button_full_width",
+      "label": "Full width buttons on mobile",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_width",
+      "min": 60,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile button minimum width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_height",
+      "min": 30,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile button height",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_text_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile text size",
+      "default": 13
+    },
+    {
+      "type": "header",
+      "content": "Collection1"
+    },
+    {
+      "type": "collection",
+      "id": "collection_1",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_1_label",
+      "label": "Custom label"
+    },
+    {
+      "type": "header",
+      "content": "Collection 2"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_2_label",
+      "label": "Custom label"
+    },
+    {
+      "type": "header",
+      "content": "Collection 3"
+    },
+    {
+      "type": "collection",
+      "id": "collection_3",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_3_label",
+      "label": "Custom label"
+    },
+    {
+      "type": "header",
+      "content": "Collection 4"
+    },
+    {
+      "type": "collection",
+      "id": "collection_4",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_4_label",
+      "label": "Custom label"
+    },
+    {
+      "type": "header",
+      "content": "Collection 5"
+    },
+    {
+      "type": "collection",
+      "id": "collection_5",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_5_label",
+      "label": "Custom label"
+    },
+    {
+      "type": "header",
+      "content": "Collection 6"
+    },
+    {
+      "type": "collection",
+      "id": "collection_6",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_6_label",
+      "label": "Custom label"
+    },
+    {
+      "type": "header",
+      "content": "Collection 7"
+    },
+    {
+      "type": "collection",
+      "id": "collection_7",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_7_label",
+      "label": "Custom label"
+    },
+    {
+      "type": "header",
+      "content": "Collection 8"
+    },
+    {
+      "type": "collection",
+      "id": "collection_8",
+      "label": "Collection"
+    },
+    {
+      "type": "text",
+      "id": "collection_8_label",
+      "label": "Custom label"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection menu"
+    }
+  ]
+}
+{% endschema %}

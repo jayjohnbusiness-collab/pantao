@@ -1,0 +1,641 @@
+{% doc %}
+  @prompt
+    Generate a one row product collection menu in button style. Include button adjustment settings such as button edges, height, width, hover color, outline color, fill color, and fill color transparency toggle option. Include menu settings for padding, theme, background color, transparency. Include settings to link collections for each button and Menu should include menu wrapping settings.. Menu actions: Scroll left or right when a button is selected., Include menu stacking option for mobile. It should have the option to scroll or stack. Mobile menu should have the ability to scroll through the collection buttons., The menu should wrap on both desktop and mobile and include settings to adjust the wrapping. For mobile you can scroll through the menu by swiping left or right. For desktop, when a button is selected the rest will shift left or right with the button to show which one is selected. There should not be any arrow scroll icons.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collection-menu-{{ ai_gen_id }} {
+    background-color: {% if block.settings.background_transparency %}rgba({{ block.settings.background_color | color_extract: 'red' }}, {{ block.settings.background_color | color_extract: 'green' }}, {{ block.settings.background_color | color_extract: 'blue' }}, {{ block.settings.background_opacity | divided_by: 100.0 }}){% else %}{{ block.settings.background_color }}{% endif %};
+    padding: {{ block.settings.menu_padding }}px;
+    overflow: hidden;
+  }
+
+  .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+    display: flex;
+    flex-wrap: {% if block.settings.enable_wrapping %}wrap{% else %}nowrap{% endif %};
+    gap: {{ block.settings.button_gap }}px;
+    {% unless block.settings.enable_wrapping %}
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-bottom: 2px;
+    {% endunless %}
+  }
+
+  {% unless block.settings.enable_wrapping %}
+    .ai-collection-menu__wrapper-{{ ai_gen_id }}::-webkit-scrollbar {
+      display: none;
+    }
+  {% endunless %}
+
+  .ai-collection-menu__button-{{ ai_gen_id }} {
+    {% if block.settings.enable_wrapping %}
+      flex: {% if block.settings.wrap_button_behavior == 'equal' %}1 1 auto{% elsif block.settings.wrap_button_behavior == 'fit' %}0 0 auto{% else %}1 1 {{ block.settings.wrap_min_width }}px{% endif %};
+    {% else %}
+      flex-shrink: 0;
+    {% endif %}
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: {{ block.settings.button_height }}px;
+    {% if block.settings.button_width_type == 'fixed' and block.settings.enable_wrapping == false %}
+      width: {{ block.settings.button_width }}px;
+    {% else %}
+      padding: 0 {{ block.settings.button_padding }}px;
+      min-width: fit-content;
+    {% endif %}
+    background-color: {% if block.settings.fill_transparency %}rgba({{ block.settings.fill_color | color_extract: 'red' }}, {{ block.settings.fill_color | color_extract: 'green' }}, {{ block.settings.fill_color | color_extract: 'blue' }}, {{ block.settings.fill_opacity | divided_by: 100.0 }}){% else %}{{ block.settings.fill_color }}{% endif %};
+    color: {{ block.settings.text_color }};
+    border: {{ block.settings.outline_width }}px solid {{ block.settings.outline_color }};
+    border-radius: {{ block.settings.button_radius }}px;
+    text-decoration: none;
+    font-size: {{ block.settings.font_size }}px;
+    font-weight: {{ block.settings.font_weight }};
+    text-transform: {% if block.settings.text_uppercase %}uppercase{% else %}none{% endif %};
+    transition: all 0.3s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }}:hover {
+    background-color: {% if block.settings.fill_transparency %}rgba({{ block.settings.hover_color | color_extract: 'red' }}, {{ block.settings.hover_color | color_extract: 'green' }}, {{ block.settings.hover_color | color_extract: 'blue' }}, {{ block.settings.fill_opacity | divided_by: 100.0 }}){% else %}{{ block.settings.hover_color }}{% endif %};
+    color: {{ block.settings.hover_text_color }};
+    border-color: {{ block.settings.hover_outline_color }};
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }}.active {
+    background-color: {{ block.settings.active_color }};
+    color: {{ block.settings.active_text_color }};
+    border-color: {{ block.settings.active_outline_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+      flex-wrap: {% if block.settings.mobile_enable_wrapping %}wrap{% else %}nowrap{% endif %};
+      gap: {{ block.settings.mobile_button_gap }}px;{% unless block.settings.mobile_enable_wrapping %}
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        -webkit-overflow-scrolling: touch;
+      {% endunless %}
+    }
+
+    {% unless block.settings.mobile_enable_wrapping %}
+      .ai-collection-menu__wrapper-{{ ai_gen_id }}::-webkit-scrollbar {
+        display: none;
+      }
+    {% endunless %}
+
+    .ai-collection-menu__button-{{ ai_gen_id }} {
+      {% if block.settings.mobile_enable_wrapping %}
+        flex: {% if block.settings.mobile_wrap_button_behavior == 'equal' %}1 1 auto{% elsif block.settings.mobile_wrap_button_behavior == 'fit' %}0 0 auto{% else %}1 1 {{ block.settings.mobile_wrap_min_width }}px{% endif %};
+      {% else %}
+        flex-shrink: 0;
+      {% endif %}
+      font-size: {{ block.settings.mobile_font_size }}px;
+      height: {{ block.settings.mobile_button_height }}px;
+    }
+  }
+
+  .ai-collection-menu__empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 14px;
+  }
+{% endstyle %}
+
+<collection-menu-{{ ai_gen_id }}
+  class="ai-collection-menu-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  {% assign has_collections = false %}
+  {% for i in (1..8) %}
+    {% assign collection_key = 'collection_' | append: i %}
+    {% if block.settings[collection_key] != blank %}
+      {% assign has_collections = true %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+
+  {% if has_collections %}
+    <div class="ai-collection-menu__wrapper-{{ ai_gen_id }}">
+      {% for i in (1..8) %}
+        {% assign collection_key = 'collection_' | append: i %}
+        {% assign collection = block.settings[collection_key] %}
+        {% if collection != blank %}
+          <a
+            href="{{ collection.url }}"
+            class="ai-collection-menu__button-{{ ai_gen_id }}"
+            data-collection-handle="{{ collection.handle }}"
+          >
+            {{ collection.title }}
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="ai-collection-menu__empty-state-{{ ai_gen_id }}">
+      Add collections to display your menu
+    </div>
+  {% endif %}
+</collection-menu-{{ ai_gen_id }}><script>
+  (function() {
+    class CollectionMenu{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.wrapper = this.querySelector('.ai-collection-menu__wrapper-{{ ai_gen_id }}');
+        this.buttons = this.querySelectorAll('.ai-collection-menu__button-{{ ai_gen_id }}');
+        if (this.wrapper && this.buttons.length > 0) {
+          this.setupActiveState();
+          this.setupDesktopScrolling();
+          this.setupMobileTouch();
+        }
+      }
+
+      setupActiveState() {
+        const currentPath = window.location.pathname;
+        this.buttons.forEach(button => {
+          const buttonPath = new URL(button.href).pathname;
+          
+          if (currentPath === buttonPath || currentPath.startsWith(buttonPath + '/')) {
+            button.classList.add('active');
+          }
+          button.addEventListener('click', (e) => {
+            this.buttons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');});
+        });
+      }
+
+      setupDesktopScrolling() {
+        if (window.innerWidth > 749 && !{{ block.settings.enable_wrapping | json }}) {
+          this.buttons.forEach(button => {
+            button.addEventListener('click', (e) => {
+              setTimeout(() => {
+                this.scrollToButton(button);
+              }, 100);
+            });
+          });
+        }
+      }
+
+      setupMobileTouch() {
+        if (window.innerWidth <= 749 && !{{ block.settings.mobile_enable_wrapping | json }}) {
+          let startX = 0;
+          let scrollLeft = 0;
+          let isDown = false;
+
+          this.wrapper.addEventListener('touchstart', (e) => {
+            isDown = true;
+            startX = e.touches[0].pageX - this.wrapper.offsetLeft;
+            scrollLeft = this.wrapper.scrollLeft;
+          });
+
+          this.wrapper.addEventListener('touchmove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.touches[0].pageX - this.wrapper.offsetLeft;
+            const walk = (x - startX) * 2;
+            this.wrapper.scrollLeft = scrollLeft - walk;
+          });
+
+          this.wrapper.addEventListener('touchend', () => {
+            isDown = false;
+          });
+        }
+      }
+
+      scrollToButton(button) {
+        const buttonRect = button.getBoundingClientRect();
+        const wrapperRect = this.wrapper.getBoundingClientRect();
+        const buttonCenter = buttonRect.left + buttonRect.width / 2;
+        const wrapperCenter = wrapperRect.left + wrapperRect.width / 2;
+        const scrollOffset = buttonCenter - wrapperCenter;
+        
+        this.wrapper.scrollBy({
+          left: scrollOffset,
+          behavior: 'smooth'
+        });
+      }
+    }
+
+    customElements.define('collection-menu-{{ ai_gen_id }}', CollectionMenu{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection menu",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collections"
+    },
+    {
+      "type": "collection",
+      "id": "collection_1",
+      "label": "Collection 1"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2",
+      "label": "Collection 2"
+    },
+    {
+      "type": "collection",
+      "id": "collection_3",
+      "label": "Collection 3"
+    },
+    {
+      "type": "collection",
+      "id": "collection_4",
+      "label": "Collection 4"
+    },
+    {
+      "type": "collection",
+      "id": "collection_5",
+      "label": "Collection 5"
+    },
+    {
+      "type": "collection",
+      "id": "collection_6",
+      "label": "Collection 6"
+    },
+    {
+      "type": "collection",
+      "id": "collection_7",
+      "label": "Collection 7"
+    },
+    {
+      "type": "collection",
+      "id": "collection_8",
+      "label": "Collection 8"
+    },
+    {
+      "type": "header",
+      "content": "Desktop layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_wrapping",
+      "label": "Enable wrapping",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "wrap_button_behavior",
+      "label": "Button behavior when wrapped",
+      "options": [
+        {
+          "value": "equal",
+          "label": "Equal width"
+        },
+        {
+          "value": "fit",
+          "label": "Fit content"
+        },
+        {
+          "value": "min",
+          "label": "Minimum width"
+        }
+      ],
+      "default": "fit"
+    },
+    {
+      "type": "range",
+      "id": "wrap_min_width",
+      "min": 80,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Minimum button width",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "menu_padding",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Menu padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Button spacing",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_enable_wrapping",
+      "label": "Enable mobile wrapping",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "mobile_wrap_button_behavior",
+      "label": "Mobile button behavior when wrapped",
+      "options": [
+        {
+          "value": "equal",
+          "label": "Equal width"
+        },
+        {
+          "value": "fit",
+          "label": "Fit content"
+        },
+        {
+          "value": "min",
+          "label": "Minimum width"
+        }
+      ],
+      "default": "equal"
+    },
+    {
+      "type": "range",
+      "id": "mobile_wrap_min_width",
+      "min": 60,
+      "max": 150,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile minimum button width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_gap",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile button spacing",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Menu background"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "background_transparency",
+      "label": "Enable background transparency",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "background_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background opacity",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "range",
+      "id": "button_height",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Button height",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_height",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile button height",
+      "default": 40
+    },
+    {
+      "type": "select",
+      "id": "button_width_type",
+      "label": "Button width",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "fixed",
+          "label": "Fixed"
+        }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "range",
+      "id": "button_width",
+      "min": 80,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Fixed width",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "button_padding",
+      "min": 10,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Button padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Button colors"
+    },
+    {
+      "type": "color",
+      "id": "fill_color",
+      "label": "Fill color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "fill_transparency",
+      "label": "Enable fill transparency",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "fill_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Fill opacity",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "outline_color",
+      "label": "Outline color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "outline_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Outline width",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Button hover colors"
+    },
+    {
+      "type": "color",
+      "id": "hover_color",
+      "label": "Hover fill color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "hover_outline_color",
+      "label": "Hover outline color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Active button colors"
+    },
+    {
+      "type": "color",
+      "id": "active_color",
+      "label": "Active fill color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "active_text_color",
+      "label": "Active text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "active_outline_color",
+      "label": "Active outline color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Button typography"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "min": 10,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "mobile_font_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile font size",
+      "default": 12
+    },
+    {
+      "type": "select",
+      "id": "font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "checkbox",
+      "id": "text_uppercase",
+      "label": "Uppercase text",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection menu"
+    }
+  ]
+}
+{% endschema %}

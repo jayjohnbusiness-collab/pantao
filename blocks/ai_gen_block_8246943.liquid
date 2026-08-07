@@ -1,0 +1,343 @@
+{% doc %}
+  @prompt
+    CREATE A FOOTER THAT GIVES ME THREE SECTIONS TO LINK DIFFERENT MENUS. GIVE ME THE OPTION TO ADJUST THE ALIGNMENT, INPUT A HEADER, MENU TEXT SIZE/FONT.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-footer-menu-{{ ai_gen_id }} {
+    padding: {{ block.settings.padding_top }}px 20px {{ block.settings.padding_bottom }}px;
+    background-color: {{ block.settings.background_color }};
+  }
+
+  .ai-footer-menu-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-footer-menu-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+
+  .ai-footer-menu-column-{{ ai_gen_id }} {
+    text-align: {{ block.settings.alignment }};
+  }
+
+  .ai-footer-menu-header-{{ ai_gen_id }} {
+    margin: 0 0 {{ block.settings.header_spacing }}px;
+    color: {{ block.settings.header_color }};
+    font-size: {{ block.settings.header_size }}px;
+    font-family: {{ block.settings.header_font.family }}, {{ block.settings.header_font.fallback_families }};
+    font-weight: {{ block.settings.header_font.weight }};
+    font-style: {{ block.settings.header_font.style }};
+    text-transform: {{ block.settings.header_text_transform }};
+  }
+
+  .ai-footer-menu-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-footer-menu-item-{{ ai_gen_id }} {
+    margin-bottom: {{ block.settings.menu_item_spacing }}px;
+  }
+
+  .ai-footer-menu-link-{{ ai_gen_id }} {
+    color: {{ block.settings.menu_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.menu_size }}px;
+    font-family: {{ block.settings.menu_font.family }}, {{ block.settings.menu_font.fallback_families }};
+    font-weight: {{ block.settings.menu_font.weight }};
+    font-style: {{ block.settings.menu_font.style }};
+    transition: color 0.3s ease;
+  }
+
+  .ai-footer-menu-link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.menu_hover_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-footer-menu-grid-{{ ai_gen_id }} {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+
+    .ai-footer-menu-column-{{ ai_gen_id }} {
+      text-align: {{ block.settings.mobile_alignment }};
+    }
+  }
+{% endstyle %}
+
+<div class="ai-footer-menu-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-footer-menu-container-{{ ai_gen_id }}">
+    <div class="ai-footer-menu-grid-{{ ai_gen_id }}">
+      {% for i in (1..3) %}
+        {% liquid
+          assign header_key = 'menu_' | append: i | append: '_header'
+          assign menu_key = 'menu_' | append: i
+          assign header = block.settings[header_key]
+          assign menu = block.settings[menu_key]
+        %}
+        
+        <div class="ai-footer-menu-column-{{ ai_gen_id }}">
+          {% if header != blank %}
+            <h3 class="ai-footer-menu-header-{{ ai_gen_id }}">{{ header }}</h3>
+          {% endif %}
+          
+          {% if menu.links.size > 0 %}
+            <ul class="ai-footer-menu-list-{{ ai_gen_id }}">
+              {% for link in menu.links %}
+                <li class="ai-footer-menu-item-{{ ai_gen_id }}">
+                  <a href="{{ link.url }}" class="ai-footer-menu-link-{{ ai_gen_id }}">
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% else %}
+            <p class="ai-footer-menu-link-{{ ai_gen_id }}" style="opacity: 0.6; font-style: italic;">
+              Select a menu
+            </p>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Footer menu columns",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Menu 1"
+    },
+    {
+      "type": "text",
+      "id": "menu_1_header",
+      "label": "Header",
+      "default": "Quick links"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_1",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Menu 2"
+    },
+    {
+      "type": "text",
+      "id": "menu_2_header",
+      "label": "Header",
+      "default": "Information"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Menu 3"
+    },
+    {
+      "type": "text",
+      "id": "menu_3_header",
+      "label": "Header",
+      "default": "Support"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_3",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Desktop alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "mobile_alignment",
+      "label": "Mobile alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Header style"
+    },
+    {
+      "type": "font_picker",
+      "id": "header_font",
+      "label": "Font",
+      "default": "sans_serif_n4"
+    },
+    {
+      "type": "range",
+      "id": "header_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "header_text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "color",
+      "id": "header_color",
+      "label": "Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "header_spacing",
+      "min": 5,
+      "max": 40,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom spacing",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Menu style"
+    },
+    {
+      "type": "font_picker",
+      "id": "menu_font",
+      "label": "Font",
+      "default": "sans_serif_n4"
+    },
+    {
+      "type": "range",
+      "id": "menu_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 14
+    },
+    {
+      "type": "color",
+      "id": "menu_color",
+      "label": "Color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "menu_hover_color",
+      "label": "Hover color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "menu_item_spacing",
+      "min": 5,
+      "max": 30,
+      "step": 5,
+      "unit": "px",
+      "label": "Item spacing",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f5f5f5"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer menu columns"
+    }
+  ]
+}
+{% endschema %}

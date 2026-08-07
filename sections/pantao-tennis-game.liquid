@@ -1,0 +1,2667 @@
+{% comment %}
+  Pantao Mini — Tennis Game
+  A monochrome, Acne-Studios-styled Pong-tennis mini game.
+  Drop into any page via the theme editor.
+{% endcomment %}
+
+<div
+  class="section spacing-style {% if section.settings.color_scheme != blank %}color-{{ section.settings.color_scheme }}{% endif %}"
+  style="{% render 'spacing-padding', settings: section.settings %}"
+>
+  {%- assign gate_required = section.settings.gate_required -%}
+  {%- assign already_passed = false -%}
+  {%- if customer.posted? -%}{%- assign already_passed = true -%}{%- endif -%}
+  {%- assign gate_panel_color = section.settings.gate_panel_bg_color | default: '#0d1f0d' -%}
+  {%- assign gate_panel_alpha = section.settings.gate_panel_opacity | default: 60 | divided_by: 100.0 -%}
+
+  <div
+    class="pantao-stepper"
+    data-pantao-stepper
+    data-fullscreen="{% if section.settings.gate_fullscreen %}true{% else %}false{% endif %}"
+    data-step="{% if gate_required and already_passed == false %}gate{% else %}game{% endif %}"
+    style="
+      --pg-bg: {{ section.settings.gate_bg_color | default: '#0d1f0d' }};
+      --pg-fg: {{ section.settings.gate_fg_color | default: '#ffffff' }};
+      --pg-accent: {{ section.settings.gate_accent_color | default: '#c8ff00' }};
+      --pg-muted: rgba(255,255,255,0.6);
+
+      --pg-eyebrow-size: {{ section.settings.gate_eyebrow_size | default: 11 }}px;
+      --pg-eyebrow-tracking: {{ section.settings.gate_eyebrow_tracking | default: 22 }};
+      --pg-eyebrow-color: {{ section.settings.gate_eyebrow_color | default: 'rgba(255,255,255,0.6)' }};
+      --pg-eyebrow-align: {{ section.settings.gate_eyebrow_align | default: 'center' }};
+      --pg-eyebrow-line: {{ section.settings.gate_eyebrow_line_height | default: 140 | divided_by: 100.0 }};
+
+      --pg-heading-size: {{ section.settings.gate_heading_size | default: 36 }}px;
+      --pg-heading-tracking: {{ section.settings.gate_heading_tracking | default: 4 }};
+      --pg-heading-color: {{ section.settings.gate_heading_color | default: '#ffffff' }};
+      --pg-heading-align: {{ section.settings.gate_heading_align | default: 'center' }};
+      --pg-heading-line: {{ section.settings.gate_heading_line_height | default: 105 | divided_by: 100.0 }};
+
+      --pg-subheading-size: {{ section.settings.gate_subheading_size | default: 14 }}px;
+      --pg-subheading-color: {{ section.settings.gate_subheading_color | default: 'rgba(255,255,255,0.6)' }};
+      --pg-subheading-align: {{ section.settings.gate_subheading_align | default: 'center' }};
+      --pg-subheading-line: {{ section.settings.gate_subheading_line_height | default: 150 | divided_by: 100.0 }};
+
+      --pg-fine-size: {{ section.settings.gate_fine_size | default: 11 }}px;
+      --pg-fine-color: {{ section.settings.gate_fine_color | default: 'rgba(255,255,255,0.6)' }};
+      --pg-fine-align: {{ section.settings.gate_fine_align | default: 'center' }};
+      --pg-fine-line: {{ section.settings.gate_fine_line_height | default: 150 | divided_by: 100.0 }};
+
+      --pg-input-size: {{ section.settings.gate_input_size | default: 14 }}px;
+      --pg-button-size: {{ section.settings.gate_button_size | default: 12 }}px;
+      --pg-input-radius: {{ section.settings.gate_input_radius | default: 0 }}px;
+      --pg-panel-radius: {{ section.settings.gate_panel_radius | default: 0 }}px;
+      --pg-panel-bg-r: {{ gate_panel_color | color_extract: 'red' }};
+      --pg-panel-bg-g: {{ gate_panel_color | color_extract: 'green' }};
+      --pg-panel-bg-b: {{ gate_panel_color | color_extract: 'blue' }};
+      --pg-panel-bg-alpha: {{ gate_panel_alpha }};
+      --pg-panel-max-width: {{ section.settings.gate_panel_max_width | default: 460 }}px;
+      --pg-panel-padding: {{ section.settings.gate_panel_padding | default: 36 }}px;
+      --pg-bg-overlay: {{ section.settings.gate_bg_overlay_opacity | default: 0 | divided_by: 100.0 }};
+      --pg-bg-position: {{ section.settings.gate_bg_position | default: 'center center' }};
+      --pg-bg-fit: {{ section.settings.gate_bg_fit | default: 'cover' }};
+    "
+  >
+    {%- if gate_required -%}
+      {%- comment -%} Step 1: Email gate (overlay on top of the game) {%- endcomment -%}
+      <div class="pantao-stepper__gate" data-step-gate>
+        {%- if section.settings.gate_background_image != blank -%}
+          <div class="pantao-stepper__gate-bg" aria-hidden="true">
+            <img
+              src="{{ section.settings.gate_background_image | image_url: width: 1920 }}"
+              srcset="
+                {{ section.settings.gate_background_image | image_url: width: 960 }} 960w,
+                {{ section.settings.gate_background_image | image_url: width: 1920 }} 1920w,
+                {{ section.settings.gate_background_image | image_url: width: 2400 }} 2400w
+              "
+              sizes="100vw"
+              alt=""
+              loading="eager"
+            />
+            {%- if section.settings.gate_bg_overlay_opacity > 0 -%}
+              <div class="pantao-stepper__gate-bg-overlay" aria-hidden="true"></div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        <div class="pantao-stepper__gate-panel">
+          {%- if section.settings.gate_eyebrow != blank -%}
+            <div class="pantao-stepper__gate-eyebrow">{{ section.settings.gate_eyebrow }}</div>
+          {%- endif -%}
+          {%- if section.settings.gate_heading != blank -%}
+            <div class="pantao-stepper__gate-heading">{{ section.settings.gate_heading }}</div>
+          {%- endif -%}
+          {%- if section.settings.gate_subheading != blank -%}
+            <div class="pantao-stepper__gate-subheading">{{ section.settings.gate_subheading }}</div>
+          {%- endif -%}
+
+          {%- form 'customer', class: 'pantao-stepper__gate-form', id: 'pantao-stepper-form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter,pantao-mini">
+            {%- assign gate_input_label = section.settings.gate_input_label | default: 'Email' -%}
+            {%- if section.settings.gate_input_show_label -%}
+              <label class="pantao-stepper__gate-label" for="pantao-stepper-email">{{ gate_input_label }}</label>
+            {%- endif -%}
+            <div class="pantao-stepper__gate-row">
+              <input
+                class="pantao-stepper__gate-input"
+                id="pantao-stepper-email"
+                type="email"
+                name="contact[email]"
+                placeholder="{{ section.settings.gate_input_placeholder | default: 'you@example.com' }}"
+                aria-label="{{ gate_input_label }}"
+                autocomplete="email"
+                required
+                aria-required="true"
+              />
+              <button class="pantao-stepper__gate-submit" type="submit">
+                {{ section.settings.gate_button_label | default: 'Enter' }}
+              </button>
+            </div>
+            <p class="pantao-stepper__gate-error" data-gate-error hidden></p>
+            {%- if form.errors -%}
+              <p class="pantao-stepper__gate-error">
+                {%- for error in form.errors -%}
+                  {{ form.errors.messages[error] }}{%- unless forloop.last -%}, {%- endunless -%}
+                {%- endfor -%}
+              </p>
+            {%- endif -%}
+            {%- if section.settings.gate_fine_print != blank -%}
+              <div class="pantao-stepper__gate-fine">{{ section.settings.gate_fine_print }}</div>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} Step 2: The mini game itself {%- endcomment -%}
+    <div class="pantao-stepper__game" data-step-game>
+      <div class="pantao-tennis" data-pantao-tennis>
+    <div class="pantao-tennis__header">
+      <p class="pantao-tennis__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+      <h2 class="pantao-tennis__title">{{ section.settings.heading | escape }}</h2>
+      <p class="pantao-tennis__subtitle">{{ section.settings.subheading | escape }}</p>
+    </div>
+
+    <div class="pantao-tennis__scoreboard">
+      <div class="pantao-tennis__score-block">
+        <span class="pantao-tennis__score-label" data-player-label>Player</span>
+        <span class="pantao-tennis__score-value" data-player-score>0</span>
+      </div>
+      <div class="pantao-tennis__meta">
+        <span class="pantao-tennis__meta-label" data-status>Press start</span>
+        <span class="pantao-tennis__meta-divider">/</span>
+        <span class="pantao-tennis__meta-label">First to {{ section.settings.win_score }}</span>
+      </div>
+      <div class="pantao-tennis__score-block pantao-tennis__score-block--right">
+        <span class="pantao-tennis__score-label">PG  CPU</span>
+        <span class="pantao-tennis__score-value" data-cpu-score>0</span>
+      </div>
+    </div>
+
+    <div class="pantao-tennis__court-wrap">
+      <canvas
+        class="pantao-tennis__court"
+        data-court
+        width="980"
+        height="680"
+        aria-label="Tennis court"
+        role="img"
+      ></canvas>
+      <div class="pantao-tennis__overlay" data-overlay>
+        <p class="pantao-tennis__overlay-title" data-overlay-title>PANTAO MINI</p>
+        <p class="pantao-tennis__overlay-text" data-overlay-text>
+          Move your paddle with the mouse, touch, or arrow keys.
+        </p>
+        <button class="pantao-tennis__btn" type="button" data-start>Start match</button>
+      </div>
+    </div>
+
+    <div class="pantao-tennis__customize">
+      <div class="pantao-tennis__field">
+        <label class="pantao-tennis__control-label" for="pantao-tennis-name">Your name</label>
+        <input
+          class="pantao-tennis__input"
+          id="pantao-tennis-name"
+          type="text"
+          maxlength="12"
+          placeholder="PLAYER"
+          autocomplete="off"
+          data-name-input
+        />
+      </div>
+      <div class="pantao-tennis__field">
+        <label class="pantao-tennis__control-label" for="pantao-tennis-flag">Country</label>
+        <select class="pantao-tennis__select" id="pantao-tennis-flag" data-flag-select>
+          <option value="">— None —</option>
+          <option value="PG">PG  Pantao Galeriya</option>
+          <option value="🇦🇷">🇦🇷 Argentina</option>
+          <option value="🇦🇺">🇦🇺 Australia</option>
+          <option value="🇦🇹">🇦🇹 Austria</option>
+          <option value="🇧🇪">🇧🇪 Belgium</option>
+          <option value="🇧🇷">🇧🇷 Brazil</option>
+          <option value="🇨🇦">🇨🇦 Canada</option>
+          <option value="🇨🇱">🇨🇱 Chile</option>
+          <option value="🇨🇳">🇨🇳 China</option>
+          <option value="🇨🇴">🇨🇴 Colombia</option>
+          <option value="🇨🇿">🇨🇿 Czechia</option>
+          <option value="🇩🇰">🇩🇰 Denmark</option>
+          <option value="🇪🇬">🇪🇬 Egypt</option>
+          <option value="🇫🇮">🇫🇮 Finland</option>
+          <option value="🇫🇷">🇫🇷 France</option>
+          <option value="🇩🇪">🇩🇪 Germany</option>
+          <option value="🇬🇷">🇬🇷 Greece</option>
+          <option value="🇭🇰">🇭🇰 Hong Kong</option>
+          <option value="🇭🇺">🇭🇺 Hungary</option>
+          <option value="🇮🇳">🇮🇳 India</option>
+          <option value="🇮🇩">🇮🇩 Indonesia</option>
+          <option value="🇮🇪">🇮🇪 Ireland</option>
+          <option value="🇮🇱">🇮🇱 Israel</option>
+          <option value="🇮🇹">🇮🇹 Italy</option>
+          <option value="🇯🇵">🇯🇵 Japan</option>
+          <option value="🇰🇷">🇰🇷 Korea</option>
+          <option value="🇲🇾">🇲🇾 Malaysia</option>
+          <option value="🇲🇽">🇲🇽 Mexico</option>
+          <option value="🇲🇦">🇲🇦 Morocco</option>
+          <option value="🇳🇱">🇳🇱 Netherlands</option>
+          <option value="🇳🇿">🇳🇿 New Zealand</option>
+          <option value="🇳🇴">🇳🇴 Norway</option>
+          <option value="🇵🇭">🇵🇭 Philippines</option>
+          <option value="🇵🇱">🇵🇱 Poland</option>
+          <option value="🇵🇹">🇵🇹 Portugal</option>
+          <option value="🇷🇴">🇷🇴 Romania</option>
+          <option value="🇷🇺">🇷🇺 Russia</option>
+          <option value="🇸🇦">🇸🇦 Saudi Arabia</option>
+          <option value="🇸🇬">🇸🇬 Singapore</option>
+          <option value="🇿🇦">🇿🇦 South Africa</option>
+          <option value="🇪🇸">🇪🇸 Spain</option>
+          <option value="🇸🇪">🇸🇪 Sweden</option>
+          <option value="🇨🇭">🇨🇭 Switzerland</option>
+          <option value="🇹🇼">🇹🇼 Taiwan</option>
+          <option value="🇹🇭">🇹🇭 Thailand</option>
+          <option value="🇹🇷">🇹🇷 Turkey</option>
+          <option value="🇺🇦">🇺🇦 Ukraine</option>
+          <option value="🇦🇪">🇦🇪 UAE</option>
+          <option value="🇬🇧">🇬🇧 United Kingdom</option>
+          <option value="🇺🇸">🇺🇸 United States</option>
+          <option value="🇻🇳">🇻🇳 Vietnam</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="pantao-tennis__controls">
+      <div class="pantao-tennis__control-group">
+        <span class="pantao-tennis__control-label">Difficulty</span>
+        <div class="pantao-tennis__chips" role="radiogroup" aria-label="Difficulty">
+          <button class="pantao-tennis__chip is-active" type="button" data-difficulty="easy" role="radio" aria-checked="true">Easy</button>
+          <button class="pantao-tennis__chip" type="button" data-difficulty="normal" role="radio" aria-checked="false">Normal</button>
+          <button class="pantao-tennis__chip" type="button" data-difficulty="hard" role="radio" aria-checked="false">Hard</button>
+          <button class="pantao-tennis__chip" type="button" data-difficulty="pro" role="radio" aria-checked="false">Pro</button>
+        </div>
+      </div>
+      <div class="pantao-tennis__control-group pantao-tennis__control-group--end">
+        <button class="pantao-tennis__btn pantao-tennis__btn--ghost" type="button" data-reset>Reset</button>
+      </div>
+    </div>
+
+  </div>
+    </div>{%- comment -%} /.pantao-stepper__game {%- endcomment -%}
+  </div>{%- comment -%} /.pantao-stepper {%- endcomment -%}
+</div>
+
+<style>
+  /* === Stepper / gate styles === */
+  .pantao-stepper {
+    position: relative;
+  }
+  .pantao-stepper__game {
+    transition: opacity 0.45s ease;
+  }
+  .pantao-stepper[data-step="gate"] .pantao-stepper__game {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .pantao-stepper[data-step="game"] .pantao-stepper__game {
+    opacity: 1;
+    visibility: visible;
+  }
+  .pantao-stepper__gate {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: var(--pg-bg);
+    color: var(--pg-fg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+    padding: 60px 24px;
+    transition: opacity 0.45s ease, visibility 0s linear 0.45s;
+  }
+  /* Fullscreen mode: gate covers the entire viewport, breaking out of any
+     theme containers/padding. Disabled by default for content pages where
+     the gate should be inline; enable for password / hero use. */
+  .pantao-stepper[data-fullscreen="true"] .pantao-stepper__gate {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+  }
+  /* When the gate is fixed-fullscreen, also lock body scroll so the user
+     can't scroll past the gate to see partial game underneath. */
+  .pantao-stepper[data-fullscreen="true"][data-step="gate"] {
+    /* container itself stays normal flow so game is below it once unlocked */
+  }
+  .pantao-stepper[data-step="game"] .pantao-stepper__gate {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+  .pantao-stepper[data-step="gate"] .pantao-stepper__gate {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.45s ease, visibility 0s linear 0s;
+  }
+  .pantao-stepper__gate-bg {
+    position: absolute; inset: 0; z-index: 0;
+    overflow: hidden;
+  }
+  .pantao-stepper__gate-bg img {
+    width: 100%; height: 100%;
+    object-fit: var(--pg-bg-fit, cover);
+    object-position: var(--pg-bg-position, center center);
+    display: block;
+  }
+  .pantao-stepper__gate-bg-overlay {
+    position: absolute; inset: 0;
+    background: #000;
+    opacity: var(--pg-bg-overlay, 0);
+    pointer-events: none;
+  }
+  .pantao-stepper__gate-panel {
+    position: relative;
+    z-index: 1;
+    max-width: var(--pg-panel-max-width, 460px);
+    width: 100%;
+    margin: 0 auto;
+    background: rgba(
+      var(--pg-panel-bg-r, 13),
+      var(--pg-panel-bg-g, 31),
+      var(--pg-panel-bg-b, 13),
+      var(--pg-panel-bg-alpha, 0.6)
+    );
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--pg-panel-radius, 0);
+    padding: var(--pg-panel-padding, 36px) calc(var(--pg-panel-padding, 36px) * 0.78);
+    box-sizing: border-box;
+  }
+  .pantao-stepper__gate-eyebrow {
+    font-size: var(--pg-eyebrow-size, 11px);
+    letter-spacing: calc(var(--pg-eyebrow-tracking, 22) * 0.01em);
+    line-height: var(--pg-eyebrow-line, 1.4);
+    text-transform: uppercase;
+    color: var(--pg-eyebrow-color, var(--pg-muted));
+    text-align: var(--pg-eyebrow-align, center);
+    margin: 0 0 18px;
+  }
+  .pantao-stepper__gate-eyebrow > *:first-child { margin-top: 0; }
+  .pantao-stepper__gate-eyebrow > *:last-child { margin-bottom: 0; }
+  .pantao-stepper__gate-heading {
+    font-size: var(--pg-heading-size, 36px);
+    letter-spacing: calc(var(--pg-heading-tracking, 4) * 0.01em);
+    line-height: var(--pg-heading-line, 1.05);
+    text-transform: uppercase;
+    margin: 0 0 12px;
+    color: var(--pg-heading-color, var(--pg-fg));
+    text-align: var(--pg-heading-align, center);
+    font-weight: 600;
+  }
+  .pantao-stepper__gate-heading > *:first-child { margin-top: 0; font-size: inherit; font-weight: inherit; line-height: inherit; }
+  .pantao-stepper__gate-heading > *:last-child { margin-bottom: 0; }
+  .pantao-stepper__gate-subheading {
+    font-size: var(--pg-subheading-size, 14px);
+    line-height: var(--pg-subheading-line, 1.5);
+    color: var(--pg-subheading-color, var(--pg-muted));
+    text-align: var(--pg-subheading-align, center);
+    margin: 0 0 26px;
+  }
+  .pantao-stepper__gate-subheading > *:first-child { margin-top: 0; }
+  .pantao-stepper__gate-subheading > *:last-child { margin-bottom: 0; }
+  .pantao-stepper__gate-form { margin: 0; }
+  .pantao-stepper__gate-label {
+    display: block;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pg-muted);
+    margin-bottom: 8px;
+    text-align: left;
+  }
+  .pantao-stepper__gate-row {
+    display: flex;
+    border: 1px solid var(--pg-fg);
+    border-radius: var(--pg-input-radius, 0);
+    overflow: hidden;
+  }
+  .pantao-stepper__gate-input {
+    flex: 1 1 auto;
+    appearance: none;
+    border: none;
+    background: transparent;
+    color: var(--pg-fg);
+    font: inherit;
+    font-size: var(--pg-input-size, 14px);
+    letter-spacing: 0.04em;
+    padding: 12px 14px;
+    outline: none;
+    border-radius: 0;
+    min-width: 0;
+  }
+  .pantao-stepper__gate-input::placeholder { color: rgba(255,255,255,0.35); }
+  .pantao-stepper__gate-submit {
+    appearance: none;
+    border: none;
+    border-left: 1px solid var(--pg-fg);
+    background: var(--pg-fg);
+    color: var(--pg-bg);
+    font: inherit;
+    font-size: var(--pg-button-size, 12px);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 12px 22px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+  .pantao-stepper__gate-submit:hover {
+    background: var(--pg-accent);
+    color: var(--pg-bg);
+  }
+  .pantao-stepper__gate-submit:disabled {
+    opacity: 0.6;
+    cursor: progress;
+  }
+  .pantao-stepper__gate-error {
+    margin: 14px 0 0;
+    font-size: 12px;
+    color: #ff6b6b;
+    text-align: left;
+  }
+  .pantao-stepper__gate-fine {
+    margin: 18px 0 0;
+    font-size: var(--pg-fine-size, 11px);
+    line-height: var(--pg-fine-line, 1.5);
+    color: var(--pg-fine-color, var(--pg-muted));
+    text-align: var(--pg-fine-align, center);
+  }
+  .pantao-stepper__gate-fine p { margin: 0; }
+  .pantao-stepper__gate-fine > *:first-child { margin-top: 0; }
+  .pantao-stepper__gate-fine > *:last-child { margin-bottom: 0; }
+
+  /* === Original tennis styles === */
+  .pantao-tennis {
+    --pt-fg: #000;
+    --pt-bg: #fff;
+    --pt-muted: #666;
+    --pt-line: #e6e6e6;
+    --pt-court: #fafafa;
+
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 16px;
+    color: var(--pt-fg);
+    font-family: inherit;
+  }
+
+  .pantao-tennis__header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .pantao-tennis__eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pt-muted);
+    margin: 0 0 12px;
+  }
+
+  .pantao-tennis__title {
+    font-size: clamp(36px, 7vw, 72px);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+    font-weight: 400;
+  }
+
+  .pantao-tennis__subtitle {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--pt-muted);
+    margin: 0;
+  }
+
+  .pantao-tennis__scoreboard {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    border-block: 1px solid var(--pt-fg);
+    padding: 18px 4px;
+    margin-bottom: 0;
+  }
+
+  .pantao-tennis__score-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: left;
+  }
+
+  .pantao-tennis__score-block--right {
+    text-align: right;
+    align-items: flex-end;
+  }
+
+  .pantao-tennis__score-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pt-muted);
+  }
+
+  .pantao-tennis__score-value {
+    font-size: clamp(40px, 6vw, 56px);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    font-weight: 400;
+  }
+
+  .pantao-tennis__meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--pt-muted);
+    white-space: nowrap;
+  }
+
+  .pantao-tennis__meta-divider {
+    opacity: 0.4;
+  }
+
+  .pantao-tennis__court-wrap {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 980 / 680;
+    border: 1px solid var(--pt-fg);
+    border-top: none;
+    background: #0a0a0a;
+    overflow: hidden;
+  }
+
+  .pantao-tennis__court {
+    display: block;
+    width: 100%;
+    height: 100%;
+    cursor: none;
+    touch-action: none;
+  }
+
+  .pantao-tennis__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.94);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+    gap: 16px;
+    transition: opacity 0.2s ease;
+  }
+
+  .pantao-tennis__overlay.is-hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .pantao-tennis__overlay-title {
+    font-size: clamp(28px, 5vw, 48px);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    margin: 0;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .pantao-tennis__overlay-text {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--pt-muted);
+    margin: 0;
+    max-width: 32ch;
+  }
+
+  .pantao-tennis__btn {
+    appearance: none;
+    border: 1px solid var(--pt-fg);
+    background: var(--pt-fg);
+    color: var(--pt-bg);
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .pantao-tennis__btn:hover {
+    background: #383838;
+    border-color: #383838;
+  }
+
+  .pantao-tennis__btn--ghost {
+    background: transparent;
+    color: var(--pt-fg);
+  }
+
+  .pantao-tennis__btn--ghost:hover {
+    background: var(--pt-fg);
+    color: var(--pt-bg);
+  }
+
+  .pantao-tennis__controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--pt-fg);
+    flex-wrap: wrap;
+  }
+
+  .pantao-tennis__control-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .pantao-tennis__control-group--end {
+    margin-left: auto;
+  }
+
+  .pantao-tennis__control-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--pt-muted);
+  }
+
+  .pantao-tennis__customize {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--pt-fg);
+    flex-wrap: wrap;
+  }
+
+  .pantao-tennis__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1 1 200px;
+  }
+
+  .pantao-tennis__input,
+  .pantao-tennis__select {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 1px solid var(--pt-fg);
+    background: var(--pt-bg);
+    color: var(--pt-fg);
+    font: inherit;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 12px;
+    border-radius: 0;
+    width: 100%;
+    line-height: 1.2;
+    height: 40px;
+    box-sizing: border-box;
+  }
+
+  .pantao-tennis__input::placeholder {
+    color: var(--pt-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .pantao-tennis__input:focus,
+  .pantao-tennis__select:focus {
+    outline: none;
+    box-shadow: inset 0 0 0 1px var(--pt-fg);
+  }
+
+  .pantao-tennis__select {
+    text-transform: none;
+    letter-spacing: 0.04em;
+    background-image: linear-gradient(45deg, transparent 50%, var(--pt-fg) 50%),
+                      linear-gradient(135deg, var(--pt-fg) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 18px, calc(100% - 13px) 18px;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 32px;
+    cursor: pointer;
+  }
+
+  .pantao-tennis__chips {
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid var(--pt-fg);
+  }
+
+  .pantao-tennis__chip {
+    appearance: none;
+    border: none;
+    border-right: 1px solid var(--pt-fg);
+    background: transparent;
+    color: var(--pt-fg);
+    font: inherit;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 10px 13px;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .pantao-tennis__chip:last-child {
+    border-right: none;
+  }
+
+  .pantao-tennis__chip.is-active {
+    background: var(--pt-fg);
+    color: var(--pt-bg);
+  }
+
+  .pantao-tennis__chip:hover:not(.is-active) {
+    background: #f5f5f5;
+  }
+
+  @media (max-width: 600px) {
+    .pantao-tennis__scoreboard {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 16px;
+    }
+    .pantao-tennis__meta {
+      grid-column: 1 / -1;
+      justify-content: center;
+      order: 3;
+      padding-top: 8px;
+      border-top: 1px solid var(--pt-line);
+    }
+    .pantao-tennis__controls {
+      justify-content: center;
+    }
+    .pantao-tennis__control-group--end {
+      margin-left: 0;
+    }
+  }
+</style>
+
+<script>
+  // === Stepper / email gate ===
+  (function () {
+    const STORAGE_KEY = 'pantao-gate-passed';
+    const steppers = document.querySelectorAll('[data-pantao-stepper]');
+    steppers.forEach(initStepper);
+
+    function initStepper(stepper) {
+      const form = stepper.querySelector('#pantao-stepper-form');
+      const emailInput = stepper.querySelector('#pantao-stepper-email');
+      const submit = stepper.querySelector('.pantao-stepper__gate-submit');
+      const errorEl = stepper.querySelector('[data-gate-error]');
+
+      // No form means gate is disabled — section is in "game" state already.
+      if (!form) return;
+
+      // Returning visitor on this browser: skip the gate
+      let alreadyPassed = false;
+      try {
+        alreadyPassed = localStorage.getItem(STORAGE_KEY) === '1';
+      } catch (e) { /* private mode etc. */ }
+      if (alreadyPassed) {
+        revealGame(stepper);
+      }
+
+      function showError(msg) {
+        if (!errorEl) return;
+        errorEl.textContent = msg;
+        errorEl.hidden = false;
+      }
+      function clearError() {
+        if (!errorEl) return;
+        errorEl.textContent = '';
+        errorEl.hidden = true;
+      }
+      function isValidEmail(v) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+      }
+
+      form.addEventListener('submit', (e) => {
+        const email = (emailInput && emailInput.value || '').trim();
+        if (!isValidEmail(email)) {
+          e.preventDefault();
+          showError('Please enter a valid email address.');
+          return;
+        }
+        // Use a native form submission (not AJAX). Shopify's spam protection
+        // is much friendlier to native submits — fetch-based POSTs to /contact
+        // tend to trigger the human-verification challenge. The form has the
+        // right hidden tokens because it's wrapped in a customer form,
+        // so the browser will POST it correctly. Shopify will redirect back
+        // with ?customer_posted=true, and the Liquid template detects that
+        // via customer.posted? to render directly in "game" state.
+        clearError();
+        if (submit) {
+          submit.disabled = true;
+          submit.textContent = 'Sending…';
+        }
+        // Set the localStorage flag now so even if redirect cookies behave
+        // oddly, the gate will be skipped on the next visit.
+        try { localStorage.setItem(STORAGE_KEY, '1'); } catch (err) {}
+        // Let the form submit naturally — do NOT preventDefault.
+      });
+
+      if (emailInput) {
+        emailInput.addEventListener('input', clearError);
+      }
+    }
+
+    function revealGame(stepper) {
+      stepper.setAttribute('data-step', 'game');
+      // Fire a resize so the tennis canvas refreshes its layout if it
+      // measured itself while the stepper was in gate state
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new Event('resize'));
+      }
+    }
+  })();
+
+  // === Tennis game ===
+  (function () {
+    const roots = document.querySelectorAll('[data-pantao-tennis]');
+    roots.forEach(initGame);
+
+    function initGame(root) {
+      const canvas = root.querySelector('[data-court]');
+      const ctx = canvas.getContext('2d');
+      const overlay = root.querySelector('[data-overlay]');
+      const overlayTitle = root.querySelector('[data-overlay-title]');
+      const overlayText = root.querySelector('[data-overlay-text]');
+      const startBtn = root.querySelector('[data-start]');
+      const resetBtn = root.querySelector('[data-reset]');
+      const playerScoreEl = root.querySelector('[data-player-score]');
+      const cpuScoreEl = root.querySelector('[data-cpu-score]');
+      const playerLabelEl = root.querySelector('[data-player-label]');
+      const statusEl = root.querySelector('[data-status]');
+      const chips = root.querySelectorAll('[data-difficulty]');
+      const nameInput = root.querySelector('[data-name-input]');
+      const flagSelect = root.querySelector('[data-flag-select]');
+
+      const WIN_SCORE = {{ section.settings.win_score | default: 5 | json }};
+      const CW = canvas.width;        // Full canvas width (includes crowd)
+      const CH = canvas.height;       // Full canvas height (includes crowd)
+      const PAD = 90;                 // Crowd band thickness around court
+      const W = CW - PAD * 2;         // Court width (game logic uses this)
+      const H = CH - PAD * 2;         // Court height (game logic uses this)
+      const WALL_THICK = 14;          // Stadium courtside wall thickness
+
+      const DIFFICULTY = {
+        easy:   { cpuSpeed: 5.6, ballSpeed: 6.2, spin: 0.22 },
+        normal: { cpuSpeed: 7.4, ballSpeed: 7.4, spin: 0.28 },
+        hard:   { cpuSpeed: 8.8, ballSpeed: 8.6, spin: 0.34 },
+        pro:    { cpuSpeed: 10.2, ballSpeed: 9.8, spin: 0.40 }
+      };
+      const DIFFICULTY_ORDER = ['easy', 'normal', 'hard', 'pro'];
+      const DIFFICULTY_LABEL = { easy: 'Easy', normal: 'Normal', hard: 'Hard', pro: 'Pro' };
+
+      const state = {
+        running: false,
+        paused: false,
+        difficulty: 'easy',
+        playerName: '',
+        playerFlag: '',
+        playerScore: 0,
+        cpuScore: 0,
+        player: { x: 24, y: H / 2 - 50, w: 10, h: 100, vy: 0, prevY: H / 2 - 50 },
+        cpu:    { x: W - 24 - 10, y: H / 2 - 50, w: 10, h: 100, vy: 0, prevY: H / 2 - 50 },
+        ball:   { x: W / 2, y: H / 2, r: 9, vx: 0, vy: 0, spin: 0, rotation: 0, prevX: W / 2, prevY: H / 2 },
+        lastTime: 0,
+        keys: { up: false, down: false },
+        pointerY: null,
+        countdown: 0
+      };
+
+      // Knight watermark — preload from inline base64
+      const knightImg = new Image();
+      let knightReady = false;
+      knightImg.onload = () => { knightReady = true; draw(); };
+      knightImg.src = 'data:image/png;base64,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';
+
+      // ---- Stadium canvas: pre-rendered once on init for performance ----
+      // We draw the entire Wimbledon-style stadium frame (walls, crowd, umpire,
+      // benches, line judges, ballkids, signage) into an offscreen canvas,
+      // then blit it each frame instead of redrawing hundreds of elements.
+      const crowdCanvas = document.createElement('canvas');
+      crowdCanvas.width = CW;
+      crowdCanvas.height = CH;
+      buildCrowd();
+
+      function buildCrowd() {
+        const cctx = crowdCanvas.getContext('2d');
+
+        // Wimbledon palette
+        const WALL = '#1d3d1d';      // dark green courtside wall
+        const PURPLE = '#503d6e';    // AELTC purple trim
+        const BENCH = '#1a3d1a';     // dark green bench/chair
+        const NAVY = '#2a3d5a';      // judge / ballkid uniform navy
+        const CREAM = '#e8dcc4';     // pants / Wimbledon cream
+        const TOWEL_GREEN = '#2d5a2d';
+
+        // Stadium back-fill (very dark green, behind crowd)
+        cctx.fillStyle = '#0d1f0d';
+        cctx.fillRect(0, 0, CW, CH);
+
+        // Seeded RNG for consistent visuals
+        let seed = 1337;
+        const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+        const rint = (min, max) => Math.floor(rand() * (max - min + 1)) + min;
+        const pick = (arr) => arr[Math.floor(rand() * arr.length)];
+
+        // Wimbledon summer-attire spectator palette — pale, varied, refined
+        const bodyColors = [
+          '#e8dcc4', '#d4c4a0', '#a8b8c8', '#3a4a6a', '#7a6a4a',
+          '#c8b89c', '#e0d4b8', '#5a4a3a', '#b8a89c', '#8a9aaa', '#dcc8a8'
+        ];
+        const headColors = ['#d4a87c', '#8a6648', '#c08a64', '#5c4030', '#a47854', '#9a7050'];
+        const hatColors = ['#e8dcc4', '#d4c4a0', '#c8b89c', null, null, null, null];
+
+        function drawSpectator(cx, cy) {
+          const headR = 4, bodyW = 12, bodyH = 10;
+          cctx.fillStyle = pick(bodyColors);
+          cctx.beginPath();
+          cctx.ellipse(cx, cy + headR, bodyW / 2, bodyH / 2, 0, 0, Math.PI * 2);
+          cctx.fill();
+          cctx.fillStyle = pick(headColors);
+          cctx.beginPath();
+          cctx.arc(cx, cy - bodyH / 2 + 2, headR, 0, Math.PI * 2);
+          cctx.fill();
+          // Occasional summer hat
+          const hat = pick(hatColors);
+          if (hat) {
+            cctx.fillStyle = hat;
+            cctx.beginPath();
+            cctx.ellipse(cx, cy - bodyH / 2 + 1, headR + 1, 1.5, 0, 0, Math.PI * 2);
+            cctx.fill();
+          }
+        }
+
+        // Crowd — three rows wrapping all four sides
+        const ROWS = 3, ROW_SPACING = 18, COL_SPACING = 16;
+        for (let row = 0; row < ROWS; row++) {
+          let y = PAD - 22 - row * ROW_SPACING;
+          if (y >= 8) {
+            for (let x = 12 + (row % 2) * 8; x < CW - 12; x += COL_SPACING) {
+              drawSpectator(x + rint(-2, 2), y + rint(-2, 2));
+            }
+          }
+          y = PAD + H + 22 + row * ROW_SPACING;
+          if (y <= CH - 8) {
+            for (let x = 12 + (row % 2) * 8; x < CW - 12; x += COL_SPACING) {
+              drawSpectator(x + rint(-2, 2), y + rint(-2, 2));
+            }
+          }
+          let x = PAD - 22 - row * ROW_SPACING;
+          if (x >= 8) {
+            for (let yy = PAD + 8 + (row % 2) * 8; yy < PAD + H - 8; yy += COL_SPACING) {
+              drawSpectator(x + rint(-2, 2), yy + rint(-2, 2));
+            }
+          }
+          x = PAD + W + 22 + row * ROW_SPACING;
+          if (x <= CW - 8) {
+            for (let yy = PAD + 8 + (row % 2) * 8; yy < PAD + H - 8; yy += COL_SPACING) {
+              drawSpectator(x + rint(-2, 2), yy + rint(-2, 2));
+            }
+          }
+        }
+
+        // ===== Dark green courtside wall (with purple AELTC trim) =====
+        cctx.fillStyle = WALL;
+        cctx.fillRect(PAD - WALL_THICK, PAD - WALL_THICK, W + WALL_THICK * 2, WALL_THICK);             // top
+        cctx.fillRect(PAD - WALL_THICK, PAD + H, W + WALL_THICK * 2, WALL_THICK);                       // bottom
+        cctx.fillRect(PAD - WALL_THICK, PAD - WALL_THICK, WALL_THICK, H + WALL_THICK * 2);             // left
+        cctx.fillRect(PAD + W, PAD - WALL_THICK, WALL_THICK, H + WALL_THICK * 2);                       // right
+
+        // Purple trim line on outer edge of wall
+        cctx.fillStyle = PURPLE;
+        cctx.fillRect(PAD - WALL_THICK, PAD - WALL_THICK, W + WALL_THICK * 2, 3);
+        cctx.fillRect(PAD - WALL_THICK, PAD + H + WALL_THICK - 3, W + WALL_THICK * 2, 3);
+        cctx.fillRect(PAD - WALL_THICK, PAD - WALL_THICK, 3, H + WALL_THICK * 2);
+        cctx.fillRect(PAD + W + WALL_THICK - 3, PAD - WALL_THICK, 3, H + WALL_THICK * 2);
+
+        // Inner thin black line where wall meets court
+        cctx.strokeStyle = '#000';
+        cctx.lineWidth = 1;
+        cctx.strokeRect(PAD - 0.5, PAD - 0.5, W + 1, H + 1);
+
+        // ===== Signage on the walls =====
+        cctx.fillStyle = '#ffffff';
+        cctx.font = 'bold 9px sans-serif';
+        cctx.textAlign = 'center';
+        cctx.textBaseline = 'middle';
+        // Top wall: "THE CHAMPIONSHIPS"
+        cctx.fillText('THE CHAMPIONSHIPS', PAD + W / 2, PAD - WALL_THICK / 2 - 1);
+        // Bottom wall: "WIMBLEDON"
+        cctx.font = 'bold 11px sans-serif';
+        cctx.fillText('WIMBLEDON', PAD + W / 2, PAD + H + WALL_THICK / 2 + 1);
+
+        // Scoreboard is drawn separately each frame in draw() so it can update
+        // with the live score, name, and flag.
+
+        // ===== Umpire chair (top sideline, at the net) =====
+        // Wimbledon umpire chair sits raised above the courtside wall.
+        const umpCx = PAD + W / 2;
+        const umpCy = PAD - WALL_THICK - 22;
+        // Chair platform (dark green)
+        cctx.fillStyle = BENCH;
+        cctx.fillRect(umpCx - 25, umpCy - 16, 50, 36);
+        cctx.strokeStyle = '#000';
+        cctx.lineWidth = 1.5;
+        cctx.strokeRect(umpCx - 25, umpCy - 16, 50, 36);
+        // Chair backrest (top edge — visible high back)
+        cctx.fillStyle = '#0d2510';
+        cctx.fillRect(umpCx - 22, umpCy - 16, 44, 8);
+        // Side armrests
+        cctx.fillStyle = '#0d2510';
+        cctx.fillRect(umpCx - 25, umpCy - 8, 4, 28);
+        cctx.fillRect(umpCx + 21, umpCy - 8, 4, 28);
+        // Umpire figure — navy blazer
+        cctx.fillStyle = NAVY;
+        cctx.beginPath();
+        cctx.ellipse(umpCx, umpCy + 5, 10, 8, 0, 0, Math.PI * 2);
+        cctx.fill();
+        // White shirt collar visible
+        cctx.fillStyle = '#ffffff';
+        cctx.fillRect(umpCx - 3, umpCy + 1, 6, 4);
+        // Head
+        cctx.fillStyle = '#d4a87c';
+        cctx.beginPath();
+        cctx.arc(umpCx, umpCy - 3, 5, 0, Math.PI * 2);
+        cctx.fill();
+        // Visor / hair shadow
+        cctx.fillStyle = '#3a2a1a';
+        cctx.beginPath();
+        cctx.arc(umpCx, umpCy - 5, 5, Math.PI, Math.PI * 2);
+        cctx.fill();
+        // Microphone arm extending toward court
+        cctx.strokeStyle = '#1a1a1a';
+        cctx.lineWidth = 2;
+        cctx.beginPath();
+        cctx.moveTo(umpCx, umpCy + 13);
+        cctx.lineTo(umpCx, umpCy + 28);
+        cctx.stroke();
+        cctx.fillStyle = '#1a1a1a';
+        cctx.beginPath();
+        cctx.arc(umpCx, umpCy + 28, 2.5, 0, Math.PI * 2);
+        cctx.fill();
+
+        // ===== Player benches (bottom sideline, one each side of net) =====
+        function drawBench(cx, cy) {
+          const bw = 92, bh = 30;
+          // Frame
+          cctx.fillStyle = BENCH;
+          cctx.fillRect(cx - bw / 2, cy - bh / 2, bw, bh);
+          cctx.strokeStyle = '#000';
+          cctx.lineWidth = 1.5;
+          cctx.strokeRect(cx - bw / 2, cy - bh / 2, bw, bh);
+          // Backrest
+          cctx.fillStyle = '#0d2510';
+          cctx.fillRect(cx - bw / 2 + 2, cy + bh / 2 - 6, bw - 4, 4);
+          // Folded towel — purple/green Wimbledon stripe
+          const tx = cx - 38, ty = cy - 11;
+          cctx.fillStyle = PURPLE;
+          cctx.fillRect(tx, ty, 30, 22);
+          cctx.fillStyle = TOWEL_GREEN;
+          cctx.fillRect(tx + 10, ty, 10, 22);
+          cctx.fillStyle = PURPLE;
+          cctx.fillRect(tx + 14, ty, 2, 22);
+          // Water bottle — clear-blue with cap
+          cctx.fillStyle = '#a8c8e8';
+          cctx.beginPath();
+          cctx.ellipse(cx + 6, cy + 2, 4, 7, 0, 0, Math.PI * 2);
+          cctx.fill();
+          cctx.fillStyle = '#1a3d1a';
+          cctx.fillRect(cx + 4, cy - 6, 4, 3);
+          // Sports drink (orange)
+          cctx.fillStyle = '#e87a3a';
+          cctx.beginPath();
+          cctx.ellipse(cx + 16, cy + 2, 4, 7, 0, 0, Math.PI * 2);
+          cctx.fill();
+          cctx.fillStyle = '#1a1a1a';
+          cctx.fillRect(cx + 14, cy - 6, 4, 3);
+          // Tennis bag at the end
+          cctx.fillStyle = '#1a1a1a';
+          cctx.fillRect(cx + 24, cy - 13, 22, 26);
+          cctx.strokeStyle = PURPLE;
+          cctx.lineWidth = 1.5;
+          cctx.strokeRect(cx + 24, cy - 13, 22, 26);
+          // Racket handle sticking out of bag
+          cctx.fillStyle = '#3a2a1a';
+          cctx.fillRect(cx + 32, cy - 18, 3, 6);
+          cctx.fillStyle = '#1a1a1a';
+          cctx.fillRect(cx + 31, cy - 19, 5, 2);
+        }
+        const benchY = PAD + H + WALL_THICK + 22;
+        drawBench(PAD + W * 0.32, benchY);
+        drawBench(PAD + W * 0.68, benchY);
+
+        // ===== Line judges =====
+        // Wimbledon line judges in cream pants + navy/cream Polo Ralph Lauren tops,
+        // sitting on small dark green chairs at sideline positions
+        function drawLineJudge(cx, cy) {
+          // Small chair under the judge
+          cctx.fillStyle = BENCH;
+          cctx.fillRect(cx - 8, cy + 2, 16, 12);
+          cctx.strokeStyle = '#000';
+          cctx.lineWidth = 1;
+          cctx.strokeRect(cx - 8, cy + 2, 16, 12);
+          // Cream pants (lower body)
+          cctx.fillStyle = CREAM;
+          cctx.beginPath();
+          cctx.ellipse(cx, cy + 4, 6, 5, 0, 0, Math.PI * 2);
+          cctx.fill();
+          // Navy top
+          cctx.fillStyle = NAVY;
+          cctx.beginPath();
+          cctx.ellipse(cx, cy - 2, 6, 5, 0, 0, Math.PI * 2);
+          cctx.fill();
+          // Polo collar (cream stripe at neck)
+          cctx.fillStyle = CREAM;
+          cctx.fillRect(cx - 2, cy - 5, 4, 2);
+          // Head
+          cctx.fillStyle = '#d4a87c';
+          cctx.beginPath();
+          cctx.arc(cx, cy - 9, 3.5, 0, Math.PI * 2);
+          cctx.fill();
+          // Cap (navy with white peak)
+          cctx.fillStyle = NAVY;
+          cctx.beginPath();
+          cctx.arc(cx, cy - 11, 4, Math.PI, Math.PI * 2);
+          cctx.fill();
+          cctx.fillStyle = '#ffffff';
+          cctx.fillRect(cx - 4, cy - 8, 8, 1);
+        }
+        const courtMargin = 28;
+        const courtSinglesInset = 26;
+        const judgeOffset = WALL_THICK + 18;
+        // Baseline judges (left/right ends of court)
+        drawLineJudge(PAD - judgeOffset, PAD + H / 2);
+        drawLineJudge(PAD + W + judgeOffset, PAD + H / 2);
+        // Sideline judges at corners (top + bottom)
+        drawLineJudge(PAD + courtMargin, PAD - judgeOffset);
+        drawLineJudge(PAD + W - courtMargin, PAD - judgeOffset);
+        drawLineJudge(PAD + courtMargin, PAD + H + judgeOffset);
+        drawLineJudge(PAD + W - courtMargin, PAD + H + judgeOffset);
+        // Service line judges (top + bottom — top-center skipped, umpire is there)
+        drawLineJudge(PAD + W * 0.25, PAD - judgeOffset);
+        drawLineJudge(PAD + W * 0.75, PAD - judgeOffset);
+        drawLineJudge(PAD + W * 0.25, PAD + H + judgeOffset);
+        drawLineJudge(PAD + W * 0.75, PAD + H + judgeOffset);
+
+        // ===== Ballkids =====
+        // Smaller, kneeling, in dark navy Wimbledon ballkid uniforms
+        function drawBallkid(cx, cy) {
+          // Body — kneeling navy
+          cctx.fillStyle = NAVY;
+          cctx.beginPath();
+          cctx.ellipse(cx, cy + 2, 5, 4.5, 0, 0, Math.PI * 2);
+          cctx.fill();
+          // Head
+          cctx.fillStyle = '#d4a87c';
+          cctx.beginPath();
+          cctx.arc(cx, cy - 4, 3, 0, Math.PI * 2);
+          cctx.fill();
+          // Hair / cap
+          cctx.fillStyle = '#3a2a1a';
+          cctx.beginPath();
+          cctx.arc(cx, cy - 5, 3, Math.PI, Math.PI * 2);
+          cctx.fill();
+          // Tennis ball in hand
+          cctx.fillStyle = '#c8ff00';
+          cctx.beginPath();
+          cctx.arc(cx + 5, cy + 2, 2, 0, Math.PI * 2);
+          cctx.fill();
+        }
+        const kidOffset = WALL_THICK + 8;
+        // At each corner of the court
+        drawBallkid(PAD - kidOffset, PAD - kidOffset);
+        drawBallkid(PAD + W + kidOffset, PAD - kidOffset);
+        drawBallkid(PAD - kidOffset, PAD + H + kidOffset);
+        drawBallkid(PAD + W + kidOffset, PAD + H + kidOffset);
+        // At the net on each side
+        drawBallkid(PAD + W / 2 - 38, PAD - kidOffset);
+        drawBallkid(PAD + W / 2 + 38, PAD - kidOffset);
+        drawBallkid(PAD + W / 2 - 38, PAD + H + kidOffset);
+        drawBallkid(PAD + W / 2 + 38, PAD + H + kidOffset);
+      }
+
+      function resetBall(direction) {
+        const d = DIFFICULTY[state.difficulty];
+        state.ball.x = W / 2;
+        state.ball.y = H / 2;
+        state.ball.prevX = W / 2;
+        state.ball.prevY = H / 2;
+        const angle = (Math.random() * 0.6 - 0.3); // -0.3..0.3 rad
+        const dir = direction || (Math.random() < 0.5 ? -1 : 1);
+        state.ball.vx = Math.cos(angle) * d.ballSpeed * dir;
+        state.ball.vy = Math.sin(angle) * d.ballSpeed;
+        state.ball.spin = 0;
+        state.ball.rotation = 0;
+        state.countdown = 60; // ~1s pause before serve
+      }
+
+      function fullReset() {
+        stopFireworks();
+        state.playerScore = 0;
+        state.cpuScore = 0;
+        state.player.y = H / 2 - state.player.h / 2;
+        state.cpu.y = H / 2 - state.cpu.h / 2;
+        updateScores();
+        resetBall();
+        state.running = false;
+        state.paused = false;
+        showOverlay('PANTAO MINI', 'Move your paddle with the mouse, touch, or arrow keys.', 'Start match');
+        statusEl.textContent = 'Press start';
+      }
+
+      function updateScores() {
+        playerScoreEl.textContent = String(state.playerScore).padStart(2, '0');
+        cpuScoreEl.textContent = String(state.cpuScore).padStart(2, '0');
+      }
+
+      function showOverlay(title, text, btnLabel) {
+        overlayTitle.textContent = title;
+        overlayText.textContent = text;
+        startBtn.textContent = btnLabel || 'Start match';
+        overlay.classList.remove('is-hidden');
+      }
+
+      function hideOverlay() {
+        overlay.classList.add('is-hidden');
+      }
+
+      function step(dt) {
+        const d = DIFFICULTY[state.difficulty];
+
+        // Track previous paddle Y so we can compute velocity at moment of contact
+        state.player.prevY = state.player.y;
+        state.cpu.prevY = state.cpu.y;
+
+        // Player input — keys
+        const keySpeed = 8;
+        if (state.keys.up) state.player.y -= keySpeed;
+        if (state.keys.down) state.player.y += keySpeed;
+
+        // Player input — pointer (overrides keys when active)
+        if (state.pointerY !== null) {
+          const target = state.pointerY - state.player.h / 2;
+          state.player.y += (target - state.player.y) * 0.35;
+        }
+
+        // Clamp player
+        state.player.y = Math.max(0, Math.min(H - state.player.h, state.player.y));
+
+        // Compute paddle velocities (px per frame)
+        state.player.vy = state.player.y - state.player.prevY;
+
+        // CPU AI — chase ball with limited speed and a deadzone
+        const cpuTarget = state.ball.y - state.cpu.h / 2;
+        const cpuDelta = cpuTarget - state.cpu.y;
+        const cpuMove = Math.max(-d.cpuSpeed, Math.min(d.cpuSpeed, cpuDelta));
+        // Add slight imperfection
+        state.cpu.y += cpuMove * (0.85 + Math.random() * 0.15);
+        state.cpu.y = Math.max(0, Math.min(H - state.cpu.h, state.cpu.y));
+        state.cpu.vy = state.cpu.y - state.cpu.prevY;
+
+        // Countdown before serve
+        if (state.countdown > 0) {
+          state.countdown -= 1;
+          return;
+        }
+
+        // Apply spin: Magnus-effect-style sideways force on the ball
+        // Spin is in radians/frame; positive spin curves ball downward, negative upward
+        // (since ball travels horizontally, vy is the curve axis)
+        const magnusForce = state.ball.spin * 0.35;
+        state.ball.vy += magnusForce;
+
+        // Spin decay (air resistance) — slows over time so it doesn't compound forever
+        state.ball.spin *= 0.992;
+
+        // Visual rotation tracks accumulated spin
+        state.ball.rotation += state.ball.spin * 1.6;
+
+        // Move ball — record prev position first for swept collision detection
+        state.ball.prevX = state.ball.x;
+        state.ball.prevY = state.ball.y;
+        state.ball.x += state.ball.vx;
+        state.ball.y += state.ball.vy;
+
+        // Top / bottom walls — wall bounce dampens spin
+        if (state.ball.y - state.ball.r < 0) {
+          state.ball.y = state.ball.r;
+          state.ball.vy *= -1;
+          state.ball.spin *= -0.5;
+        } else if (state.ball.y + state.ball.r > H) {
+          state.ball.y = H - state.ball.r;
+          state.ball.vy *= -1;
+          state.ball.spin *= -0.5;
+        }
+
+        // --- Paddle collision helper ---
+        // Returns spin imparted by the hit, given:
+        //   hit01: position on paddle from -1 (top edge) to +1 (bottom edge)
+        //   paddleVy: paddle velocity at time of contact
+        function computeSpin(hit01, paddleVy) {
+          // Edge factor: hits near top/bottom 25% of paddle generate extra spin
+          // matching the side they hit (top edge = upward spin, bottom = downward)
+          let edgeSpin = 0;
+          const absHit = Math.abs(hit01);
+          if (absHit > 0.55) {
+            // Past the 55% mark = "edge zone" — ramp from 0 at 0.55 to full at 1.0
+            const edgeStrength = (absHit - 0.55) / 0.45; // 0..1
+            edgeSpin = Math.sign(hit01) * edgeStrength * 0.18;
+          }
+          // Slide factor: paddle was moving when it hit the ball — clamp paddle vy
+          // to a reasonable range so absurd values don't dominate
+          const clampedVy = Math.max(-12, Math.min(12, paddleVy));
+          const slideSpin = clampedVy * 0.022;
+          return edgeSpin + slideSpin;
+        }
+
+        // --- Swept paddle collision ---
+        // Standard intersection checks tunnel through paddles when ball speed
+        // exceeds paddle thickness per frame. Instead we check whether the ball's
+        // path between prevX/prevY and current X/Y crossed the paddle's hit plane,
+        // and whether the Y at that crossing point is within the paddle's height.
+
+        // Player paddle (left side; ball moving leftward hits the right edge)
+        if (state.ball.vx < 0) {
+          const hitPlane = state.player.x + state.player.w + state.ball.r;
+          // Ball was on the right of the plane and is now on or past it
+          if (state.ball.prevX >= hitPlane && state.ball.x <= hitPlane) {
+            const dx = state.ball.x - state.ball.prevX;
+            const t = dx === 0 ? 0 : (hitPlane - state.ball.prevX) / dx;
+            const crossY = state.ball.prevY + t * (state.ball.y - state.ball.prevY);
+            if (crossY >= state.player.y - state.ball.r && crossY <= state.player.y + state.player.h + state.ball.r) {
+              const clampedY = Math.max(state.player.y, Math.min(state.player.y + state.player.h, crossY));
+              const hit = (clampedY - (state.player.y + state.player.h / 2)) / (state.player.h / 2);
+              const speed = Math.hypot(state.ball.vx, state.ball.vy) * 1.04;
+              const angle = hit * (Math.PI / 3);
+              state.ball.vx = Math.abs(Math.cos(angle) * speed);
+              state.ball.vy = Math.sin(angle) * speed;
+              state.ball.x = hitPlane;        // park ball on the contact plane
+              state.ball.y = crossY;
+              state.ball.spin = computeSpin(hit, state.player.vy);
+            }
+          }
+        }
+
+        // CPU paddle (right side; ball moving rightward hits the left edge)
+        if (state.ball.vx > 0) {
+          const hitPlane = state.cpu.x - state.ball.r;
+          if (state.ball.prevX <= hitPlane && state.ball.x >= hitPlane) {
+            const dx = state.ball.x - state.ball.prevX;
+            const t = dx === 0 ? 0 : (hitPlane - state.ball.prevX) / dx;
+            const crossY = state.ball.prevY + t * (state.ball.y - state.ball.prevY);
+            if (crossY >= state.cpu.y - state.ball.r && crossY <= state.cpu.y + state.cpu.h + state.ball.r) {
+              const clampedY = Math.max(state.cpu.y, Math.min(state.cpu.y + state.cpu.h, crossY));
+              const hit = (clampedY - (state.cpu.y + state.cpu.h / 2)) / (state.cpu.h / 2);
+              const speed = Math.hypot(state.ball.vx, state.ball.vy) * 1.04;
+              const angle = hit * (Math.PI / 3);
+              state.ball.vx = -Math.abs(Math.cos(angle) * speed);
+              state.ball.vy = Math.sin(angle) * speed;
+              state.ball.x = hitPlane;
+              state.ball.y = crossY;
+              state.ball.spin = computeSpin(hit, state.cpu.vy);
+            }
+          }
+        }
+
+        // Cap top speed
+        const maxSpeed = 14;
+        const cur = Math.hypot(state.ball.vx, state.ball.vy);
+        if (cur > maxSpeed) {
+          state.ball.vx = (state.ball.vx / cur) * maxSpeed;
+          state.ball.vy = (state.ball.vy / cur) * maxSpeed;
+        }
+
+        // Scoring
+        if (state.ball.x < -20) {
+          state.cpuScore += 1;
+          updateScores();
+          if (state.cpuScore >= WIN_SCORE) return endMatch(false);
+          statusEl.textContent = 'CPU scored';
+          resetBall(1);
+        } else if (state.ball.x > W + 20) {
+          state.playerScore += 1;
+          updateScores();
+          if (state.playerScore >= WIN_SCORE) return endMatch(true);
+          statusEl.textContent = 'Point';
+          resetBall(-1);
+        }
+      }
+
+      function endMatch(playerWon) {
+        state.running = false;
+        if (playerWon) {
+          const beaten = state.difficulty;
+          const idx = DIFFICULTY_ORDER.indexOf(beaten);
+          const nextIdx = idx + 1;
+          if (idx >= 0 && nextIdx < DIFFICULTY_ORDER.length) {
+            const next = DIFFICULTY_ORDER[nextIdx];
+            setDifficulty(next);
+            showOverlay(
+              'GAME — SET — MATCH',
+              'You beat ' + DIFFICULTY_LABEL[beaten] + '. Next up: ' + DIFFICULTY_LABEL[next] + '.',
+              'Play ' + DIFFICULTY_LABEL[next]
+            );
+            statusEl.textContent = 'Advanced to ' + DIFFICULTY_LABEL[next];
+          } else {
+            // Already at top tier (Pro) — no auto-advance, but celebrate with fireworks
+            showOverlay('GAME — SET — MATCH', 'You won at Pro. Rematch?', 'Play again');
+            statusEl.textContent = 'You won';
+            startFireworks(10000); // launch rockets for 10 seconds
+          }
+        } else {
+          showOverlay('Match over', 'CPU took it. Rematch?', 'Play again');
+          statusEl.textContent = 'CPU won';
+        }
+      }
+
+      // ---- Pro-win celebration: fireworks (rockets + bursts) ----
+      const FIREWORK_COLORS = ['#c8ff00', '#503d6e', '#1e40af', '#ffffff', '#e87a3a', '#ff4d6d', '#3d7a3d'];
+      const fireworks = {
+        active: false,
+        launchUntil: 0,    // stop launching new rockets after this timestamp
+        lastLaunch: 0,
+        rockets: [],
+        particles: [],
+        rafId: null
+      };
+
+      function launchRocket() {
+        // Random launch X (anywhere along the bottom), targeting an explosion height
+        // somewhere in the upper half of the canvas
+        const x = 80 + Math.random() * (CW - 160);
+        const targetY = 60 + Math.random() * (CH * 0.45);
+        const startY = CH - 10;
+        // Compute an upward velocity that will decelerate to a stop near targetY
+        // Using kinematics with gravity g: vy_initial = -sqrt(2 * g * (startY - targetY))
+        const g = 0.06;
+        const vy = -Math.sqrt(2 * g * (startY - targetY));
+        const vx = (Math.random() - 0.5) * 0.4;
+        fireworks.rockets.push({
+          x: x,
+          y: startY,
+          vx: vx,
+          vy: vy,
+          trailColor: FIREWORK_COLORS[Math.floor(Math.random() * FIREWORK_COLORS.length)],
+          burstColor: FIREWORK_COLORS[Math.floor(Math.random() * FIREWORK_COLORS.length)]
+        });
+      }
+
+      function explodeRocket(rocket) {
+        const count = 32 + Math.floor(Math.random() * 16);
+        for (let i = 0; i < count; i++) {
+          const angle = (i / count) * Math.PI * 2 + Math.random() * 0.1;
+          const speed = 1.5 + Math.random() * 2.5;
+          fireworks.particles.push({
+            x: rocket.x,
+            y: rocket.y,
+            vx: Math.cos(angle) * speed,
+            vy: Math.sin(angle) * speed,
+            color: rocket.burstColor,
+            life: 1.0,
+            decay: 0.012 + Math.random() * 0.01
+          });
+        }
+      }
+
+      function updateFireworks() {
+        const g = 0.06;
+        // Update rockets
+        for (let i = fireworks.rockets.length - 1; i >= 0; i--) {
+          const r = fireworks.rockets[i];
+          r.x += r.vx;
+          r.y += r.vy;
+          r.vy += g;
+          // Explode at apex (when vy becomes non-negative — rocket starts to fall)
+          if (r.vy >= 0) {
+            explodeRocket(r);
+            fireworks.rockets.splice(i, 1);
+          }
+        }
+        // Update particles
+        for (let i = fireworks.particles.length - 1; i >= 0; i--) {
+          const p = fireworks.particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += g * 0.6; // particles fall a bit slower than rockets
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.life -= p.decay;
+          if (p.life <= 0) fireworks.particles.splice(i, 1);
+        }
+      }
+
+      function drawFireworks() {
+        if (!fireworks.active && fireworks.rockets.length === 0 && fireworks.particles.length === 0) return;
+        // Rocket trails
+        for (const r of fireworks.rockets) {
+          ctx.fillStyle = r.trailColor;
+          ctx.globalAlpha = 0.9;
+          ctx.beginPath();
+          ctx.arc(r.x, r.y, 2, 0, Math.PI * 2);
+          ctx.fill();
+          // Trail spark
+          ctx.globalAlpha = 0.4;
+          ctx.beginPath();
+          ctx.arc(r.x - r.vx * 1.5, r.y - r.vy * 1.5, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        // Burst particles
+        for (const p of fireworks.particles) {
+          ctx.globalAlpha = Math.max(0, Math.min(1, p.life));
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      function startFireworks(durationMs) {
+        fireworks.active = true;
+        fireworks.launchUntil = performance.now() + durationMs;
+        fireworks.lastLaunch = 0;
+        // Run an independent rAF loop so the celebration animates even though
+        // the main game loop has stopped (state.running = false on win)
+        if (fireworks.rafId !== null) return;
+        const tick = () => {
+          const now = performance.now();
+          if (fireworks.active && now < fireworks.launchUntil) {
+            // Throttle to ~one rocket every 350ms
+            if (now - fireworks.lastLaunch > 350) {
+              launchRocket();
+              fireworks.lastLaunch = now;
+            }
+          }
+          updateFireworks();
+          draw();
+          // Continue if still launching or any particles/rockets remain
+          if (
+            (fireworks.active && now < fireworks.launchUntil) ||
+            fireworks.rockets.length > 0 ||
+            fireworks.particles.length > 0
+          ) {
+            fireworks.rafId = requestAnimationFrame(tick);
+          } else {
+            fireworks.rafId = null;
+            fireworks.active = false;
+          }
+        };
+        fireworks.rafId = requestAnimationFrame(tick);
+      }
+
+      function stopFireworks() {
+        fireworks.active = false;
+        fireworks.rockets.length = 0;
+        fireworks.particles.length = 0;
+        if (fireworks.rafId !== null) {
+          cancelAnimationFrame(fireworks.rafId);
+          fireworks.rafId = null;
+        }
+      }
+
+      // ---- Pro mode: bunting banners + confetti ----
+      // Particles are persistent; they keep falling whenever the player is on Pro.
+      const CONFETTI_COLORS = ['#503d6e', '#1e40af', '#c8ff00', '#ffffff', '#e87a3a', '#3d7a3d'];
+      const confetti = [];
+      const CONFETTI_COUNT = 80;
+      for (let i = 0; i < CONFETTI_COUNT; i++) {
+        confetti.push({
+          x: Math.random() * CW,
+          y: Math.random() * CH - CH, // start above canvas, staggered
+          vx: (Math.random() - 0.5) * 0.6,
+          vy: 0.7 + Math.random() * 1.4,
+          size: 4 + Math.random() * 4,
+          color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+          rotation: Math.random() * Math.PI * 2,
+          rotationSpeed: (Math.random() - 0.5) * 0.18
+        });
+      }
+
+      // Bunting: pre-compute triangle positions along top + bottom walls
+      const BUNTING_COLORS = ['#503d6e', '#c8ff00', '#1e40af', '#ffffff'];
+      const buntingTriangles = (() => {
+        const triangles = [];
+        const triCount = 18;
+        const spacing = (CW - 24) / triCount;
+        for (let i = 0; i <= triCount; i++) {
+          triangles.push({
+            x: 12 + i * spacing,
+            color: BUNTING_COLORS[i % BUNTING_COLORS.length]
+          });
+        }
+        return triangles;
+      })();
+
+      function drawProDecorations() {
+        if (state.difficulty !== 'pro') return;
+
+        // ===== Bunting banners along top + bottom walls =====
+        const triHalfWidth = 7;
+        const triHeight = 14;
+
+        // Top bunting — hanging down from just above the top wall, into the upper crowd zone
+        const topY = PAD - WALL_THICK - 6;
+        // String line connecting them
+        ctx.strokeStyle = 'rgba(20, 30, 20, 0.6)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(buntingTriangles[0].x, topY);
+        for (let i = 1; i < buntingTriangles.length; i++) {
+          // Slight sag between triangles
+          const prev = buntingTriangles[i - 1];
+          const cur = buntingTriangles[i];
+          const midX = (prev.x + cur.x) / 2;
+          ctx.quadraticCurveTo(midX, topY + 3, cur.x, topY);
+        }
+        ctx.stroke();
+        // Triangles hanging from string
+        for (const tri of buntingTriangles) {
+          ctx.fillStyle = tri.color;
+          ctx.beginPath();
+          ctx.moveTo(tri.x - triHalfWidth, topY);
+          ctx.lineTo(tri.x + triHalfWidth, topY);
+          ctx.lineTo(tri.x, topY + triHeight);
+          ctx.closePath();
+          ctx.fill();
+          // Subtle outline
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+
+        // Bottom bunting — hanging up from just below the bottom wall, into the lower crowd zone
+        const botY = PAD + H + WALL_THICK + 6;
+        ctx.strokeStyle = 'rgba(20, 30, 20, 0.6)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(buntingTriangles[0].x, botY);
+        for (let i = 1; i < buntingTriangles.length; i++) {
+          const prev = buntingTriangles[i - 1];
+          const cur = buntingTriangles[i];
+          const midX = (prev.x + cur.x) / 2;
+          ctx.quadraticCurveTo(midX, botY - 3, cur.x, botY);
+        }
+        ctx.stroke();
+        for (const tri of buntingTriangles) {
+          ctx.fillStyle = tri.color;
+          ctx.beginPath();
+          ctx.moveTo(tri.x - triHalfWidth, botY);
+          ctx.lineTo(tri.x + triHalfWidth, botY);
+          ctx.lineTo(tri.x, botY - triHeight);
+          ctx.closePath();
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+
+        // ===== Confetti =====
+        for (const p of confetti) {
+          // Update only when game is running so confetti freezes on pause/idle
+          if (state.running) {
+            p.x += p.vx;
+            p.y += p.vy;
+            p.rotation += p.rotationSpeed;
+            if (p.y > CH + 10) {
+              p.y = -10 - Math.random() * 40;
+              p.x = Math.random() * CW;
+              p.vy = 0.7 + Math.random() * 1.4;
+              p.vx = (Math.random() - 0.5) * 0.6;
+              p.color = CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+            }
+          }
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rotation);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 4, p.size, p.size / 2);
+          ctx.restore();
+        }
+      }
+
+      // Live scoreboard drawn on top of the pre-rendered stadium each frame
+      function drawStadiumScoreboard() {
+        const sbX = PAD - WALL_THICK + 8;
+        const sbY = PAD - WALL_THICK - 38;
+        const sbW = 160;
+        const sbH = 34;
+        if (sbY < 4) return;
+
+        // Box
+        ctx.fillStyle = '#0a1a0a';
+        ctx.fillRect(sbX, sbY, sbW, sbH);
+        ctx.strokeStyle = '#503d6e'; // Wimbledon purple trim
+        ctx.lineWidth = 1;
+        ctx.strokeRect(sbX + 0.5, sbY + 0.5, sbW - 1, sbH - 1);
+
+        // Divider line between rows
+        ctx.beginPath();
+        ctx.moveTo(sbX + 1, sbY + sbH / 2);
+        ctx.lineTo(sbX + sbW - 1, sbY + sbH / 2);
+        ctx.strokeStyle = '#1d3d1d';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Compose player label: optional flag + name (or "PLAYER")
+        const rawName = (state.playerName || '').trim();
+        const displayName = (rawName ? rawName : 'PLAYER').toUpperCase();
+        const flag = state.playerFlag || '';
+        // PG (Pantao Galeriya) gets a double-space to match the CPU's "PG  CPU" format
+        const flagSep = flag === 'PG' ? '  ' : ' ';
+        const playerLabel = flag ? flag + flagSep + displayName : displayName;
+        // CPU represents the Pantao house — abbreviation "PG"
+        const cpuLabel = 'PG  CPU';
+
+        // Player row
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 11px system-ui, -apple-system, "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif';
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'middle';
+        // Truncate label if too wide for the box (leave room for score)
+        const maxLabelWidth = sbW - 38;
+        let label = playerLabel;
+        while (ctx.measureText(label).width > maxLabelWidth && label.length > 1) {
+          label = label.slice(0, -1);
+        }
+        ctx.fillText(label, sbX + 6, sbY + sbH / 4 + 1);
+
+        // CPU row
+        ctx.fillText(cpuLabel, sbX + 6, sbY + (sbH * 3) / 4 + 1);
+
+        // Scores (right-aligned, lime green)
+        ctx.fillStyle = '#c8ff00';
+        ctx.font = 'bold 13px sans-serif';
+        ctx.textAlign = 'right';
+        const playerScoreStr = String(state.playerScore).padStart(2, '0');
+        const cpuScoreStr = String(state.cpuScore).padStart(2, '0');
+        ctx.fillText(playerScoreStr, sbX + sbW - 6, sbY + sbH / 4 + 1);
+        ctx.fillText(cpuScoreStr, sbX + sbW - 6, sbY + (sbH * 3) / 4 + 1);
+      }
+
+      function draw() {
+        // Paint pre-rendered stadium + crowd background
+        ctx.drawImage(crowdCanvas, 0, 0);
+
+        // Pro mode adds bunting banners + falling confetti over the stadium
+        // (drawn before the court, so the court fill cleanly covers any
+        // confetti that has fallen onto the playing surface)
+        drawProDecorations();
+
+        // Live scoreboard (drawn each frame so score, name, and flag are current)
+        drawStadiumScoreboard();
+
+        // Translate so all subsequent court drawing uses court-local coords (0..W, 0..H)
+        ctx.save();
+        ctx.translate(PAD, PAD);
+
+        // Court surface — Wimbledon grass with mowing stripes
+        ctx.fillStyle = '#3d7a3d';
+        ctx.fillRect(0, 0, W, H);
+        // Alternating lighter horizontal mowing stripes
+        ctx.fillStyle = '#4d8c4d';
+        const stripeCount = 8;
+        const stripeH = H / stripeCount;
+        for (let i = 0; i < stripeCount; i += 2) {
+          ctx.fillRect(0, i * stripeH, W, stripeH);
+        }
+
+        // Knight watermark — centered in each side's vertical service rectangle
+        if (knightReady) {
+          const courtMargin = 28;
+          const courtSinglesInset = 26;
+          const rectTop = courtMargin + courtSinglesInset;
+          const rectBottom = H - courtMargin - courtSinglesInset;
+          const rectHeight = rectBottom - rectTop;
+          const rectCenterY = (rectTop + rectBottom) / 2;
+
+          // Left rectangle: from courtMargin to W*0.25
+          const leftRectCenterX = (courtMargin + W * 0.25) / 2;
+          // Right rectangle: from W*0.75 to W-courtMargin
+          const rightRectCenterX = (W * 0.75 + (W - courtMargin)) / 2;
+          const rectWidth = (W * 0.25) - courtMargin;
+
+          // Fit watermark to ~75% of rect, preserving aspect ratio
+          const aspect = knightImg.width / knightImg.height;
+          const maxW = rectWidth * 0.75;
+          const maxH = rectHeight * 0.75;
+          let targetW = maxW;
+          let targetH = targetW / aspect;
+          if (targetH > maxH) {
+            targetH = maxH;
+            targetW = targetH * aspect;
+          }
+
+          ctx.save();
+          ctx.globalAlpha = 0.18;
+          // Left
+          ctx.drawImage(knightImg, leftRectCenterX - targetW / 2, rectCenterY - targetH / 2, targetW, targetH);
+          // Right — mirrored so knights face each other
+          ctx.translate(rightRectCenterX, rectCenterY);
+          ctx.scale(-1, 1);
+          ctx.drawImage(knightImg, -targetW / 2, -targetH / 2, targetW, targetH);
+          ctx.restore();
+        }
+
+        // Court markings — white
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineCap = 'butt';
+
+        // Outer boundary (doubles court)
+        const margin = 28;
+        ctx.lineWidth = 3;
+        ctx.strokeRect(margin, margin, W - margin * 2, H - margin * 2);
+
+        // Singles sidelines (inset on top and bottom — net runs vertically here)
+        const singlesInset = 26;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(margin, margin + singlesInset);
+        ctx.lineTo(W - margin, margin + singlesInset);
+        ctx.moveTo(margin, H - margin - singlesInset);
+        ctx.lineTo(W - margin, H - margin - singlesInset);
+        ctx.stroke();
+
+        // Service lines (vertical, at 1/4 and 3/4)
+        const serviceLeftX = W * 0.25;
+        const serviceRightX = W * 0.75;
+        ctx.beginPath();
+        ctx.moveTo(serviceLeftX, margin + singlesInset);
+        ctx.lineTo(serviceLeftX, H - margin - singlesInset);
+        ctx.moveTo(serviceRightX, margin + singlesInset);
+        ctx.lineTo(serviceRightX, H - margin - singlesInset);
+        ctx.stroke();
+
+        // Center service line (between the two service lines)
+        ctx.beginPath();
+        ctx.moveTo(serviceLeftX, H / 2);
+        ctx.lineTo(serviceRightX, H / 2);
+        ctx.stroke();
+
+        // Center marks on baselines
+        ctx.beginPath();
+        ctx.moveTo(margin, H / 2);
+        ctx.lineTo(margin + 10, H / 2);
+        ctx.moveTo(W - margin - 10, H / 2);
+        ctx.lineTo(W - margin, H / 2);
+        ctx.stroke();
+
+        // Net — vertical line down the middle with band
+        ctx.strokeStyle = '#1a1a1a';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 6]);
+        ctx.beginPath();
+        ctx.moveTo(W / 2, 0);
+        ctx.lineTo(W / 2, H);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        // Net band (white strip across the top of the net)
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(W / 2 - 2, 0, 4, 12);
+        ctx.fillRect(W / 2 - 2, H - 12, 4, 12);
+
+        // Paddles
+        function drawPaddle(p, isPG) {
+          if (isPG) {
+            // Light wood backing
+            ctx.fillStyle = '#e8d4a8';
+            ctx.fillRect(p.x, p.y, p.w, p.h);
+            // Wood grain — a few faint vertical streaks
+            ctx.strokeStyle = 'rgba(120, 90, 50, 0.32)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < 3; i++) {
+              const gx = p.x + 2 + (i + 1) * (p.w / 4);
+              ctx.beginPath();
+              ctx.moveTo(gx, p.y + 2);
+              ctx.lineTo(gx, p.y + p.h - 2);
+              ctx.stroke();
+            }
+            // Wood edge shadow (top + bottom)
+            ctx.fillStyle = 'rgba(80, 55, 25, 0.35)';
+            ctx.fillRect(p.x, p.y, p.w, 2);
+            ctx.fillRect(p.x, p.y + p.h - 2, p.w, 2);
+            // Royal blue face, inset
+            ctx.fillStyle = '#1e40af';
+            ctx.fillRect(p.x + 2, p.y + 4, p.w - 4, p.h - 8);
+            // Highlight strip down the left side of the face for subtle depth
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
+            ctx.fillRect(p.x + 2, p.y + 4, 1, p.h - 8);
+          } else {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(p.x, p.y, p.w, p.h);
+          }
+        }
+        const playerIsPG = state.playerFlag === 'PG';
+        drawPaddle(state.player, playerIsPG);
+        drawPaddle(state.cpu, true); // CPU is always PG (the house)
+
+        // Ball — optic tennis green with proper seam pattern that rotates with spin
+        const bx = state.ball.x;
+        const by = state.ball.y;
+        const br = state.ball.r;
+
+        ctx.save();
+        ctx.translate(bx, by);
+        ctx.rotate(state.ball.rotation);
+
+        // Ball body
+        ctx.beginPath();
+        ctx.arc(0, 0, br, 0, Math.PI * 2);
+        ctx.fillStyle = '#c8ff00';
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+        ctx.stroke();
+
+        // Seam — two opposing curves
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1.4;
+        const seamOffset = br * 1.15;
+
+        ctx.beginPath();
+        ctx.arc(0, -seamOffset, br * 1.4, Math.PI * 0.28, Math.PI * 0.72);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(0, seamOffset, br * 1.4, Math.PI * 1.28, Math.PI * 1.72);
+        ctx.stroke();
+
+        ctx.restore();
+
+        // Countdown indicator
+        if (state.countdown > 0 && state.running) {
+          ctx.fillStyle = 'rgba(255,255,255,0.85)';
+          ctx.font = '500 14px sans-serif';
+          ctx.textAlign = 'center';
+          const sec = Math.ceil(state.countdown / 60);
+          ctx.fillText('SERVE IN ' + sec, W / 2, 22);
+        }
+
+        ctx.restore();
+
+        // Fireworks render LAST so they appear on top of the court, paddles,
+        // and ball — celebrating across the entire scene rather than being
+        // hidden by the court fill that paints over the stadium each frame.
+        drawFireworks();
+      }
+
+      function loop(ts) {
+        if (!state.running) return;
+        const dt = Math.min(32, ts - state.lastTime);
+        state.lastTime = ts;
+        step(dt);
+        draw();
+        requestAnimationFrame(loop);
+      }
+
+      function start() {
+        // Resuming from a pause: don't reset the ball, just continue
+        if (state.paused) {
+          state.paused = false;
+          hideOverlay();
+          state.running = true;
+          state.lastTime = performance.now();
+          statusEl.textContent = 'Live';
+          requestAnimationFrame(loop);
+          return;
+        }
+        // Stop any lingering celebration from the prior match
+        stopFireworks();
+        if (state.playerScore >= WIN_SCORE || state.cpuScore >= WIN_SCORE) {
+          state.playerScore = 0;
+          state.cpuScore = 0;
+          updateScores();
+        }
+        hideOverlay();
+        state.running = true;
+        state.lastTime = performance.now();
+        statusEl.textContent = 'Live';
+        resetBall();
+        requestAnimationFrame(loop);
+      }
+
+      function pauseGame() {
+        if (!state.running) return; // nothing to pause
+        state.running = false;
+        state.paused = true;
+        statusEl.textContent = 'Paused';
+        showOverlay('Paused', 'Press ESC or click Resume to continue.', 'Resume');
+      }
+
+      // Pointer / touch input
+      function pointerToCanvasY(clientY) {
+        const rect = canvas.getBoundingClientRect();
+        const scale = CH / rect.height;
+        // Map screen Y to canvas Y, then subtract PAD to get court Y
+        return (clientY - rect.top) * scale - PAD;
+      }
+
+      canvas.addEventListener('mousemove', (e) => {
+        state.pointerY = pointerToCanvasY(e.clientY);
+      });
+      canvas.addEventListener('mouseleave', () => {
+        state.pointerY = null;
+      });
+      canvas.addEventListener('touchmove', (e) => {
+        if (e.touches[0]) {
+          state.pointerY = pointerToCanvasY(e.touches[0].clientY);
+          e.preventDefault();
+        }
+      }, { passive: false });
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches[0]) {
+          state.pointerY = pointerToCanvasY(e.touches[0].clientY);
+        }
+      }, { passive: true });
+
+      // Keyboard
+      function isTyping(e) {
+        const t = e.target;
+        if (!t) return false;
+        const tag = t.tagName;
+        return tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t.isContentEditable;
+      }
+      document.addEventListener('keydown', (e) => {
+        if (isTyping(e)) return;
+        if (!isInView(root)) return;
+        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') { state.keys.up = true; e.preventDefault(); }
+        if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') { state.keys.down = true; e.preventDefault(); }
+        if (e.key === ' ' && !state.running) { start(); e.preventDefault(); }
+        if (e.key === 'Escape' || e.key === 'Esc') {
+          if (state.running) { pauseGame(); e.preventDefault(); }
+          else if (state.paused) { start(); e.preventDefault(); }
+        }
+      });
+      document.addEventListener('keyup', (e) => {
+        if (isTyping(e)) return;
+        if (e.key === 'ArrowUp' || e.key === 'w' || e.key === 'W') state.keys.up = false;
+        if (e.key === 'ArrowDown' || e.key === 's' || e.key === 'S') state.keys.down = false;
+      });
+
+      function isInView(el) {
+        const r = el.getBoundingClientRect();
+        return r.bottom > 0 && r.top < window.innerHeight;
+      }
+
+      // Buttons
+      startBtn.addEventListener('click', start);
+      resetBtn.addEventListener('click', () => {
+        fullReset();
+      });
+
+      // Difficulty
+      function setDifficulty(name) {
+        if (!DIFFICULTY[name]) return;
+        state.difficulty = name;
+        chips.forEach((c) => {
+          const isMatch = c.dataset.difficulty === name;
+          c.classList.toggle('is-active', isMatch);
+          c.setAttribute('aria-checked', isMatch ? 'true' : 'false');
+        });
+        // If the user switches difficulty mid-celebration, stop the show
+        if (name !== 'pro') stopFireworks();
+        if (!state.running) draw();
+      }
+      chips.forEach((chip) => {
+        chip.addEventListener('click', () => setDifficulty(chip.dataset.difficulty));
+      });
+
+      // Player customization (name + flag), persisted in localStorage
+      const STORAGE_KEY = 'pantao-tennis-player';
+      function updatePlayerLabel() {
+        if (!playerLabelEl) return;
+        const rawName = (state.playerName || '').trim();
+        const displayName = rawName ? rawName : 'Player';
+        const flag = state.playerFlag || '';
+        const flagSep = flag === 'PG' ? '  ' : ' ';
+        playerLabelEl.textContent = flag ? flag + flagSep + displayName : displayName;
+      }
+      function savePlayer() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({
+            name: state.playerName,
+            flag: state.playerFlag
+          }));
+        } catch (e) { /* storage may be unavailable; fail silently */ }
+      }
+      function loadPlayer() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const data = JSON.parse(raw);
+          if (data && typeof data.name === 'string') {
+            state.playerName = data.name;
+            if (nameInput) nameInput.value = data.name;
+          }
+          if (data && typeof data.flag === 'string') {
+            state.playerFlag = data.flag;
+            if (flagSelect) flagSelect.value = data.flag;
+          }
+        } catch (e) { /* ignore corrupt or unavailable storage */ }
+      }
+      loadPlayer();
+      updatePlayerLabel();
+
+      if (nameInput) {
+        nameInput.addEventListener('input', () => {
+          state.playerName = nameInput.value.slice(0, 12);
+          savePlayer();
+          updatePlayerLabel();
+          if (!state.running) draw();
+        });
+      }
+      if (flagSelect) {
+        flagSelect.addEventListener('change', () => {
+          state.playerFlag = flagSelect.value;
+          savePlayer();
+          updatePlayerLabel();
+          if (!state.running) draw();
+        });
+      }
+
+      // Pause when tab hidden
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          stopFireworks();
+          if (state.running) pauseGame();
+        }
+      });
+
+      // Initial paint
+      draw();
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Pantao Tennis Game",
+  "settings": [
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "PANTAO ARCADE"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "PANTAO MINI"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "A small game. First to five."
+    },
+    {
+      "type": "range",
+      "id": "win_score",
+      "label": "Points to win",
+      "min": 3,
+      "max": 11,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Email gate — On/off"
+    },
+    {
+      "type": "checkbox",
+      "id": "gate_required",
+      "label": "Require email before play",
+      "default": false,
+      "info": "When enabled, visitors enter their email (saved to your customer list) before the game appears."
+    },
+    {
+      "type": "checkbox",
+      "id": "gate_fullscreen",
+      "label": "Fullscreen gate",
+      "default": true,
+      "info": "When enabled, the gate covers the entire viewport (recommended for password page)."
+    },
+    {
+      "type": "header",
+      "content": "Email gate — Copy"
+    },
+    {
+      "type": "header",
+      "content": "↳ Eyebrow"
+    },
+    {
+      "type": "richtext",
+      "id": "gate_eyebrow",
+      "label": "Eyebrow text",
+      "default": "<p>MEMBER ACCESS ONLY</p>",
+      "info": "Use the toolbar for bold, italic, and links."
+    },
+    {
+      "type": "range",
+      "id": "gate_eyebrow_size",
+      "label": "Font size",
+      "min": 8,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "gate_eyebrow_line_height",
+      "label": "Line height",
+      "min": 80,
+      "max": 250,
+      "step": 5,
+      "unit": "%",
+      "default": 140
+    },
+    {
+      "type": "range",
+      "id": "gate_eyebrow_tracking",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "default": 22,
+      "info": "In hundredths of an em."
+    },
+    {
+      "type": "color",
+      "id": "gate_eyebrow_color",
+      "label": "Color"
+    },
+    {
+      "type": "select",
+      "id": "gate_eyebrow_align",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "↳ Heading"
+    },
+    {
+      "type": "richtext",
+      "id": "gate_heading",
+      "label": "Heading text",
+      "default": "<p>Pantao Mini</p>",
+      "info": "Use the toolbar for bold, italic, and links."
+    },
+    {
+      "type": "range",
+      "id": "gate_heading_size",
+      "label": "Font size",
+      "min": 18,
+      "max": 96,
+      "step": 1,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "gate_heading_line_height",
+      "label": "Line height",
+      "min": 80,
+      "max": 200,
+      "step": 5,
+      "unit": "%",
+      "default": 105
+    },
+    {
+      "type": "range",
+      "id": "gate_heading_tracking",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 30,
+      "step": 1,
+      "default": 4,
+      "info": "In hundredths of an em."
+    },
+    {
+      "type": "color",
+      "id": "gate_heading_color",
+      "label": "Color"
+    },
+    {
+      "type": "select",
+      "id": "gate_heading_align",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "↳ Subheading"
+    },
+    {
+      "type": "richtext",
+      "id": "gate_subheading",
+      "label": "Subheading text",
+      "default": "<p>Drop your email to unlock the court.</p>",
+      "info": "Use the toolbar for bold, italic, and links."
+    },
+    {
+      "type": "range",
+      "id": "gate_subheading_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 28,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "gate_subheading_line_height",
+      "label": "Line height",
+      "min": 100,
+      "max": 250,
+      "step": 5,
+      "unit": "%",
+      "default": 150
+    },
+    {
+      "type": "color",
+      "id": "gate_subheading_color",
+      "label": "Color"
+    },
+    {
+      "type": "select",
+      "id": "gate_subheading_align",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "↳ Fine print"
+    },
+    {
+      "type": "richtext",
+      "id": "gate_fine_print",
+      "label": "Fine print text",
+      "default": "<p>By entering you agree to receive emails from Pantao.</p>"
+    },
+    {
+      "type": "range",
+      "id": "gate_fine_size",
+      "label": "Font size",
+      "min": 9,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "default": 11
+    },
+    {
+      "type": "range",
+      "id": "gate_fine_line_height",
+      "label": "Line height",
+      "min": 100,
+      "max": 250,
+      "step": 5,
+      "unit": "%",
+      "default": 150
+    },
+    {
+      "type": "color",
+      "id": "gate_fine_color",
+      "label": "Color"
+    },
+    {
+      "type": "select",
+      "id": "gate_fine_align",
+      "label": "Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Email gate — Input field"
+    },
+    {
+      "type": "checkbox",
+      "id": "gate_input_show_label",
+      "label": "Show field label",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "gate_input_label",
+      "label": "Field label",
+      "default": "Email"
+    },
+    {
+      "type": "text",
+      "id": "gate_input_placeholder",
+      "label": "Placeholder text",
+      "default": "you@example.com"
+    },
+    {
+      "type": "range",
+      "id": "gate_input_size",
+      "label": "Input font size",
+      "min": 11,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 14
+    },
+    {
+      "type": "range",
+      "id": "gate_input_radius",
+      "label": "Input box corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "text",
+      "id": "gate_button_label",
+      "label": "Button label",
+      "default": "Enter"
+    },
+    {
+      "type": "range",
+      "id": "gate_button_size",
+      "label": "Button font size",
+      "min": 9,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Email gate — Panel"
+    },
+    {
+      "type": "color",
+      "id": "gate_panel_bg_color",
+      "label": "Panel background color",
+      "default": "#0d1f0d"
+    },
+    {
+      "type": "range",
+      "id": "gate_panel_opacity",
+      "label": "Panel background opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "gate_panel_max_width",
+      "label": "Panel max width",
+      "min": 320,
+      "max": 800,
+      "step": 10,
+      "unit": "px",
+      "default": 460
+    },
+    {
+      "type": "range",
+      "id": "gate_panel_padding",
+      "label": "Panel padding",
+      "min": 16,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "gate_panel_radius",
+      "label": "Panel corner radius",
+      "min": 0,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Email gate — Background"
+    },
+    {
+      "type": "image_picker",
+      "id": "gate_background_image",
+      "label": "Background image",
+      "info": "Recommended: 1920×1080. The grass + knight asset works well here."
+    },
+    {
+      "type": "select",
+      "id": "gate_bg_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover (fill area, may crop)" },
+        { "value": "contain", "label": "Contain (fit fully)" },
+        { "value": "fill", "label": "Stretch to fill" }
+      ],
+      "default": "cover"
+    },
+    {
+      "type": "select",
+      "id": "gate_bg_position",
+      "label": "Image position",
+      "options": [
+        { "value": "center center", "label": "Center" },
+        { "value": "top center", "label": "Top" },
+        { "value": "bottom center", "label": "Bottom" },
+        { "value": "center left", "label": "Left" },
+        { "value": "center right", "label": "Right" },
+        { "value": "top left", "label": "Top left" },
+        { "value": "top right", "label": "Top right" },
+        { "value": "bottom left", "label": "Bottom left" },
+        { "value": "bottom right", "label": "Bottom right" }
+      ],
+      "default": "center center"
+    },
+    {
+      "type": "range",
+      "id": "gate_bg_overlay_opacity",
+      "label": "Dark overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "default": 0,
+      "info": "Tints the background image darker for legibility."
+    },
+    {
+      "type": "color",
+      "id": "gate_bg_color",
+      "label": "Fallback background color",
+      "info": "Shown if no background image is set, or behind transparent images.",
+      "default": "#0d1f0d"
+    },
+    {
+      "type": "header",
+      "content": "Email gate — Colors"
+    },
+    {
+      "type": "color",
+      "id": "gate_fg_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "gate_accent_color",
+      "label": "Hover accent",
+      "default": "#c8ff00"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 200,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pantao Tennis Game"
+    }
+  ],
+  "enabled_on": {
+    "templates": ["page", "password"]
+  }
+}
+{% endschema %}

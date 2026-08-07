@@ -1,0 +1,442 @@
+{% doc %}
+  @prompt
+    Generate a one row product collection menu in button style. Include button adjustment settings such as button edges, height, width, hover color, outline color, fill color, and fill color transparency toggle option. Include menu settings for padding, theme, background color, transparency. Include settings to link collections for each button and Menu should include a toggle menu wrapping button and the settings to adjust the wrapping.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collection-menu-{{ ai_gen_id }} {
+    width: 100%;
+    padding: {{ block.settings.menu_padding }}px;
+    background-color: {% if block.settings.menu_bg_transparency %}rgba({{ block.settings.menu_bg_color | color_extract: 'red' }}, {{ block.settings.menu_bg_color | color_extract: 'green' }}, {{ block.settings.menu_bg_color | color_extract: 'blue' }}, {{ block.settings.menu_bg_opacity | divided_by: 100.0 }}){% else %}{{ block.settings.menu_bg_color }}{% endif %};
+    {% if block.settings.menu_theme == 'dark' %}
+      color: #ffffff;
+    {% else %}
+      color: #000000;
+    {% endif %}
+  }
+
+  .ai-collection-menu__container-{{ ai_gen_id }} {
+    display: flex;
+    {% if block.settings.menu_wrapping %}
+      flex-wrap: wrap;
+    {% else %}
+      flex-wrap: nowrap;
+      overflow-x: auto;
+    {% endif %}
+    gap: {{ block.settings.button_gap }}px;
+    align-items: center;
+    justify-content: {% if block.settings.menu_alignment == 'left' %}flex-start{% elsif block.settings.menu_alignment == 'center' %}center{% else %}flex-end{% endif %};
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }} {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 {{ block.settings.button_horizontal_padding }}px;
+    height: {{ block.settings.button_height }}px;
+    {% if block.settings.button_width_type == 'fixed' %}
+      width: {{ block.settings.button_width }}px;
+    {% else %}
+      min-width: fit-content;
+    {% endif %}
+    background-color: {% if block.settings.button_fill_transparency %}rgba({{ block.settings.button_fill_color | color_extract: 'red' }}, {{ block.settings.button_fill_color | color_extract: 'green' }}, {{ block.settings.button_fill_color | color_extract: 'blue' }}, {{ block.settings.button_fill_opacity | divided_by: 100.0 }}){% else %}{{ block.settings.button_fill_color }}{% endif %};
+    color: {{ block.settings.button_text_color }};
+    border: {{ block.settings.button_outline_width }}px solid {{ block.settings.button_outline_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    text-decoration: none;
+    font-size: {{ block.settings.button_font_size }}px;
+    font-weight: {{ block.settings.button_font_weight }};
+    text-transform: {% if block.settings.button_text_uppercase %}uppercase{% else %}none{% endif %};
+    transition: all 0.3s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;}
+
+  .ai-collection-menu__button-{{ ai_gen_id }}:hover {
+    background-color: {% if block.settings.button_fill_transparency %}rgba({{ block.settings.button_hover_color | color_extract: 'red' }}, {{ block.settings.button_hover_color | color_extract: 'green' }}, {{ block.settings.button_hover_color | color_extract: 'blue' }}, {{ block.settings.button_fill_opacity | divided_by: 100.0 }}){% else %}{{ block.settings.button_hover_color }}{% endif %};color: {{ block.settings.button_hover_text_color }};border-color: {{ block.settings.button_hover_outline_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }}:focus {
+    outline: 2px solid {{ block.settings.button_outline_color }};
+    outline-offset: 2px;
+  }
+
+  .ai-collection-menu__empty-state-{{ ai_gen_id }} {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-style: italic;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-collection-menu__container-{{ ai_gen_id }} {
+      {% unless block.settings.menu_wrapping %}
+        justify-content: flex-start;
+      {% endunless %}
+    }
+
+    .ai-collection-menu__button-{{ ai_gen_id }} {
+      font-size: {{ block.settings.button_font_size | times: 0.9 }}px;
+      padding: 0 {{ block.settings.button_horizontal_padding | times: 0.8 }}px;
+      height: {{ block.settings.button_height | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-collection-menu-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-collection-menu__container-{{ ai_gen_id }}">
+    {% assign has_collections = false %}
+    
+    {% for i in (1..8) %}
+      {% assign collection_key = 'collection_' | append: i %}
+      {% assign collection = block.settings[collection_key] %}
+      
+      {% if collection != blank %}
+        {% assign has_collections = true %}
+        <a 
+          href="{{ collection.url }}" 
+          class="ai-collection-menu__button-{{ ai_gen_id }}"
+          aria-label="View {{ collection.title }} collection"
+        >
+          {{ collection.title }}
+        </a>
+      {% endif %}
+    {% endfor %}
+    
+    {% unless has_collections %}
+      <div class="ai-collection-menu__empty-state-{{ ai_gen_id }}">
+        Add collections to display your menu buttons
+      </div>
+    {% endunless %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection menu buttons",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Menu layout"
+    },
+    {
+      "type": "select",
+      "id": "menu_alignment",
+      "label": "Menu alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "checkbox",
+      "id": "menu_wrapping",
+      "label": "Enable menu wrapping",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "button_gap",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Button spacing",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "menu_padding",
+      "min": 0,
+      "max": 60,
+      "step": 4,
+      "unit": "px",
+      "label": "Menu padding",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Menu background"
+    },
+    {
+      "type": "select",
+      "id": "menu_theme",
+      "label": "Menu theme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "color",
+      "id": "menu_bg_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "menu_bg_transparency",
+      "label": "Enable background transparency",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "menu_bg_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Background opacity",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "select",
+      "id": "button_width_type",
+      "label": "Button width",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto fit content"
+        },
+        {
+          "value": "fixed",
+          "label": "Fixed width"
+        }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "range",
+      "id": "button_width",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Fixed button width",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "button_height",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Button height",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "button_horizontal_padding",
+      "min": 8,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "label": "Button border radius",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Button colors"
+    },
+    {
+      "type": "color",
+      "id": "button_fill_color",
+      "label": "Fill color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_fill_transparency",
+      "label": "Enable fill transparency",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "button_fill_opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Fill opacity",
+      "default": 100
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_outline_color",
+      "label": "Outline color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_outline_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Outline width",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Button hover colors"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Hover fill color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_outline_color",
+      "label": "Hover outline color",
+      "default": "#333333"
+    },
+    {
+      "type": "header",
+      "content": "Button typography"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "checkbox",
+      "id": "button_text_uppercase",
+      "label": "Uppercase text",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Collections"
+    },
+    {
+      "type": "collection",
+      "id": "collection_1",
+      "label": "Collection 1"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2",
+      "label": "Collection 2"
+    },
+    {
+      "type": "collection",
+      "id": "collection_3",
+      "label": "Collection 3"
+    },
+    {
+      "type": "collection",
+      "id": "collection_4",
+      "label": "Collection 4"
+    },
+    {
+      "type": "collection",
+      "id": "collection_5",
+      "label": "Collection 5"
+    },
+    {
+      "type": "collection",
+      "id": "collection_6",
+      "label": "Collection 6"
+    },
+    {
+      "type": "collection",
+      "id": "collection_7",
+      "label": "Collection 7"
+    },
+    {
+      "type": "collection",
+      "id": "collection_8",
+      "label": "Collection 8"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection menu buttons"
+    }
+  ]
+}
+{% endschema %}

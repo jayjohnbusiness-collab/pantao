@@ -1,0 +1,520 @@
+{% doc %}
+  @prompt
+    CREATE A SECTION WHERE OUR BRAND CAN HIGHLIGHT OUR SERVICES MAX 4 COLUMNS. EACH COLUMN WILL HAVE AN ICON ABOVE THE HEADER AND DESCRIPTION TEXT. ICON OPTIONS INCLUDE: TRUCK, PRICE TAG, REVERSE, STAR, INFINITY SYMBOL, 1+, SILHOUETTE, AND STAR BADGE. INCLUDE SETTINGS TO ADJUST THE SIZING AND ALIGNMENT OF THE ICONS. INCLUDE SETTINGS TO ADJUST THE SIZE, FONT, AND ALIGNMENT OF TEXT. INCLUDE SETTINGS TO ADJUST THE PADDING IN BETWEEN EACH COLUMN AND THE OUTER PADDING., INCLUDE SETTINGS TO ADJUST THE ALIGNMENT OF THE FULL SECTION., WHEN ONE COLUMN IS TOGGLED OFF THE REMAINING COLUMNS SHOULD SHIFT OVER ACCORDINGLY, ADD A HAMMER ICON
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-services-{{ ai_gen_id }} {
+    padding: {{ block.settings.outer_padding }}px;
+    background-color: {{ block.settings.background_color }};
+    display: flex;
+    justify-content: {{ block.settings.section_alignment }};
+  }
+
+  .ai-services-container-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: {{ block.settings.column_gap }}px;
+    max-width: {{ block.settings.max_width }}px;
+    width: 100%;
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-services-container-{{ ai_gen_id }} {
+      grid-template-columns: repeat(auto-fit, minmax(calc(({{ block.settings.max_width }}px - ({{ block.settings.column_gap }}px * ({{ block.settings.columns_desktop }} - 1))) / {{ block.settings.columns_desktop }}), 1fr));
+    }
+  }
+
+  .ai-service-item-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    align-items: {{ block.settings.alignment }};
+    text-align: {{ block.settings.text_alignment }};
+  }
+
+  .ai-service-icon-{{ ai_gen_id }} {
+    width: {{ block.settings.icon_size }}px;
+    height: {{ block.settings.icon_size }}px;
+    margin-bottom: 16px;
+    color: {{ block.settings.icon_color }};
+  }
+
+  .ai-service-icon-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.5;
+  }
+
+  .ai-service-heading-{{ ai_gen_id }} {
+    margin: 0 0 8px;
+    font-size: {{ block.settings.heading_size }}px;
+    font-family: {{ block.settings.heading_font.family }}, {{ block.settings.heading_font.fallback_families }};
+    font-weight: {{ block.settings.heading_font.weight }};
+    color: {{ block.settings.heading_color }};
+    text-transform: {{ block.settings.heading_case }};
+  }
+
+  .ai-service-description-{{ ai_gen_id }} {
+    margin: 0;
+    font-size: {{ block.settings.description_size }}px;
+    font-family: {{ block.settings.description_font.family }}, {{ block.settings.description_font.fallback_families }};
+    font-weight: {{ block.settings.description_font.weight }};
+    color: {{ block.settings.description_color }};
+    line-height: 1.5;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-services-container-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+    }
+
+    .ai-service-icon-{{ ai_gen_id }} {
+      width: {{ block.settings.icon_size | times: 0.8 }}px;
+      height: {{ block.settings.icon_size | times: 0.8 }}px;
+    }
+
+    .ai-service-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_size | times: 0.9 }}px;
+    }
+
+    .ai-service-description-{{ ai_gen_id }} {
+      font-size: {{ block.settings.description_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-services-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-services-container-{{ ai_gen_id }}">
+    {% for i in (1..4) %}
+      {% liquid
+        assign enabled_key = 'service_' | append: i | append: '_enabled'
+        assign icon_key = 'service_' | append: i | append: '_icon'
+        assign heading_key = 'service_' | append: i | append: '_heading'
+        assign description_key = 'service_' | append: i | append: '_description'
+
+        assign enabled = block.settings[enabled_key]
+        assign icon = block.settings[icon_key]
+        assign heading = block.settings[heading_key]
+        assign description = block.settings[description_key]
+      %}
+
+      {% if enabled %}
+        <div class="ai-service-item-{{ ai_gen_id }}">
+          <div class="ai-service-icon-{{ ai_gen_id }}">
+            {% case icon %}
+              {% when 'truck' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M1 3h15v13H1z"/>
+                  <path d="M16 8h4l3 3v5h-7V8z"/>
+                  <circle cx="5.5" cy="18.5" r="2.5"/>
+                  <circle cx="18.5" cy="18.5" r="2.5"/>
+                </svg>
+              {% when 'price_tag' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                  <circle cx="7" cy="7" r="1"/>
+                </svg>
+              {% when 'reverse' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <polyline points="1 4 1 10 7 10"/>
+                  <polyline points="23 20 23 14 17 14"/>
+                  <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                </svg>
+              {% when 'star' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                </svg>
+              {% when 'infinity' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M18.178 8C15.739 8 14 9.993 12 12.007 10 9.992 8.261 8 5.822 8 3.116 8 1 10.116 1 12.822s2.116 4.822 4.822 4.822c2.439 0 4.178-1.993 6.178-4.007 2 2.015 3.739 4.007 6.178 4.007C20.884 17.644 23 15.528 23 12.822S20.884 8 18.178 8z"/>
+                </svg>
+              {% when 'one_plus' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M7 2v20M2 7h10M17 7v10M22 12h-10"/>
+                </svg>
+              {% when 'silhouette' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                  <circle cx="12" cy="7" r="4"/>
+                </svg>
+              {% when 'star_badge' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <circle cx="12" cy="12" r="10"/>
+                  <polygon points="12 6 13.5 10.5 18 10.5 14.5 13.5 15.5 18 12 15 8.5 18 9.5 13.5 6 10.5 10.5 10.5 12 6"/>
+                </svg>
+              {% when 'hammer' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+                </svg>
+            {% endcase %}
+          </div>
+
+          {% if heading != blank %}
+            <h3 class="ai-service-heading-{{ ai_gen_id }}">{{ heading }}</h3>
+          {% endif %}
+
+          {% if description != blank %}
+            <p class="ai-service-description-{{ ai_gen_id }}">{{ description }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Services highlight",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "section_alignment",
+      "label": "Section alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 600,
+      "max": 1600,
+      "step": 100,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 1200
+    },
+    {
+      "type": "select",
+      "id": "columns_desktop",
+      "label": "Columns on desktop",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        { "value": "1", "label": "1" },
+        { "value": "2", "label": "2" }
+      ],
+      "default": "1"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Content alignment",
+      "options": [
+        { "value": "flex-start", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "flex-end", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "column_gap",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Gap between columns",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "outer_padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Outer padding",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "icon_color",
+      "label": "Icon",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "description_color",
+      "label": "Description",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Icon"
+    },
+    {
+      "type": "range",
+      "id": "icon_size",
+      "min": 20,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Size",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "font_picker",
+      "id": "heading_font",
+      "label": "Font",
+      "default": "sans_serif_n4"
+    },
+    {
+      "type": "range",
+      "id": "heading_size",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Size",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "heading_case",
+      "label": "Text case",
+      "options": [
+        { "value": "none", "label": "Default" },
+        { "value": "uppercase", "label": "Uppercase" }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "header",
+      "content": "Description"
+    },
+    {
+      "type": "font_picker",
+      "id": "description_font",
+      "label": "Font",
+      "default": "sans_serif_n4"
+    },
+    {
+      "type": "range",
+      "id": "description_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Service 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "service_1_enabled",
+      "label": "Enable service 1",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "service_1_icon",
+      "label": "Icon",
+      "options": [
+        { "value": "truck", "label": "Truck" },
+        { "value": "price_tag", "label": "Price tag" },
+        { "value": "reverse", "label": "Reverse" },
+        { "value": "star", "label": "Star" },
+        { "value": "infinity", "label": "Infinity" },
+        { "value": "one_plus", "label": "1+" },
+        { "value": "silhouette", "label": "Silhouette" },
+        { "value": "star_badge", "label": "Star badge" },
+        { "value": "hammer", "label": "Hammer" }
+      ],
+      "default": "truck"
+    },
+    {
+      "type": "text",
+      "id": "service_1_heading",
+      "label": "Heading",
+      "default": "Free Shipping"
+    },
+    {
+      "type": "textarea",
+      "id": "service_1_description",
+      "label": "Description",
+      "default": "On orders over $50"
+    },
+    {
+      "type": "header",
+      "content": "Service 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "service_2_enabled",
+      "label": "Enable service 2",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "service_2_icon",
+      "label": "Icon",
+      "options": [
+        { "value": "truck", "label": "Truck" },
+        { "value": "price_tag", "label": "Price tag" },
+        { "value": "reverse", "label": "Reverse" },
+        { "value": "star", "label": "Star" },
+        { "value": "infinity", "label": "Infinity" },
+        { "value": "one_plus", "label": "1+" },
+        { "value": "silhouette", "label": "Silhouette" },
+        { "value": "star_badge", "label": "Star badge" },
+        { "value": "hammer", "label": "Hammer" }
+      ],
+      "default": "price_tag"
+    },
+    {
+      "type": "text",
+      "id": "service_2_heading",
+      "label": "Heading",
+      "default": "Best Prices"
+    },
+    {
+      "type": "textarea",
+      "id": "service_2_description",
+      "label": "Description",
+      "default": "Guaranteed lowest prices"
+    },
+    {
+      "type": "header",
+      "content": "Service 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "service_3_enabled",
+      "label": "Enable service 3",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "service_3_icon",
+      "label": "Icon",
+      "options": [
+        { "value": "truck", "label": "Truck" },
+        { "value": "price_tag", "label": "Price tag" },
+        { "value": "reverse", "label": "Reverse" },
+        { "value": "star", "label": "Star" },
+        { "value": "infinity", "label": "Infinity" },
+        { "value": "one_plus", "label": "1+" },
+        { "value": "silhouette", "label": "Silhouette" },
+        { "value": "star_badge", "label": "Star badge" },
+        { "value": "hammer", "label": "Hammer" }
+      ],
+      "default": "reverse"
+    },
+    {
+      "type": "text",
+      "id": "service_3_heading",
+      "label": "Heading",
+      "default": "Easy Returns"
+    },
+    {
+      "type": "textarea",
+      "id": "service_3_description",
+      "label": "Description",
+      "default": "30-day return policy"
+    },
+    {
+      "type": "header",
+      "content": "Service 4"
+    },
+    {
+      "type": "checkbox",
+      "id": "service_4_enabled",
+      "label": "Enable service 4",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "service_4_icon",
+      "label": "Icon",
+      "options": [
+        { "value": "truck", "label": "Truck" },
+        { "value": "price_tag", "label": "Price tag" },
+        { "value": "reverse", "label": "Reverse" },
+        { "value": "star", "label": "Star" },
+        { "value": "infinity", "label": "Infinity" },
+        { "value": "one_plus", "label": "1+" },
+        { "value": "silhouette", "label": "Silhouette" },
+        { "value": "star_badge", "label": "Star badge" },
+        { "value": "hammer", "label": "Hammer" }
+      ],
+      "default": "star"
+    },
+    {
+      "type": "text",
+      "id": "service_4_heading",
+      "label": "Heading",
+      "default": "Premium Quality"
+    },
+    {
+      "type": "textarea",
+      "id": "service_4_description",
+      "label": "Description",
+      "default": "Top-rated products"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Services highlight"
+    }
+  ]
+}
+{% endschema %}

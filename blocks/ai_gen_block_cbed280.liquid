@@ -1,0 +1,607 @@
+{% doc %}
+  @prompt
+    Instagram style post slide show for photos or videos in a 4x5 ratio
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-instagram-slideshow-{{ ai_gen_id }} {
+    max-width: {{ block.settings.max_width }}px;
+    margin: 0 auto;
+    background-color: {{ block.settings.background_color }};
+    border-radius: {{ block.settings.border_radius }}px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);}
+
+  .ai-instagram-slideshow__header-{{ ai_gen_id }} {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid {{ block.settings.border_color }};
+  }
+
+  .ai-instagram-slideshow__avatar-{{ ai_gen_id }} {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .ai-instagram-slideshow__avatar-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-instagram-slideshow__avatar-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-instagram-slideshow__avatar-placeholder-{{ ai_gen_id }} svg {
+    width: 16px;
+    height: 16px;
+    color: #999;
+  }
+
+  .ai-instagram-slideshow__user-info-{{ ai_gen_id }} {
+    flex-grow: 1;
+  }
+
+  .ai-instagram-slideshow__username-{{ ai_gen_id }} {
+    font-weight: 600;
+    font-size: 14px;
+    color: {{ block.settings.text_color }};
+    margin: 0;
+  }
+
+  .ai-instagram-slideshow__location-{{ ai_gen_id }} {
+    font-size: 12px;
+    color: {{ block.settings.secondary_text_color }};
+    margin: 0;
+  }
+
+  .ai-instagram-slideshow__media-container-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+  }
+
+  .ai-instagram-slideshow__media-wrapper-{{ ai_gen_id }} {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-instagram-slideshow__media-item-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  .ai-instagram-slideshow__media-item-{{ ai_gen_id }} img,
+  .ai-instagram-slideshow__media-item-{{ ai_gen_id }} video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-instagram-slideshow__media-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .ai-instagram-slideshow__media-placeholder-{{ ai_gen_id }} svg {
+    width: 48px;
+    height: 48px;
+    color: #999;
+  }
+
+  .ai-instagram-slideshow__empty-state-{{ ai_gen_id }} {
+    color: #666;
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .ai-instagram-slideshow__nav-button-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;z-index: 2;
+  }
+
+  .ai-instagram-slideshow__nav-button-{{ ai_gen_id }}:hover {
+    background: rgba(0, 0, 0, 0.7);
+  }
+
+  .ai-instagram-slideshow__nav-button--prev-{{ ai_gen_id }} {
+    left: 12px;
+  }
+
+  .ai-instagram-slideshow__nav-button--next-{{ ai_gen_id }} {
+    right: 12px;
+  }
+
+  .ai-instagram-slideshow__media-container-{{ ai_gen_id }}:hover .ai-instagram-slideshow__nav-button-{{ ai_gen_id }} {
+    opacity: 1;
+  }
+
+  .ai-instagram-slideshow__indicators-{{ ai_gen_id }} {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    display: flex;
+    gap: 4px;
+    z-index: 2;
+  }
+
+  .ai-instagram-slideshow__indicator-{{ ai_gen_id }} {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transition: background 0.3s ease;
+  }
+
+  .ai-instagram-slideshow__indicator-{{ ai_gen_id }}.active {
+    background: rgba(255, 255, 255, 1);
+  }
+
+  .ai-instagram-slideshow__actions-{{ ai_gen_id }} {
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .ai-instagram-slideshow__action-button-{{ ai_gen_id }} {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: {{ block.settings.text_color }};
+    transition: color 0.3s ease;
+  }
+
+  .ai-instagram-slideshow__action-button-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.secondary_text_color }};
+  }
+
+  .ai-instagram-slideshow__action-button-{{ ai_gen_id }} svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .ai-instagram-slideshow__caption-{{ ai_gen_id }} {
+    padding: 0 16px 16px;
+    color: {{ block.settings.text_color }};
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .ai-instagram-slideshow__caption-{{ ai_gen_id }} p {
+    margin: 0;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-instagram-slideshow-{{ ai_gen_id }} {
+      max-width: 100%;
+      border-radius: 0;
+    }
+
+    .ai-instagram-slideshow__nav-button-{{ ai_gen_id }} {
+      opacity: 1;
+    }
+  }
+{% endstyle %}<instagram-slideshow-{{ ai_gen_id }}
+  class="ai-instagram-slideshow-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  {% if block.settings.show_header %}
+    <div class="ai-instagram-slideshow__header-{{ ai_gen_id }}">
+      <div class="ai-instagram-slideshow__avatar-{{ ai_gen_id }}">
+        {% if block.settings.avatar_image %}
+          <img
+            src="{{ block.settings.avatar_image | image_url: width: 64}}"
+            alt="{{ block.settings.username | escape }}"
+            width="32"
+            height="32"loading="lazy"
+          >
+        {% else %}
+          <div class="ai-instagram-slideshow__avatar-placeholder-{{ ai_gen_id }}">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+            </svg>
+          </div>
+        {% endif %}
+      </div>
+      <div class="ai-instagram-slideshow__user-info-{{ ai_gen_id }}">
+        {% if block.settings.username != blank %}
+          <p class="ai-instagram-slideshow__username-{{ ai_gen_id }}">{{ block.settings.username }}</p>
+        {% endif %}
+        {% if block.settings.location != blank %}
+          <p class="ai-instagram-slideshow__location-{{ ai_gen_id }}">{{ block.settings.location }}</p>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}<div class="ai-instagram-slideshow__media-container-{{ ai_gen_id }}">
+    {% assign media_count = 0 %}
+    {% for i in (1..5) %}
+      {% assign image_key = 'image_' | append: i %}
+      {% assign video_key = 'video_' | append: i %}
+      {% if block.settings[image_key] or block.settings[video_key] %}
+        {% assign media_count = media_count | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+
+    {% if media_count > 0 %}
+      <div class="ai-instagram-slideshow__media-wrapper-{{ ai_gen_id }}" data-current-slide="0">
+        {% for i in (1..5) %}
+          {% assign image_key = 'image_' | append: i %}
+          {% assign video_key = 'video_' | append: i %}
+          {% assign image = block.settings[image_key] %}
+          {% assign video = block.settings[video_key] %}
+
+          {% if image or video %}
+            <div class="ai-instagram-slideshow__media-item-{{ ai_gen_id }}">
+              {% if video %}
+                <video
+                  src="{{ video }}"
+                  controls
+                  muted
+                  playsinline
+                  preload="metadata"
+                >
+                  Your browser does not support the video tag.
+                </video>
+              {% elsif image %}
+                <img
+                  src="{{ image | image_url: width: 800 }}"
+                  alt="{{ image.alt | escape }}"
+                  width="{{ image.width }}"
+                  height="{{ image.height }}"
+                  loading="lazy"
+                >
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endfor %}
+      </div>
+
+      {% if media_count > 1 %}
+        <button
+          class="ai-instagram-slideshow__nav-button-{{ ai_gen_id }} ai-instagram-slideshow__nav-button--prev-{{ ai_gen_id }}"
+          aria-label="Previous image"
+          data-direction="prev"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="15,18 9,12 15,6"></polyline>
+          </svg>
+        </button>
+
+        <button
+          class="ai-instagram-slideshow__nav-button-{{ ai_gen_id }} ai-instagram-slideshow__nav-button--next-{{ ai_gen_id }}"
+          aria-label="Next image"
+          data-direction="next"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9,18 15,12 9,6"></polyline>
+          </svg>
+        </button>
+
+        <div class="ai-instagram-slideshow__indicators-{{ ai_gen_id }}">
+          {% for i in (1..media_count) %}
+            <div class="ai-instagram-slideshow__indicator-{{ ai_gen_id }}{% if forloop.first %} active{% endif %}"></div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      <div class="ai-instagram-slideshow__media-placeholder-{{ ai_gen_id }}">
+        {{ 'image' | placeholder_svg_tag }}
+        <div class="ai-instagram-slideshow__empty-state-{{ ai_gen_id }}">
+          Add images or videos to create your slideshow
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if block.settings.show_actions %}
+    <div class="ai-instagram-slideshow__actions-{{ ai_gen_id }}">
+      <button class="ai-instagram-slideshow__action-button-{{ ai_gen_id }}" aria-label="Like">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+      </button>
+      <button class="ai-instagram-slideshow__action-button-{{ ai_gen_id }}" aria-label="Comment">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+      </button>
+      <button class="ai-instagram-slideshow__action-button-{{ ai_gen_id }}" aria-label="Share">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="18" cy="5" r="3"></circle>
+          <circle cx="6" cy="12" r="3"></circle>
+          <circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+          <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+        </svg>
+      </button>
+    </div>
+  {% endif %}
+
+  {% if block.settings.caption != blank %}
+    <div class="ai-instagram-slideshow__caption-{{ ai_gen_id }}">
+      {{ block.settings.caption }}
+    </div>
+  {% endif %}
+</instagram-slideshow-{{ ai_gen_id }}><script>
+  (function() {
+    class InstagramSlideshow{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.currentSlide = 0;
+        this.totalSlides = 0;
+      }
+
+      connectedCallback() {
+        this.mediaWrapper = this.querySelector('.ai-instagram-slideshow__media-wrapper-{{ ai_gen_id }}');
+        this.prevButton = this.querySelector('.ai-instagram-slideshow__nav-button--prev-{{ ai_gen_id }}');
+        this.nextButton = this.querySelector('.ai-instagram-slideshow__nav-button--next-{{ ai_gen_id }}');
+        this.indicators = this.querySelectorAll('.ai-instagram-slideshow__indicator-{{ ai_gen_id }}');
+        this.mediaItems = this.querySelectorAll('.ai-instagram-slideshow__media-item-{{ ai_gen_id }}');
+
+        this.totalSlides = this.mediaItems.length;
+
+        if (this.totalSlides > 1) {
+          this.setupEventListeners();
+        }
+      }
+
+      setupEventListeners() {
+        if (this.prevButton) {
+          this.prevButton.addEventListener('click', () => this.goToSlide(this.currentSlide - 1));
+        }
+
+        if (this.nextButton) {
+          this.nextButton.addEventListener('click', () => this.goToSlide(this.currentSlide + 1));
+        }
+
+        this.indicators.forEach((indicator, index) => {
+          indicator.addEventListener('click', () => this.goToSlide(index));
+        });
+
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+
+        this.mediaWrapper.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].clientX;
+          isDragging = true;
+        });
+
+        this.mediaWrapper.addEventListener('touchmove', (e) => {
+          if (!isDragging) return;
+          currentX = e.touches[0].clientX;});
+
+        this.mediaWrapper.addEventListener('touchend', () => {
+          if (!isDragging) return;
+          isDragging = false;
+
+          const diffX = startX - currentX;
+          const threshold = 50;
+
+          if (Math.abs(diffX) > threshold) {
+            if (diffX > 0) {
+              this.goToSlide(this.currentSlide + 1);
+            } else {
+              this.goToSlide(this.currentSlide - 1);
+            }
+          }
+        });
+      }
+
+      goToSlide(slideIndex) {
+        if (slideIndex < 0) {
+          this.currentSlide = this.totalSlides - 1;
+        } else if (slideIndex >= this.totalSlides) {
+          this.currentSlide = 0;
+        } else {
+          this.currentSlide = slideIndex;
+        }
+
+        const translateX = -this.currentSlide * 100;
+        this.mediaWrapper.style.transform = `translateX(${translateX}%)`;
+
+        this.indicators.forEach((indicator, index) => {
+          indicator.classList.toggle('active', index === this.currentSlide);
+        });
+
+        this.mediaWrapper.setAttribute('data-current-slide', this.currentSlide);
+      }
+    }
+
+    customElements.define('instagram-slideshow-{{ ai_gen_id }}', InstagramSlideshow{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Instagram slideshow",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Post header"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_header",
+      "label": "Show header",
+      "default": true
+    },
+    {
+      "type": "image_picker",
+      "id": "avatar_image",
+      "label": "Avatar image"
+    },
+    {
+      "type": "text",
+      "id": "username",
+      "label": "Username",
+      "default": "your_username"
+    },
+    {
+      "type": "text",
+      "id": "location",
+      "label": "Location"
+    },
+    {
+      "type": "header",
+      "content": "Media content"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image 1"
+    },
+    {
+      "type": "url",
+      "id": "video_1",
+      "label": "Video 1 URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2"
+    },
+    {
+      "type": "url",
+      "id": "video_2",
+      "label": "Video 2 URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image 3"
+    },
+    {
+      "type": "url",
+      "id": "video_3",
+      "label": "Video 3 URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Image 4"
+    },
+    {
+      "type": "url",
+      "id": "video_4",
+      "label": "Video 4 URL"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_5",
+      "label": "Image 5"
+    },
+    {
+      "type": "url",
+      "id": "video_5",
+      "label": "Video 5 URL"
+    },
+    {
+      "type": "header",
+      "content": "Post footer"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_actions",
+      "label": "Show action buttons",
+      "default": true
+    },
+    {
+      "type": "richtext",
+      "id": "caption",
+      "label": "Caption"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "max_width",
+      "min": 300,
+      "max": 600,
+      "step": 20,
+      "unit": "px",
+      "label": "Maximum width",
+      "default": 400
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "secondary_text_color",
+      "label": "Secondary text color",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "border_color",
+      "label": "Border color",
+      "default": "#e6e6e6"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Instagram slideshow"
+    }
+  ]
+}
+{% endschema %}
