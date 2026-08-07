@@ -116,7 +116,7 @@
       padding: 0;
       border-radius: 0;
       background: transparent;
-      transition: transform var(--logo-trigger-rotation-ms) cubic-bezier(0.5, 0, 0.2, 1);
+      transition: transform var(--logo-trigger-rotation-ms) cubic-bezier(0.22, 1, 0.36, 1);
       transform-origin: center center;
       will-change: transform;
       cursor: pointer;
@@ -197,10 +197,41 @@
       outline-offset: 4px;
     }
 
-    /* Reduced motion: skip the rotation transition. */
+    /* ----------------------------------------------------------------
+       REFINEMENTS — trigger feel + open/close motion
+       Subtle only; the behavior is unchanged.
+       ---------------------------------------------------------------- */
+
+    /* A quiet hover cue so the logo reads as clickable. Only when the
+       menu is closed — while open, the 90° rotation owns the transform. */
+    .header__drawer--logo-trigger details:not([open]) > summary.header__icon--menu:hover {
+      transform: scale(1.06);
+    }
+    .header__drawer--logo-trigger details:not([open]) > summary.header__icon--menu:active {
+      transform: scale(0.95);
+    }
+
+    /* Smooth + slightly slow the drawer's slide and backdrop so the
+       entrance matches the logo's rotation instead of the theme's
+       default snappy 0.125s ease-in-out. Custom properties inherit
+       down to the sliding `.drawer` element. */
+    .header__drawer--logo-trigger,
+    .header__drawer--logo-trigger .drawer,
+    .header__drawer--logo-trigger .menu-drawer,
+    .header__drawer--logo-trigger ~ * .drawer,
+    .header__drawer--logo-trigger ~ * .menu-drawer {
+      --animation-speed: 0.44s;
+      --animation-easing: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    /* Reduced motion: skip the rotation, hover scale, and slide easing. */
     @media (prefers-reduced-motion: reduce) {
       .header__drawer--logo-trigger .header__icon--menu {
         transition: none;
+      }
+      .header__drawer--logo-trigger details:not([open]) > summary.header__icon--menu:hover,
+      .header__drawer--logo-trigger details:not([open]) > summary.header__icon--menu:active {
+        transform: none;
       }
     }
 
