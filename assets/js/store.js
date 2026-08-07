@@ -139,6 +139,34 @@
   }
 
   /* =====================================================================
+   * FLAGSHIP FEATURE
+   * ===================================================================*/
+  function renderFeature() {
+    var sec = $("#feature");
+    if (!sec) return;
+    var p = (CFG.pieces || []).find(function (x) { return x.feature; });
+    if (!p || (CFG.phase || "open") === "antechamber") { sec.hidden = true; return; }
+    // swap the CSS render for real campaign photography when provided
+    if (p.featureImg) {
+      var vis = $("#featureVisual");
+      vis.innerHTML = '<div class="feature__photo" style="background:url(' + p.featureImg + ') center/cover"></div>' +
+                      '<p class="feature__caption" id="featureCaption"></p>';
+    }
+    $("#featureEyebrow").textContent = (p.featureEyebrow || "The Flagship") + " · " + (CFG.editionLabel || "");
+    $("#featureHeading").textContent = p.featureHeading || p.name;
+    $("#featureLede").textContent = p.featureLede || p.note || "";
+    $("#featureMaterial").textContent = p.material || "";
+    $("#featurePrice").textContent = money(p.price);
+    $("#featureCaption").textContent = p.caption || "";
+    var open = function () { openQuickview(p.id); };
+    $("#featureAdd").onclick = open;
+    $("#featureView").onclick = open;
+    $("#featureVisual").onclick = open;
+    $("#featureVisual").style.cursor = "pointer";
+    sec.hidden = false;
+  }
+
+  /* =====================================================================
    * QUICKVIEW
    * ===================================================================*/
   var qv = { id: null, size: null };
@@ -331,7 +359,7 @@
     document.addEventListener("keydown", function (e) { if (e.key === "Escape") { closeQuickview(); closeBag(); } });
   }
   function init() {
-    applyPhase(); bindText(); counter(); renderManifest(); renderBag();
+    applyPhase(); bindText(); counter(); renderManifest(); renderFeature(); renderBag();
     apply(); nav(); wire(); revealScan(); preloader();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

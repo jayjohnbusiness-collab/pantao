@@ -49,6 +49,22 @@ window.PANTAO_CONFIG = {
    * ---------------------------------------------------------------- */
   pieces: [
     {
+      id: "vitrine-distressed-knit",
+      name: "Vitrine Distressed Knit",
+      material: "Hand-distressed merino · open gauge",
+      price: 345,
+      sizes: ["S", "M", "L", "XL"],
+      stock: 8,
+      tone: 9,
+      feature: true,                     // renders the flagship feature moment
+      note: "Open-gauge merino, distressed by hand. The openwork is worked deliberately at the wrist and the throat, so a watch reads at the cuff and a chain sits clear at the collarbone. Made in a count we can name.",
+      // ---- feature-section copy (luxury moment) ----
+      featureEyebrow: "The Flagship",
+      featureHeading: "The setting,\nnot the stone.",
+      featureLede: "A merino knit distressed by hand into open gauge — every loosening placed, none of it accident. At the cuff it falls away to clear the wrist. At the throat it opens to the collarbone. You bring the watch. You bring the chain. The sweater is only the setting.",
+      caption: "Worn open, on purpose."
+    },
+    {
       id: "v1-boxy-tee",
       name: "V.1 Boxy Tee",
       material: "14oz loopwheel cotton",

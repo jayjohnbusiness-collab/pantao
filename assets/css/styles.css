@@ -105,6 +105,8 @@ button { font-family: inherit; cursor: pointer; color: inherit; background: none
 .btn--line:hover { background: var(--bone); color: var(--ink); border-color: var(--bone); }
 .btn--solid { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .btn--solid:hover { background: transparent; color: var(--text); border-color: var(--ink); }
+.btn--paper { background: var(--paper); color: var(--ink); border-color: var(--paper); }
+.btn--paper:hover { background: transparent; color: var(--bone); border-color: var(--bone); }
 .btn--block { width: 100%; }
 .btn[disabled] { opacity: 0.35; pointer-events: none; }
 
@@ -208,6 +210,131 @@ button { font-family: inherit; cursor: pointer; color: inherit; background: none
 .plate { display: flex; align-items: flex-end; justify-content: flex-start; overflow: hidden; }
 .plate__no { font-family: var(--serif); font-size: clamp(40px, 10vw, 90px); font-weight: 500; color: rgba(255,255,255,0.85); mix-blend-mode: overlay; padding: 12px 14px; line-height: 0.8; }
 
+/* ============ FLAGSHIP FEATURE (dark, luxury) ============ */
+.feature {
+  background: var(--ink); color: var(--bone);
+  display: grid; grid-template-columns: 1.05fr 1fr; align-items: stretch;
+  border-top: 1px solid var(--line-d);
+}
+.feature[hidden] { display: none; }
+
+/* --- the visual: distressed knit revealing metal beneath --- */
+.feature__visual {
+  position: relative; overflow: hidden; min-height: 78vh;
+  background: #0b0b0b; cursor: default;
+}
+.knit { position: absolute; inset: 0; }
+.knit::before {
+  /* ribbed open-gauge knit */
+  content: ""; position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(90deg, #131313 0 4px, #0a0a0a 4px 9px, #161616 9px 13px, #0a0a0a 13px 18px),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.018) 0 2px, transparent 2px 11px);
+  filter: contrast(1.05);
+}
+.knit::after {
+  /* soft light fall across the fabric */
+  content: ""; position: absolute; inset: 0;
+  background: radial-gradient(120% 90% at 68% 22%, rgba(255,255,255,0.07), transparent 55%),
+              radial-gradient(90% 80% at 20% 95%, rgba(0,0,0,0.6), transparent 60%);
+}
+
+/* an opening in the knit — the metal shows through */
+.aperture {
+  position: absolute; overflow: hidden; z-index: 2;
+  background: #060606;
+  box-shadow: inset 0 0 22px 6px #000, 0 0 0 1px rgba(0,0,0,0.6);
+  transition: transform .9s var(--ease);
+}
+.aperture::after {
+  /* frayed threads across the opening */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    repeating-linear-gradient(84deg, transparent 0 7px, rgba(20,20,20,0.9) 7px 8px),
+    repeating-linear-gradient(-88deg, transparent 0 13px, rgba(14,14,14,0.8) 13px 14px);
+  mix-blend-mode: screen; opacity: 0.5;
+}
+.aperture--neck {
+  top: 15%; left: 34%; width: 32%; height: 10%;
+  border-radius: 60% 40% 55% 45% / 60% 55% 45% 40%;
+  transform: rotate(-8deg);
+}
+.aperture--wrist {
+  bottom: 17%; left: 15%; width: 27%; height: 27%;
+  border-radius: 52% 48% 45% 55% / 55% 50% 50% 45%;
+}
+.feature__visual:hover .aperture--neck  { transform: rotate(-8deg) scale(1.06); }
+.feature__visual:hover .aperture--wrist { transform: scale(1.05); }
+
+/* metal beneath: a watch at the wrist, a chain at the throat */
+.watch {
+  position: absolute; top: 50%; left: 50%; width: 58%; aspect-ratio: 1; transform: translate(-50%,-50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 38% 32%, #fff8e6 0 6%, transparent 8%),
+    conic-gradient(from 210deg, #b8a06a, #f3e6c0 20%, #8a7444 42%, #e9d9a8 62%, #9c8449 82%, #cbb27a 100%),
+    radial-gradient(circle at 50% 50%, #2a2621 0 30%, #6f5f3d 31%, #d9c489 40%, #6f5f3d 47%, transparent 49%);
+  box-shadow: 0 0 26px rgba(233,217,168,0.28), inset 0 0 20px rgba(0,0,0,0.6);
+}
+.watch::before {
+  /* dial */
+  content: ""; position: absolute; inset: 26%; border-radius: 50%;
+  background: radial-gradient(circle at 42% 36%, #4a4640, #141310 70%);
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.8), 0 0 0 2px rgba(220,200,150,0.5);
+}
+.watch::after {
+  /* hands + glint */
+  content: ""; position: absolute; inset: 0; border-radius: 50%;
+  background:
+    linear-gradient(38deg, transparent 47%, rgba(255,255,255,0.9) 49%, transparent 51%),
+    linear-gradient(122deg, transparent 48%, rgba(255,255,255,0.7) 49%, transparent 50%);
+  mask: radial-gradient(circle at 50% 50%, #000 0 34%, transparent 35%);
+  -webkit-mask: radial-gradient(circle at 50% 50%, #000 0 34%, transparent 35%);
+}
+.chain {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 84%; height: 42%;
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0 3px,
+      rgba(216,196,140,0.15) 3px 5px,
+      #d7c48a 5px 9px,
+      #7d6a3e 9px 12px,
+      rgba(0,0,0,0.4) 12px 15px);
+  border-radius: 100px;
+  box-shadow: 0 0 16px rgba(215,196,138,0.3);
+  filter: saturate(1.05);
+}
+/* slow shimmer sweep across the metal */
+.watch, .chain { position: absolute; }
+.feature__visual::before {
+  content: ""; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.05) 50%, transparent 60%);
+  transform: translateX(-40%); animation: sweep 7s ease-in-out infinite;
+}
+@keyframes sweep { 0%,100% { transform: translateX(-45%); } 50% { transform: translateX(45%); } }
+
+.feature__photo { position: absolute; inset: 0; }
+.feature__caption {
+  position: absolute; left: var(--gutter); bottom: 26px; z-index: 4;
+  font-family: var(--serif); font-style: italic; font-size: 17px; color: var(--bone-dim);
+}
+
+/* --- the info column --- */
+.feature__info {
+  display: flex; flex-direction: column; justify-content: center;
+  padding: clamp(48px, 8vw, 110px) var(--gutter);
+}
+.feature .kicker { color: var(--bone-dim); }
+.feature__heading {
+  font-family: var(--serif); font-weight: 500; font-style: italic;
+  font-size: clamp(38px, 5vw, 72px); line-height: 1.0; white-space: pre-line; margin: 20px 0 26px;
+}
+.feature__lede { color: var(--bone-dim); font-size: clamp(15px, 1.5vw, 18px); max-width: 460px; }
+.feature__meta { display: flex; align-items: baseline; gap: 22px; margin: 34px 0 30px; }
+.feature__material { font-size: 12px; letter-spacing: 0.06em; color: var(--bone-dim); text-transform: uppercase; }
+.feature__price { font-family: var(--serif); font-size: 30px; }
+.feature__cta { display: flex; flex-wrap: wrap; gap: 12px; }
+
 /* ============ INVITATION (dark) ============ */
 .invitation { background: var(--ink); color: var(--bone); padding: clamp(90px, 15vh, 180px) var(--gutter); }
 .invitation__inner { max-width: 620px; margin: 0 auto; text-align: center; }
@@ -306,6 +433,7 @@ body[data-phase="closed"] .arrival__counter { display: none; }
 
 /* hide shop chrome when doors are closed to the public */
 body[data-phase="antechamber"] .manifest,
+body[data-phase="antechamber"] .feature,
 body[data-phase="antechamber"] .nav__cart,
 body[data-phase="antechamber"] .strip { display: none; }
 body[data-phase="antechamber"] [data-shop-link] { display: none; }
@@ -318,6 +446,8 @@ body[data-phase="antechamber"] [data-shop-link] { display: none; }
   .piece { grid-template-columns: 44px 1fr; row-gap: 12px; }
   .piece__right { grid-column: 2; justify-content: flex-start; }
   .piece__plate { display: none; }
+  .feature { grid-template-columns: 1fr; }
+  .feature__visual { min-height: 68vh; }
 }
 @media (max-width: 560px) {
   .arrival__cta { flex-direction: column; align-items: stretch; }

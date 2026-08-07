@@ -71,6 +71,20 @@ Each piece's `stock` drives availability automatically:
 Set `sizes: []` for one-size pieces. Swap the monochrome `tone` plate for a real
 photo any time with `img: "assets/img/your-photo.jpg"`.
 
+### The flagship feature
+Mark one piece `feature: true` and it gets a full-bleed luxury moment above the
+manifest. The **Vitrine Distressed Knit** is the built-in example — a knit whose
+hand-worked open gauge is framed as a *setting* for the watch and chain the wearer
+brings to it ("the setting, not the stone"). Feature copy lives on the piece:
+`featureEyebrow`, `featureHeading` (use `\n` for a line break), `featureLede`,
+`caption`. The distressed-knit visual is rendered in CSS; drop in real campaign
+photography with `featureImg: "assets/img/knit.jpg"`.
+
+> Note on the horology framing: the piece is *designed* to show off fine watches and
+> jewelry, but the site copy evokes that world rather than naming other houses
+> (Rolex, AP, …) — printing their trademarks in your marketing implies an endorsement
+> you don't have, and the suggestion reads more luxury than the logo anyway.
+
 ---
 
 ## What changed in the Shopify theme
