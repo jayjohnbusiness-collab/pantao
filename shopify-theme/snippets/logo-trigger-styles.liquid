@@ -1,0 +1,210 @@
+{%- doc -%}
+  Logo trigger styles (side drawer)
+  ----------------------------------------------------------------
+  Replaces the desktop hamburger trigger with a rotating brand
+  logo. The drawer slides in from the left edge of the viewport
+  (the theme's default drawer behavior). The logo is pinned above
+  the drawer via z-index so its rotation animation is visible
+  end-to-end as the drawer enters.
+
+  Mobile (< 750px) is untouched — the standard hamburger icon
+  and side drawer remain.
+
+  Outputs nothing when `enable_logo_trigger` is off on the menu
+  block.
+
+  @param {object} block - The header menu block (provides settings)
+{%- enddoc -%}
+
+{%- liquid
+  unless block.settings.enable_logo_trigger
+    break
+  endunless
+
+  # Trigger image: prefer block-level override, fall back to
+  # the global theme logo. Allows merchants to use a wordmark
+  # globally and a monogram in the trigger.
+  assign logo_url = ''
+  if block.settings.logo_trigger_image != blank
+    assign logo_url = block.settings.logo_trigger_image | image_url: width: 600
+  elsif settings.logo != blank
+    assign logo_url = settings.logo | image_url: width: 600
+  endif
+
+  assign logo_inverse_url = ''
+  if block.settings.logo_trigger_image_inverse != blank
+    assign logo_inverse_url = block.settings.logo_trigger_image_inverse | image_url: width: 600
+  elsif settings.logo_inverse != blank
+    assign logo_inverse_url = settings.logo_inverse | image_url: width: 600
+  endif
+
+  assign trigger_size = block.settings.logo_trigger_size | default: 36
+  assign rotation_ms = block.settings.logo_trigger_rotation_ms | default: 450
+-%}
+
+{%- if block.settings.enable_logo_trigger -%}
+<style>
+  /* ============================================================
+     Logo menu (desktop) — repurposes the hamburger drawer
+     summary as a clickable, rotating brand logo. Mobile keeps
+     the standard hamburger icon untouched.
+
+     The drawer keeps its default left-slide behavior. The logo
+     is pinned above the drawer (via z-index) so the rotation
+     animation is visible end-to-end as the drawer enters.
+     ============================================================ */
+
+  .header__drawer--logo-trigger {
+    --logo-trigger-size: {{ trigger_size }}px;
+    --logo-trigger-rotation-ms: {{ rotation_ms }}ms;
+  }
+
+  /* Prevent the page "zoom" when the drawer opens.
+     The theme's drawer mechanism adds [scroll-lock] to <html>,
+     which sets overflow: hidden — that hides the vertical
+     scrollbar and reflows the page to fill the gap.
+     `scrollbar-gutter: stable` reserves the scrollbar space
+     permanently, so when overflow: hidden hides the scrollbar,
+     no reflow happens. */
+  html:has(.header__drawer--logo-trigger) {
+    scrollbar-gutter: stable;
+  }
+
+  @media screen and (min-width: 750px) {
+
+    /* 1) UN-HIDE THE DRAWER ON DESKTOP.
+          The theme's default CSS hides the drawer at this breakpoint
+          when data-menu-style='menu' is set by JS. We override that
+          when the logo-menu is enabled. */
+    #header-component[data-menu-style='menu'] .header__drawer--logo-trigger,
+    .header__drawer--logo-trigger {
+      display: flex !important;
+    }
+
+    /* 2) HIDE THE INLINE DESKTOP NAV STRIP.
+          When the logo-menu is on, the drawer is the only
+          navigation surface. The inline nav links (rendered by
+          the same menu block in 'menu' variant) would be a
+          redundant duplicate sitting in the header bar. */
+    #header-component:has(.header__drawer--logo-trigger) .header-menu,
+    #header-component:has(.header__drawer--logo-trigger) .header__navigation-bar-row {
+      display: none !important;
+    }
+
+    /* 3) PIN THE TRIGGER ABOVE THE DRAWER.
+          The drawer is z-index 18 (--layer-menu-drawer). We set the
+          trigger to 20 (--layer-temporary) so it sits visibly on top
+          of the drawer as the drawer slides in. This is what makes
+          the rotation animation visible end-to-end — without this,
+          the drawer covers the trigger before the rotation finishes. */
+    .header__drawer--logo-trigger {
+      position: relative;
+      z-index: var(--layer-temporary, 20);
+    }
+
+    .header__drawer--logo-trigger .menu-drawer-container,
+    .header__drawer--logo-trigger details.menu-drawer-container {
+      position: relative;
+      z-index: var(--layer-temporary, 20);
+    }
+
+    .header__drawer--logo-trigger .header__icon--menu {
+      position: relative;
+      z-index: var(--layer-temporary, 20);
+      width: var(--logo-trigger-size);
+      height: var(--logo-trigger-size);
+      padding: 0;
+      border-radius: 0;
+      background: transparent;
+      transition: transform var(--logo-trigger-rotation-ms) cubic-bezier(0.5, 0, 0.2, 1);
+      transform-origin: center center;
+      will-change: transform;
+      cursor: pointer;
+    }
+
+    /* 4) Hide the hamburger SVG icons — replaced by the brand logo. */
+    .header__drawer--logo-trigger .header__icon--menu .header-drawer-icon {
+      display: none !important;
+    }
+
+    /* 5) Inject the brand logo via a pseudo-element. */
+    .header__drawer--logo-trigger .header__icon--menu::before {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 100%;
+      {% if logo_url != blank %}
+      background-image: url('{{ logo_url }}');
+      {% endif %}
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    {% if logo_inverse_url != blank %}
+    /* Inverse logo for transparent + inverse-scheme pages. */
+    #header-component[transparent] .header__drawer--logo-trigger .header__icon--menu::before {
+      background-image: url('{{ logo_inverse_url }}');
+    }
+    {% endif %}
+
+    /* 6) ROTATE WHEN OPEN. The same click that opens the drawer
+          also triggers this transform (because the trigger and
+          drawer share the <details> open state). */
+    .header__drawer--logo-trigger details[open] > summary.header__icon--menu {
+      transform: rotate(90deg);
+    }
+
+    /* 7) PUSH THE DRAWER CONTENT DOWN so it doesn't render
+          underneath the trigger. The trigger's screen position
+          becomes a "reserved" area at the top-left of the drawer.
+          Without this, the rotated logo would visually overlap
+          the first navigation link in the drawer. */
+    .header__drawer--logo-trigger ~ * .menu-drawer,
+    .header__drawer--logo-trigger .menu-drawer {
+      padding-top: calc(var(--logo-trigger-size) + 4rem);
+    }
+
+    /* 8) ALIGN DRAWER CONTENT WITH THE TRIGGER'S LEFT EDGE.
+          The header trigger sits at `--page-margin` from the
+          viewport edge (40px on desktop). To make every menu
+          item line up with the trigger's left edge, we override
+          the drawer's internal padding (--drawer-padding) to
+          match --page-margin. So menu items begin on exactly
+          the same vertical line as the trigger above them. */
+    .header__drawer--logo-trigger ~ * .menu-drawer,
+    .header__drawer--logo-trigger .menu-drawer {
+      --drawer-padding: var(--page-margin, 40px);
+    }
+
+    /* 9) REMOVE THE REDUNDANT X CLOSE BUTTON.
+          Per merchant request: the rotated logo serves as the
+          close trigger, so the in-drawer X button is redundant.
+          The drawer can still be closed by:
+            - Clicking the rotated logo (native <details>/<summary>
+              toggle behavior)
+            - Clicking outside the drawer
+            - Pressing Escape
+          So no one is trapped without an exit path. */
+    .header__drawer--logo-trigger ~ * .menu-drawer__close-button,
+    .header__drawer--logo-trigger .menu-drawer__close-button {
+      display: none;
+    }
+
+    /* Accessibility: visible focus ring sits above the drawer too. */
+    .header__drawer--logo-trigger .header__icon--menu:focus-visible {
+      outline: 2px solid currentColor;
+      outline-offset: 4px;
+    }
+
+    /* Reduced motion: skip the rotation transition. */
+    @media (prefers-reduced-motion: reduce) {
+      .header__drawer--logo-trigger .header__icon--menu {
+        transition: none;
+      }
+    }
+
+  } /* end (min-width: 750px) */
+
+</style>
+{%- endif -%}

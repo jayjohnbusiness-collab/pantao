@@ -1,0 +1,742 @@
+{% doc %}
+  @prompt
+    CREATE A FOOTER THAT GIVES ME THREE SECTIONS TO LINK DIFFERENT MENUS. GIVE ME THE OPTION TO ADJUST THE ALIGNMENT, INPUT A HEADER, MENU TEXT SIZE/FONT, TOGGLE THE MENU ADAPTS TO THE CURRENT PAGE THEME, OPTIONS TO CHOOSE A DIFFERENT THEME, ADJUSTABLE MARGINS IN BETWEEN EACH MENU, VISIBILITY TOGGLE FOR EACH MENU, INCLUDE HEADER FONT AND STYLE OPTIONS, INCLUDE HEADER FONT STYLES, INCLUDE TOGGLE SETTINGS FOR THE MENU LAYOUT FOR FULL PAGE OR PAGE WIDTH, INCLUDE SETTINGS TO ADJUST THE PADDING OF THE FOOTER, INCLUDE A TOGGLE SETTING FOR MOBILE VIEW WHETHER THE MENU ARE VERTICAL OR HORIZONTAL AND IF THE MENUS BECOME DROP DOWNS, INCLUDE A TOGGLE OPTION IF THE MOBILE DROPDOWN MENU HAS AN UNDERLINE OR NOT
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-footer-menus-wrapper-{{ ai_gen_id }} {
+    width: 100%;
+    {% if block.settings.use_theme_colors %}
+      background-color: rgb(var(--color-background));
+    {% else %}
+      background-color: {{ block.settings.background_color }};
+    {% endif %}
+  }
+
+  .ai-footer-menus-container-{{ ai_gen_id }} {
+    {% if block.settings.layout_width == 'page_width' %}
+      max-width: 1200px;
+      margin: 0 auto;
+    {% endif %}
+    padding-top: {{ block.settings.padding_top }}px;
+    padding-bottom: {{ block.settings.padding_bottom }}px;
+    padding-left: {{ block.settings.padding_left }}px;
+    padding-right: {{ block.settings.padding_right }}px;
+  }
+
+  .ai-footer-menus-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.menu_spacing }}px;
+    justify-content: {{ block.settings.alignment }};
+    flex-wrap: wrap;
+  }
+
+  .ai-footer-menu-{{ ai_gen_id }} {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .ai-footer-menu-header-{{ ai_gen_id }} {
+    font-family: {{ block.settings.header_font.family }}, {{ block.settings.header_font.fallback_families }};
+    font-weight: {{ block.settings.header_font.weight }};
+    font-size: {{ block.settings.header_font_size }}px;
+    margin-bottom: 16px;
+    text-transform: {{ block.settings.header_text_transform }};
+    {% if block.settings.header_font_style == 'italic' %}
+      font-style: italic;
+    {% endif %}
+    {% if block.settings.header_text_decoration == 'underline' %}
+      text-decoration: underline;
+    {% endif %}
+    letter-spacing: {{ block.settings.header_letter_spacing }}px;
+  }
+
+  .ai-footer-menu-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-footer-menu-item-{{ ai_gen_id }} {
+    margin-bottom: 8px;
+  }
+
+  .ai-footer-menu-link-{{ ai_gen_id }} {
+    text-decoration: none;
+    font-size: {{ block.settings.menu_font_size }}px;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-footer-menu-link-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  {% if block.settings.use_theme_colors %}
+    .ai-footer-menus-wrapper-{{ ai_gen_id }} {
+      color: rgb(var(--color-foreground));
+    }
+
+    .ai-footer-menu-header-{{ ai_gen_id }} {
+      color: rgb(var(--color-foreground-heading));
+    }
+
+    .ai-footer-menu-link-{{ ai_gen_id }} {
+      color: rgb(var(--color-foreground));
+    }
+  {% else %}
+    .ai-footer-menus-wrapper-{{ ai_gen_id }} {
+      color: {{ block.settings.text_color }};
+    }
+
+    .ai-footer-menu-header-{{ ai_gen_id }} {
+      color: {{ block.settings.header_color }};
+    }
+
+    .ai-footer-menu-link-{{ ai_gen_id }} {
+      color: {{ block.settings.link_color }};
+    }
+  {% endif %}
+
+  @media screen and (max-width: 749px) {
+    .ai-footer-menus-container-{{ ai_gen_id }} {
+      padding-top: {{ block.settings.padding_top_mobile }}px;
+      padding-bottom: {{ block.settings.padding_bottom_mobile }}px;
+      padding-left: {{ block.settings.padding_left_mobile }}px;
+      padding-right: {{ block.settings.padding_right_mobile }}px;
+    }
+
+    {% if block.settings.mobile_layout == 'vertical' %}
+      .ai-footer-menus-{{ ai_gen_id }} {
+        flex-direction: column;
+        gap: 32px;
+      }
+
+      .ai-footer-menu-{{ ai_gen_id }} {
+        min-width: 100%;
+      }
+    {% elsif block.settings.mobile_layout == 'horizontal' %}
+      .ai-footer-menus-{{ ai_gen_id }} {
+        flex-direction: row;
+        overflow-x: auto;
+      }
+
+      .ai-footer-menu-{{ ai_gen_id }} {
+        min-width: 150px;
+      }
+    {% endif %}
+
+    {% if block.settings.mobile_dropdown %}
+      .ai-footer-menu-toggle-{{ ai_gen_id }} {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
+        padding: 12px 0;
+        {% if block.settings.mobile_dropdown_underline %}
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        {% endif %}
+      }
+
+      .ai-footer-menu-toggle-icon-{{ ai_gen_id }} {
+        transition: transform 0.3s ease;
+      }
+
+      .ai-footer-menu-toggle-{{ ai_gen_id }}.active .ai-footer-menu-toggle-icon-{{ ai_gen_id }} {
+        transform: rotate(180deg);
+      }
+
+      .ai-footer-menu-list-{{ ai_gen_id }} {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .ai-footer-menu-list-{{ ai_gen_id }}.active {
+        max-height: 500px;
+        padding-top: 12px;
+      }
+
+      .ai-footer-menu-header-{{ ai_gen_id }} {
+        margin-bottom: 0;
+      }
+    {% else %}
+      .ai-footer-menu-toggle-{{ ai_gen_id }} {
+        display: none;
+      }
+    {% endif %}
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-footer-menu-toggle-{{ ai_gen_id }} {
+      display: none;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-footer-menus-wrapper-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-footer-menus-container-{{ ai_gen_id }}">
+    <div class="ai-footer-menus-{{ ai_gen_id }}">
+      {% if block.settings.menu_1_visible %}
+        <div class="ai-footer-menu-{{ ai_gen_id }}">
+          {% if block.settings.menu_1_header != blank %}
+            <div class="ai-footer-menu-toggle-{{ ai_gen_id }}" data-menu="1">
+              <h3 class="ai-footer-menu-header-{{ ai_gen_id }}">{{ block.settings.menu_1_header }}</h3>
+              <svg class="ai-footer-menu-toggle-icon-{{ ai_gen_id }}" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="ai-footer-menu-header-{{ ai_gen_id }} ai-footer-menu-header-desktop-{{ ai_gen_id }}">{{ block.settings.menu_1_header }}</h3>
+          {% endif %}
+          {% if block.settings.menu_1 != blank %}
+            <ul class="ai-footer-menu-list-{{ ai_gen_id }}" data-menu-list="1">
+              {% for link in block.settings.menu_1.links %}
+                <li class="ai-footer-menu-item-{{ ai_gen_id }}">
+                  <a href="{{ link.url }}" class="ai-footer-menu-link-{{ ai_gen_id }}">
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.menu_2_visible %}
+        <div class="ai-footer-menu-{{ ai_gen_id }}">
+          {% if block.settings.menu_2_header != blank %}
+            <div class="ai-footer-menu-toggle-{{ ai_gen_id }}" data-menu="2">
+              <h3 class="ai-footer-menu-header-{{ ai_gen_id }}">{{ block.settings.menu_2_header }}</h3>
+              <svg class="ai-footer-menu-toggle-icon-{{ ai_gen_id }}" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="ai-footer-menu-header-{{ ai_gen_id }} ai-footer-menu-header-desktop-{{ ai_gen_id }}">{{ block.settings.menu_2_header }}</h3>
+          {% endif %}
+          {% if block.settings.menu_2 != blank %}
+            <ul class="ai-footer-menu-list-{{ ai_gen_id }}" data-menu-list="2">
+              {% for link in block.settings.menu_2.links %}
+                <li class="ai-footer-menu-item-{{ ai_gen_id }}">
+                  <a href="{{ link.url }}" class="ai-footer-menu-link-{{ ai_gen_id }}">
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      {% if block.settings.menu_3_visible %}
+        <div class="ai-footer-menu-{{ ai_gen_id }}">
+          {% if block.settings.menu_3_header != blank %}
+            <div class="ai-footer-menu-toggle-{{ ai_gen_id }}" data-menu="3">
+              <h3 class="ai-footer-menu-header-{{ ai_gen_id }}">{{ block.settings.menu_3_header }}</h3>
+              <svg class="ai-footer-menu-toggle-icon-{{ ai_gen_id }}" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h3 class="ai-footer-menu-header-{{ ai_gen_id }} ai-footer-menu-header-desktop-{{ ai_gen_id }}">{{ block.settings.menu_3_header }}</h3>
+          {% endif %}
+          {% if block.settings.menu_3 != blank %}
+            <ul class="ai-footer-menu-list-{{ ai_gen_id }}" data-menu-list="3">
+              {% for link in block.settings.menu_3.links %}
+                <li class="ai-footer-menu-item-{{ ai_gen_id }}">
+                  <a href="{{ link.url }}" class="ai-footer-menu-link-{{ ai_gen_id }}">
+                    {{ link.title }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  @media screen and (max-width: 749px) {
+    {% if block.settings.mobile_dropdown %}
+      .ai-footer-menu-header-desktop-{{ ai_gen_id }} {
+        display: none;
+      }
+    {% else %}
+      .ai-footer-menu-toggle-{{ ai_gen_id }} {
+        display: none !important;
+      }
+    {% endif %}
+  }
+
+  @media screen and (min-width: 750px) {
+    .ai-footer-menu-toggle-{{ ai_gen_id }} {
+      display: none !important;
+    }
+    .ai-footer-menu-header-desktop-{{ ai_gen_id }} {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    class FooterMenus{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.isMobile = window.innerWidth < 750;
+        this.dropdownEnabled = {{ block.settings.mobile_dropdown | json }};
+      }
+
+      connectedCallback() {
+        if (this.isMobile && this.dropdownEnabled) {
+          this.setupDropdowns();
+        }
+
+        window.addEventListener('resize', () => {
+          const wasMobile = this.isMobile;
+          this.isMobile = window.innerWidth < 750;
+          
+          if (wasMobile !== this.isMobile) {
+            if (this.isMobile && this.dropdownEnabled) {
+              this.setupDropdowns();
+            } else {
+              this.removeDropdowns();
+            }
+          }
+        });
+      }
+
+      setupDropdowns() {
+        const toggles = this.querySelectorAll('.ai-footer-menu-toggle-{{ ai_gen_id }}');
+        
+        toggles.forEach((toggle) => {
+          const menuId = toggle.getAttribute('data-menu');
+          const menuList = this.querySelector(`[data-menu-list="${menuId}"]`);
+          
+          toggle.addEventListener('click', () => {
+            const isActive = toggle.classList.contains('active');
+            
+            if (isActive) {
+              toggle.classList.remove('active');
+              menuList.classList.remove('active');
+            } else {
+              toggle.classList.add('active');
+              menuList.classList.add('active');
+            }
+          });
+        });
+      }
+
+      removeDropdowns() {
+        const toggles = this.querySelectorAll('.ai-footer-menu-toggle-{{ ai_gen_id }}');
+        const menuLists = this.querySelectorAll('.ai-footer-menu-list-{{ ai_gen_id }}');
+        
+        toggles.forEach((toggle) => {
+          toggle.classList.remove('active');
+        });
+        
+        menuLists.forEach((list) => {
+          list.classList.remove('active');
+        });
+      }
+    }
+
+    customElements.define('footer-menus-{{ ai_gen_id }}', FooterMenus{{ ai_gen_id }});
+  })();
+</script>
+
+<footer-menus-{{ ai_gen_id }}></footer-menus-{{ ai_gen_id }}>
+
+{% schema %}
+{
+  "name": "Footer menus",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "layout_width",
+      "label": "Width",
+      "options": [
+        {
+          "value": "full_width",
+          "label": "Full width"
+        },
+        {
+          "value": "page_width",
+          "label": "Page width"
+        }
+      ],
+      "default": "page_width"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        },
+        {
+          "value": "space-between",
+          "label": "Space between"
+        },
+        {
+          "value": "space-around",
+          "label": "Space around"
+        }
+      ],
+      "default": "space-between"
+    },
+    {
+      "type": "range",
+      "id": "menu_spacing",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Spacing between menus",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "vertical",
+          "label": "Vertical"
+        },
+        {
+          "value": "horizontal",
+          "label": "Horizontal"
+        }
+      ],
+      "default": "vertical"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_dropdown",
+      "label": "Enable dropdowns on mobile",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_dropdown_underline",
+      "label": "Show dropdown underline",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Padding (desktop)"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_left",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Left",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "padding_right",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Right",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Padding (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom",
+      "default": 30
+    },
+    {
+      "type": "range",
+      "id": "padding_left_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Left",
+      "default": 15
+    },
+    {
+      "type": "range",
+      "id": "padding_right_mobile",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Right",
+      "default": 15
+    },
+    {
+      "type": "header",
+      "content": "Header style"
+    },
+    {
+      "type": "font_picker",
+      "id": "header_font",
+      "label": "Font",
+      "default": "helvetica_n4"
+    },
+    {
+      "type": "range",
+      "id": "header_font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "header_text_transform",
+      "label": "Text case",
+      "options": [
+        {
+          "value": "none",
+          "label": "Default"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "select",
+      "id": "header_font_style",
+      "label": "Style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "header_text_decoration",
+      "label": "Decoration",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "underline",
+          "label": "Underline"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "range",
+      "id": "header_letter_spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "label": "Letter spacing",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Menu text"
+    },
+    {
+      "type": "range",
+      "id": "menu_font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_theme_colors",
+      "label": "Use theme colors",
+      "default": true
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "header_color",
+      "label": "Header",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Links",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Menu 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "menu_1_visible",
+      "label": "Show menu 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "menu_1_header",
+      "label": "Header",
+      "default": "Quick links"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_1",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Menu 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "menu_2_visible",
+      "label": "Show menu 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "menu_2_header",
+      "label": "Header",
+      "default": "Information"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Menu 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "menu_3_visible",
+      "label": "Show menu 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "menu_3_header",
+      "label": "Header",
+      "default": "Support"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_3",
+      "label": "Menu"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer menus"
+    }
+  ]
+}
+{% endschema %}

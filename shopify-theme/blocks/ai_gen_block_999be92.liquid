@@ -1,0 +1,667 @@
+{% doc %}
+  @prompt
+    CREATE A FOOTER THAT GIVES ME THREE SECTIONS TO LINK DIFFERENT MENUS. GIVE ME THE OPTION TO ADJUST THE ALIGNMENT, INPUT A HEADER, MENU TEXT SIZE/FONT, TOGGLE THE MENU ADAPTS TO THE CURRENT PAGE THEME, OPTIONS TO CHOOSE A DIFFERENT THEME, ADJUSTABLE MARGINS IN BETWEEN EACH MENU, VISIBILITY TOGGLE FOR EACH MENU, INCLUDE HEADER FONT AND STYLE OPTIONS, INCLUDE HEADER FONT STYLES, INCLUDE TOGGLE SETTINGS FOR THE MENU LAYOUT FOR FULL PAGE OR PAGE WIDTH, INCLUDE SETTINGS TO ADJUST THE PADDING OF THE FOOTER, INCLUDE A TOGGLE SETTING FOR MOBILE VIEW WHETHER THE MENU ARE VERTICAL OR HORIZONTAL AND IF THE MENUS BECOME DROP DOWNS, INCLUDE A TOGGLE OPTION IF THE MOBILE DROPDOWN MENU HAS AN UNDERLINE OR NOT. WHEN THE MENU DROP DOWN IS PRESSED THE FULL MENU SHOULD APPEAR ACCORDINGLY, INCLUDE DROPDOWN MENU ICON OPTIONS. INCLUDE: PLUS, DOWN ARROW, UP ARROW, UP CARET, AND DOWN CARET, MAKE SURE THE DROPDOWN ICON STICKS TO THE HEADER TITLE WHEN SHIFTING FROM MOBILE AND DESKTOP.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-footer-{{ ai_gen_id }} {
+    width: 100%;
+    {% if block.settings.use_page_width %}
+      max-width: 1200px;
+      margin: 0 auto;
+    {% endif %}
+    padding-top: {{ block.settings.padding_top }}px;
+    padding-bottom: {{ block.settings.padding_bottom }}px;
+    padding-left: {{ block.settings.padding_horizontal }}px;
+    padding-right: {{ block.settings.padding_horizontal }}px;
+  }
+
+  .ai-footer-container-{{ ai_gen_id }} {
+    display: flex;
+    justify-content: {{ block.settings.alignment }};
+    gap: {{ block.settings.menu_spacing }}px;
+    flex-wrap: wrap;
+  }
+
+  .ai-footer-menu-section-{{ ai_gen_id }} {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  .ai-footer-menu-header-{{ ai_gen_id }} {
+    margin: 0 0 16px 0;
+    font-family: {{ block.settings.header_font.family }}, {{ block.settings.header_font.fallback_families }};
+    font-weight: {{ block.settings.header_font.weight }};
+    font-style: {{ block.settings.header_font_style }};
+    font-size: {{ block.settings.header_font_size }}px;
+    {% if block.settings.header_text_transform == 'uppercase' %}
+      text-transform: uppercase;
+    {% endif %}
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ai-footer-dropdown-icon-{{ ai_gen_id }} {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-left: 8px;
+    display: none;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-footer-menu-list-{{ ai_gen_id }} {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .ai-footer-menu-item-{{ ai_gen_id }} {
+    margin-bottom: 12px;
+  }
+
+  .ai-footer-menu-link-{{ ai_gen_id }} {
+    text-decoration: none;
+    font-family: {{ block.settings.menu_font.family }}, {{ block.settings.menu_font.fallback_families }};
+    font-weight: {{ block.settings.menu_font.weight }};
+    font-size: {{ block.settings.menu_font_size }}px;
+    transition: opacity 0.2s ease;
+  }
+
+  .ai-footer-menu-link-{{ ai_gen_id }}:hover {
+    opacity: 0.7;
+  }
+
+  .ai-footer-menu-link-{{ ai_gen_id }}.active {
+    font-weight: 600;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-footer-container-{{ ai_gen_id }} {
+      {% if block.settings.mobile_layout == 'vertical' %}
+        flex-direction: column;
+        gap: 24px;
+      {% else %}
+        flex-direction: row;
+      {% endif %}
+    }
+
+    {% if block.settings.mobile_dropdown %}
+      .ai-footer-menu-section-{{ ai_gen_id }} {
+        border-bottom: {% if block.settings.mobile_dropdown_underline %}1px solid rgba(0, 0, 0, 0.1){% else %}none{% endif %};
+        padding-bottom: 12px;
+      }
+
+      .ai-footer-menu-header-{{ ai_gen_id }} {
+        cursor: pointer;
+        margin-bottom: 0;
+        user-select: none;
+      }
+
+      .ai-footer-dropdown-icon-{{ ai_gen_id }} {
+        display: block;
+      }
+
+      .ai-footer-menu-header-{{ ai_gen_id }}.active .ai-footer-dropdown-icon-{{ ai_gen_id }} {
+        {% if block.settings.dropdown_icon == 'plus' %}
+          transform: rotate(45deg);
+        {% elsif block.settings.dropdown_icon == 'down_arrow' or block.settings.dropdown_icon == 'down_caret' %}
+          transform: rotate(180deg);
+        {% elsif block.settings.dropdown_icon == 'up_arrow' or block.settings.dropdown_icon == 'up_caret' %}
+          transform: rotate(180deg);
+        {% endif %}
+      }
+
+      .ai-footer-menu-list-{{ ai_gen_id }} {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .ai-footer-menu-list-{{ ai_gen_id }}.active {
+        max-height: 500px;
+        margin-top: 16px;
+      }
+    {% endif %}
+  }
+{% endstyle %}
+
+<footer-menus-{{ ai_gen_id }} class="ai-footer-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-footer-container-{{ ai_gen_id }} color-{{ block.settings.color_scheme }}">
+    {% if block.settings.show_menu_1 %}
+      <div class="ai-footer-menu-section-{{ ai_gen_id }}" data-menu="1">
+        {% if block.settings.menu_1_header != blank %}
+          <h3 class="ai-footer-menu-header-{{ ai_gen_id }}">
+            <span>{{ block.settings.menu_1_header }}</span>
+            <span class="ai-footer-dropdown-icon-{{ ai_gen_id }}">
+              {% if block.settings.dropdown_icon == 'plus' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'down_arrow' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <polyline points="19 12 12 19 5 12"></polyline>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'up_arrow' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="19" x2="12" y2="5"></line>
+                  <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'down_caret' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'up_caret' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+              {% endif %}
+            </span>
+          </h3>
+        {% endif %}
+        {% if block.settings.menu_1 != blank %}
+          <ul class="ai-footer-menu-list-{{ ai_gen_id }}">
+            {% for link in block.settings.menu_1.links %}
+              <li class="ai-footer-menu-item-{{ ai_gen_id }}">
+                <a 
+                  href="{{ link.url }}" 
+                  class="ai-footer-menu-link-{{ ai_gen_id }} {% if link.active %}active{% endif %}"
+                >
+                  {{ link.title }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_menu_2 %}
+      <div class="ai-footer-menu-section-{{ ai_gen_id }}" data-menu="2">
+        {% if block.settings.menu_2_header != blank %}
+          <h3 class="ai-footer-menu-header-{{ ai_gen_id }}">
+            <span>{{ block.settings.menu_2_header }}</span>
+            <span class="ai-footer-dropdown-icon-{{ ai_gen_id }}">
+              {% if block.settings.dropdown_icon == 'plus' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'down_arrow' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <polyline points="19 12 12 19 5 12"></polyline>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'up_arrow' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="19" x2="12" y2="5"></line>
+                  <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'down_caret' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'up_caret' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+              {% endif %}
+            </span>
+          </h3>
+        {% endif %}
+        {% if block.settings.menu_2 != blank %}
+          <ul class="ai-footer-menu-list-{{ ai_gen_id }}">
+            {% for link in block.settings.menu_2.links %}
+              <li class="ai-footer-menu-item-{{ ai_gen_id }}">
+                <a 
+                  href="{{ link.url }}" 
+                  class="ai-footer-menu-link-{{ ai_gen_id }} {% if link.active %}active{% endif %}"
+                >
+                  {{ link.title }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if block.settings.show_menu_3 %}
+      <div class="ai-footer-menu-section-{{ ai_gen_id }}" data-menu="3">
+        {% if block.settings.menu_3_header != blank %}
+          <h3 class="ai-footer-menu-header-{{ ai_gen_id }}">
+            <span>{{ block.settings.menu_3_header }}</span>
+            <span class="ai-footer-dropdown-icon-{{ ai_gen_id }}">
+              {% if block.settings.dropdown_icon == 'plus' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'down_arrow' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="5" x2="12" y2="19"></line>
+                  <polyline points="19 12 12 19 5 12"></polyline>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'up_arrow' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="12" y1="19" x2="12" y2="5"></line>
+                  <polyline points="5 12 12 5 19 12"></polyline>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'down_caret' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+              {% elsif block.settings.dropdown_icon == 'up_caret' %}
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="18 15 12 9 6 15"></polyline>
+                </svg>
+              {% endif %}
+            </span>
+          </h3>
+        {% endif %}
+        {% if block.settings.menu_3 != blank %}
+          <ul class="ai-footer-menu-list-{{ ai_gen_id }}">
+            {% for link in block.settings.menu_3.links %}
+              <li class="ai-footer-menu-item-{{ ai_gen_id }}">
+                <a 
+                  href="{{ link.url }}" 
+                  class="ai-footer-menu-link-{{ ai_gen_id }} {% if link.active %}active{% endif %}"
+                >
+                  {{ link.title }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</footer-menus-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class FooterMenus{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.isMobile = window.innerWidth < 750;
+        this.mobileDropdown = {{ block.settings.mobile_dropdown | json }};
+      }
+
+      connectedCallback() {
+        if (this.isMobile && this.mobileDropdown) {
+          this.setupMobileDropdowns();
+        }
+
+        window.addEventListener('resize', () => {
+          const wasMobile = this.isMobile;
+          this.isMobile = window.innerWidth < 750;
+          
+          if (wasMobile !== this.isMobile) {
+            if (this.isMobile && this.mobileDropdown) {
+              this.setupMobileDropdowns();
+            } else {
+              this.removeMobileDropdowns();
+            }
+          }
+        });
+      }
+
+      setupMobileDropdowns() {
+        const headers = this.querySelectorAll('.ai-footer-menu-header-{{ ai_gen_id }}');
+        
+        headers.forEach((header) => {
+          const list = header.nextElementSibling;
+          
+          if (list && list.classList.contains('ai-footer-menu-list-{{ ai_gen_id }}')) {
+            list.classList.remove('active');
+            header.classList.remove('active');
+            
+            header.addEventListener('click', this.toggleDropdown.bind(this));
+          }
+        });
+      }
+
+      removeMobileDropdowns() {
+        const headers = this.querySelectorAll('.ai-footer-menu-header-{{ ai_gen_id }}');
+        const lists = this.querySelectorAll('.ai-footer-menu-list-{{ ai_gen_id }}');
+        
+        headers.forEach((header) => {
+          header.classList.remove('active');
+          header.removeEventListener('click', this.toggleDropdown);
+        });
+        
+        lists.forEach((list) => {
+          list.classList.add('active');
+        });
+      }
+
+      toggleDropdown(event) {
+        const header = event.currentTarget;
+        const list = header.nextElementSibling;
+        
+        if (list && list.classList.contains('ai-footer-menu-list-{{ ai_gen_id }}')) {
+          const isActive = list.classList.contains('active');
+          
+          list.classList.toggle('active');
+          header.classList.toggle('active');
+        }
+      }
+    }
+
+    customElements.define('footer-menus-{{ ai_gen_id }}', FooterMenus{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Footer menus",
+  "tag": null,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "alignment",
+      "label": "Alignment",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Right"
+        },
+        {
+          "value": "space-between",
+          "label": "Space between"
+        },
+        {
+          "value": "space-around",
+          "label": "Space around"
+        }
+      ],
+      "default": "space-between"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_page_width",
+      "label": "Use page width",
+      "info": "When enabled, footer is constrained to page width. When disabled, footer spans full width.",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "menu_spacing",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Space between menus",
+      "default": 40
+    },
+    {
+      "type": "header",
+      "content": "Color"
+    },
+    {
+      "type": "checkbox",
+      "id": "adapt_color_scheme",
+      "label": "Adapt to page theme",
+      "info": "When enabled, uses the current page's color scheme",
+      "default": false
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Top",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Bottom",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_horizontal",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Horizontal",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Menu 1"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_menu_1",
+      "label": "Show menu 1",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "menu_1_header",
+      "label": "Header",
+      "default": "Quick links"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_1",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Menu 2"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_menu_2",
+      "label": "Show menu 2",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "menu_2_header",
+      "label": "Header",
+      "default": "Information"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_2",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Menu 3"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_menu_3",
+      "label": "Show menu 3",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "menu_3_header",
+      "label": "Header",
+      "default": "Support"
+    },
+    {
+      "type": "link_list",
+      "id": "menu_3",
+      "label": "Menu"
+    },
+    {
+      "type": "header",
+      "content": "Header style"
+    },
+    {
+      "type": "font_picker",
+      "id": "header_font",
+      "label": "Font",
+      "default": "sans_serif_n4"
+    },
+    {
+      "type": "range",
+      "id": "header_font_size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "header_font_style",
+      "label": "Font style",
+      "options": [
+        {
+          "value": "normal",
+          "label": "Normal"
+        },
+        {
+          "value": "italic",
+          "label": "Italic"
+        }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "select",
+      "id": "header_text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "header",
+      "content": "Menu text style"
+    },
+    {
+      "type": "font_picker",
+      "id": "menu_font",
+      "label": "Font",
+      "default": "sans_serif_n4"
+    },
+    {
+      "type": "range",
+      "id": "menu_font_size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Font size",
+      "default": 14
+    },
+    {
+      "type": "header",
+      "content": "Mobile settings"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Layout",
+      "options": [
+        {
+          "value": "vertical",
+          "label": "Vertical"
+        },
+        {
+          "value": "horizontal",
+          "label": "Horizontal"
+        }
+      ],
+      "default": "vertical"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_dropdown",
+      "label": "Enable dropdown menus",
+      "info": "Menus collapse and expand when header is clicked",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "dropdown_icon",
+      "label": "Dropdown icon",
+      "options": [
+        {
+          "value": "plus",
+          "label": "Plus"
+        },
+        {
+          "value": "down_arrow",
+          "label": "Down arrow"
+        },
+        {
+          "value": "up_arrow",
+          "label": "Up arrow"
+        },
+        {
+          "value": "down_caret",
+          "label": "Down caret"
+        },
+        {
+          "value": "up_caret",
+          "label": "Up caret"
+        }
+      ],
+      "default": "plus"
+    },
+    {
+      "type": "checkbox",
+      "id": "mobile_dropdown_underline",
+      "label": "Show dropdown underline",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Footer menus"
+    }
+  ]
+}
+{% endschema %}

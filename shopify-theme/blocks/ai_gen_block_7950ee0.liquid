@@ -1,0 +1,610 @@
+{% doc %}
+  @prompt
+    Prompt:
+    Generate a product collection menu in button style.
+    
+    Button settings:
+    
+    Edge style
+    
+    Height
+    
+    Width
+    
+    Hover color
+    
+    Outline color
+    
+    Fill color
+    
+    Fill color transparency toggle
+    
+    Menu settings:
+    
+    Padding
+    
+    Theme
+    
+    Background color
+    
+    Transparency
+    
+    Collection link assignment for each button
+    
+    Wrapping options (desktop + mobile)
+    
+    Menu actions:
+    
+    Desktop: When a button is selected, the menu shifts left or right to highlight the active button (no arrow icons).
+    
+    Mobile: Option to stack or scroll. Users can swipe left or right to navigate through buttons.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collection-menu-{{ ai_gen_id }} {
+    padding: {{ block.settings.menu_padding }}px;
+    background-color: {{ block.settings.menu_background_color }};
+    {% if block.settings.menu_transparency %}
+      opacity: {{ block.settings.menu_transparency | divided_by: 100.0 }};
+    {% endif %}
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .ai-collection-menu__container-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+    display: flex;
+    gap: 8px;
+    transition: transform 0.3s ease;
+    {% if block.settings.desktop_wrapping == 'wrap' %}
+      flex-wrap: wrap;
+    {% else %}
+      flex-wrap: nowrap;
+    {% endif %}
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }} {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: {{ block.settings.button_height }}px;
+    {% if block.settings.button_width_type == 'fixed' %}
+      width: {{ block.settings.button_width }}px;
+      flex-shrink: 0;
+    {% else %}
+      padding: 0 20px;
+      white-space: nowrap;
+    {% endif %}
+    background-color: {% if block.settings.fill_transparency %}{{ block.settings.button_fill_color }}{% else %}transparent{% endif %};
+    color: {{ block.settings.button_text_color }};
+    border: 2px solid {{ block.settings.button_outline_color }};
+    {% case block.settings.button_edge_style %}
+      {% when 'rounded' %}
+        border-radius: {{ block.settings.button_height | divided_by: 2 }}px;
+      {% when 'slightly_rounded' %}
+        border-radius: 8px;
+      {% when 'square' %}
+        border-radius: 0;
+    {% endcase %}
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }}.active {
+    background-color: {{ block.settings.button_hover_color }};
+    transform: scale(1.05);
+  }
+
+  .ai-collection-menu__highlight-{{ ai_gen_id }} {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: {{ block.settings.button_hover_color }};
+    border-radius: inherit;
+    transition: all 0.3s ease;
+    z-index: 1;
+    opacity: 0.2;
+    pointer-events: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+      {% if block.settings.mobile_layout == 'stack' %}
+        flex-direction: column;
+        flex-wrap: nowrap;
+      {% elsif block.settings.mobile_layout == 'scroll' %}
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      {% else %}
+        flex-wrap: wrap;
+      {% endif %}
+    }
+
+    .ai-collection-menu__wrapper-{{ ai_gen_id }}::-webkit-scrollbar {
+      display: none;
+    }
+
+    .ai-collection-menu__button-{{ ai_gen_id }} {
+      {% if block.settings.mobile_layout == 'stack' %}
+        width: 100%;
+      {% elsif block.settings.mobile_layout == 'scroll' %}
+        flex-shrink: 0;
+        min-width: 120px;
+      {% endif %}
+    }
+  }
+
+  {% case block.settings.menu_theme %}
+    {% when 'light' %}
+      .ai-collection-menu-{{ ai_gen_id }} {
+        background-color: #ffffff;
+        color: #000000;
+      }
+    {% when 'dark' %}
+      .ai-collection-menu-{{ ai_gen_id }} {
+        background-color: #000000;
+        color: #ffffff;
+      }
+    {% when 'custom' %}
+      .ai-collection-menu-{{ ai_gen_id }} {
+        background-color: {{ block.settings.menu_background_color }};
+      }
+  {% endcase %}
+{% endstyle %}
+
+<collection-menu-{{ ai_gen_id }}
+  class="ai-collection-menu-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-collection-menu__container-{{ ai_gen_id }}">
+    <div class="ai-collection-menu__wrapper-{{ ai_gen_id }}" data-menu-wrapper>
+      <div class="ai-collection-menu__highlight-{{ ai_gen_id }}" data-highlight></div>
+      
+      {% for i in (1..8) %}
+        {% liquid
+          assign collection_key = 'collection_' | append: i
+          assign label_key = 'button_label_' | append: i
+          assign collection = block.settings[collection_key]
+          assign label = block.settings[label_key]
+        %}
+        
+        {% if collection != blank or label != blank %}
+          <a
+            href="{% if collection != blank %}{{ collection.url }}{% else %}#{% endif %}"
+            class="ai-collection-menu__button-{{ ai_gen_id }}"
+            data-button-index="{{ forloop.index0 }}"
+            {% if forloop.first %}data-active="true"{% endif %}
+          >
+            {% if label != blank %}
+              {{ label }}
+            {% elsif collection != blank %}
+              {{ collection.title }}
+            {% else %}
+              Button {{ i }}
+            {% endif %}
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+</collection-menu-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CollectionMenu{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.wrapper = this.querySelector('[data-menu-wrapper]');
+        this.highlight = this.querySelector('[data-highlight]');
+        this.buttons = this.querySelectorAll('.ai-collection-menu__button-{{ ai_gen_id }}');
+        this.activeIndex = 0;
+        this.isMobile = window.innerWidth <= 749;
+      }
+
+      connectedCallback() {
+        this.setupEventListeners();
+        this.updateHighlight();
+        this.handleResize();
+      }
+
+      setupEventListeners() {
+        this.buttons.forEach((button, index) => {
+          button.addEventListener('click', (e) => {
+            if (button.getAttribute('href') === '#') {
+              e.preventDefault();
+            }
+            this.setActiveButton(index);
+          });
+        });
+
+        window.addEventListener('resize', () => {
+          this.handleResize();
+        });
+
+        if (this.isMobile && '{{ block.settings.mobile_layout }}' === 'scroll') {
+          this.setupMobileSwipe();
+        }
+      }
+
+      setActiveButton(index) {
+        this.buttons.forEach((btn, i) => {
+          btn.classList.toggle('active', i === index);
+          btn.setAttribute('data-active', i === index);
+        });
+        this.activeIndex = index;
+        this.updateHighlight();
+        this.scrollToActiveButton();
+      }
+
+      updateHighlight() {
+        if (this.buttons.length === 0) return;
+        
+        const activeButton = this.buttons[this.activeIndex];
+        if (!activeButton) return;
+
+        const buttonRect = activeButton.getBoundingClientRect();
+        const wrapperRect = this.wrapper.getBoundingClientRect();
+        
+        const left = activeButton.offsetLeft;
+        const width = activeButton.offsetWidth;
+        this.highlight.style.left = left + 'px';
+        this.highlight.style.width = width + 'px';
+      }
+
+      scrollToActiveButton() {
+        if (!this.isMobile || '{{ block.settings.mobile_layout }}' !== 'scroll') return;
+        
+        const activeButton = this.buttons[this.activeIndex];
+        if (!activeButton) return;
+
+        const scrollLeft = activeButton.offsetLeft - (this.wrapper.offsetWidth / 2) + (activeButton.offsetWidth / 2);
+        this.wrapper.scrollTo({
+          left: scrollLeft,
+          behavior: 'smooth'
+        });
+      }
+
+      setupMobileSwipe() {
+        let startX = 0;
+        let startY = 0;
+        let isScrolling = false;
+
+        this.wrapper.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          isScrolling = false;
+        });
+
+        this.wrapper.addEventListener('touchmove', (e) => {
+          if (isScrolling) return;
+          
+          const deltaX = Math.abs(e.touches[0].clientX - startX);
+          const deltaY = Math.abs(e.touches[0].clientY - startY);
+          
+          if (deltaX > deltaY) {
+            isScrolling = true;
+          }
+        });
+
+        this.wrapper.addEventListener('touchend', (e) => {
+          if (!isScrolling) return;
+          
+          const endX = e.changedTouches[0].clientX;
+          const deltaX = startX - endX;
+          
+          if (Math.abs(deltaX) > 50) {
+            if (deltaX > 0 && this.activeIndex < this.buttons.length - 1) {
+              this.setActiveButton(this.activeIndex + 1);
+            } else if (deltaX < 0 && this.activeIndex > 0) {
+              this.setActiveButton(this.activeIndex - 1);
+            }
+          }
+        });
+      }
+
+      handleResize() {
+        this.isMobile = window.innerWidth <= 749;
+        this.updateHighlight();
+      }
+    }
+
+    customElements.define('collection-menu-{{ ai_gen_id }}', CollectionMenu{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection menu buttons",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "select",
+      "id": "button_edge_style",
+      "label": "Edge style",
+      "options": [
+        {
+          "value": "square",
+          "label": "Square"
+        },
+        {
+          "value": "slightly_rounded",
+          "label": "Slightly rounded"
+        },
+        {
+          "value": "rounded",
+          "label": "Rounded"
+        }
+      ],
+      "default": "slightly_rounded"
+    },
+    {
+      "type": "range",
+      "id": "button_height",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Height",
+      "default": 44
+    },
+    {
+      "type": "select",
+      "id": "button_width_type",
+      "label": "Width",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto"
+        },
+        {
+          "value": "fixed",
+          "label": "Fixed"
+        }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "range",
+      "id": "button_width",
+      "min": 80,
+      "max": 200,
+      "step": 5,
+      "unit": "px",
+      "label": "Fixed width",
+      "default": 120
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Hover color",
+      "default": "#000f9f"
+    },
+    {
+      "type": "color",
+      "id": "button_outline_color",
+      "label": "Outline color",
+      "default": "#e6e6e6"
+    },
+    {
+      "type": "color",
+      "id": "button_fill_color",
+      "label": "Fill color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "fill_transparency",
+      "label": "Enable fill color",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Menu settings"
+    },
+    {
+      "type": "range",
+      "id": "menu_padding",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Padding",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "menu_theme",
+      "label": "Theme",
+      "options": [
+        {
+          "value": "light",
+          "label": "Light"
+        },
+        {
+          "value": "dark",
+          "label": "Dark"
+        },
+        {
+          "value": "custom",
+          "label": "Custom"
+        }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "color",
+      "id": "menu_background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "menu_transparency",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "label": "Transparency",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Layout options"
+    },
+    {
+      "type": "select",
+      "id": "desktop_wrapping",
+      "label": "Desktop wrapping",
+      "options": [
+        {
+          "value": "nowrap",
+          "label": "No wrap"
+        },
+        {
+          "value": "wrap",
+          "label": "Wrap"
+        }
+      ],
+      "default": "nowrap"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        {
+          "value": "wrap",
+          "label": "Wrap"
+        },
+        {
+          "value": "stack",
+          "label": "Stack"
+        },
+        {
+          "value": "scroll",
+          "label": "Scroll"
+        }
+      ],
+      "default": "scroll"
+    },
+    {
+      "type": "header",
+      "content": "Collection buttons"
+    },
+    {
+      "type": "text",
+      "id": "button_label_1",
+      "label": "Button 1 label"
+    },
+    {
+      "type": "collection",
+      "id": "collection_1",
+      "label": "Button 1 collection"
+    },
+    {
+      "type": "text",
+      "id": "button_label_2",
+      "label": "Button 2 label"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2",
+      "label": "Button 2 collection"
+    },
+    {
+      "type": "text",
+      "id": "button_label_3",
+      "label": "Button 3 label"
+    },
+    {
+      "type": "collection",
+      "id": "collection_3",
+      "label": "Button 3 collection"
+    },
+    {
+      "type": "text",
+      "id": "button_label_4",
+      "label": "Button 4 label"
+    },
+    {
+      "type": "collection",
+      "id": "collection_4",
+      "label": "Button 4 collection"
+    },
+    {
+      "type": "text",
+      "id": "button_label_5",
+      "label": "Button 5 label"
+    },
+    {
+      "type": "collection",
+      "id": "collection_5",
+      "label": "Button 5 collection"
+    },
+    {
+      "type": "text",
+      "id": "button_label_6",
+      "label": "Button 6 label"
+    },
+    {
+      "type": "collection",
+      "id": "collection_6",
+      "label": "Button 6 collection"
+    },
+    {
+      "type": "text",
+      "id": "button_label_7",
+      "label": "Button 7 label"
+    },
+    {
+      "type": "collection",
+      "id": "collection_7",
+      "label": "Button 7 collection"
+    },
+    {
+      "type": "text",
+      "id": "button_label_8",
+      "label": "Button 8 label"
+    },
+    {
+      "type": "collection",
+      "id": "collection_8",
+      "label": "Button 8 collection"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection menu buttons"
+    }
+  ]
+}
+{% endschema %}

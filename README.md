@@ -1,72 +1,116 @@
 # PANTAO
 
-**A streetwear house that ripens once a year.** One drop, limited quantities, then never again.
+**pang-tao · para sa tao — "for the people."** (Tagalog)
 
-This repo is the online store — a self-contained, dependency-free experience built around the
-mythology of the _pántáo_ (蟠桃), the immortal peaches that fruit once in a lifetime.
+A house that opens once a year. A single edition, made in numbers small enough
+to know each piece by hand — then the doors close until the next.
+
+This repo holds two things:
+
+```
+/                     The experience sandbox (standalone static site)
+  index.html
+  assets/css/styles.css
+  assets/js/config.js   ⭐ the one file you edit to run an edition
+  assets/js/store.js
+
+/shopify-theme          The real store — the exported Shopify theme (Atelier base)
+```
 
 ---
 
-## What's here
+## The name
 
-```
-index.html              The store (hero, drop grid, lookbook, mythology, waitlist)
-assets/css/styles.css    All styling — monochrome + blossom accent, grain, motion
-assets/js/config.js      ⭐ THE ONLY FILE YOU EDIT to run a drop
-assets/js/store.js       The engine — countdown, cart, quickview, phase switching
-```
+Pantao is Tagalog — from **_tao_**, a person, a people. **_Pang-tao_**: for the
+people. The house takes the name as an instruction: clothing cut for the body and
+the life around it, made in numbers it can answer for. Not for the few.
 
-No build step. No frameworks. Open `index.html` or drop the folder on any static host
-(Netlify, Vercel, GitHub Pages, Cloudflare Pages).
+> The brand world is **Filipino, editorial, by invitation** — signed **· MANILA**.
+> It is **not** Chinese, and there are no peach / 蟠桃 motifs anywhere.
 
 ---
 
-## Running a drop — edit `assets/js/config.js`
+## The two surfaces, and why
 
-### 1. Set the phase
+You asked to treat the standalone site as a fast **experimentation ground** and
+port winning ideas into the Shopify theme. So the sandbox is built to **mirror the
+theme's structure 1:1**, which makes porting nearly mechanical:
+
+| Sandbox section (`index.html`) | Shopify theme section (`shopify-theme/sections/`) |
+| --- | --- |
+| Arrival hero | `arrival-hero.liquid` |
+| The Name (etymology) | *new — candidate to port* |
+| Editorial dispatch (a letter) | `editorial-dispatch.liquid` |
+| The manifest (numbered pieces) | `edition-manifest.liquid` |
+| By invitation (apply) | `password-antechamber.liquid` |
+
+Prototype an idea in the sandbox, get it looking right, then rebuild that one
+section in Liquid. Same names, same order, same voice.
+
+---
+
+## Running an edition — edit `assets/js/config.js`
+
+### Phase
 ```js
-phase: "teaser"   // countdown + waitlist, store hidden (pre-drop hype)
-phase: "live"     // full store: product grid, sizes, cart, checkout
-phase: "sold"     // drop is over — archive view + "notify me next year"
+phase: "antechamber"  // doors closed — counter + application to the list only
+phase: "open"         // the edition is live — manifest + shop
+phase: "closed"       // the edition has closed — archive + apply for next year
 ```
 
-### 2. Set the drop time (used by the countdown in `teaser`)
+### When the doors open (used by the counter in `antechamber`)
 ```js
-dropDate: "2026-11-11T11:00:00-08:00"   // ISO 8601, include your timezone
+opensAt: "2026-11-11T11:00:00+08:00"   // ISO 8601, include timezone
 ```
 
-### 3. Edit the pieces
-Each product has a `stock` number that drives availability automatically:
-- `stock > 0` → in stock (**8 or fewer** shows an "Only N left" tag)
-- `stock === 0` → renders as **Sold Out** (greyed, un-clickable)
+### The pieces
+Each piece's `stock` drives availability automatically:
+- `stock > 0` → open (**8 or fewer** shows a remaining count)
+- `stock === 0` → **closed** (struck through, retired to the archive)
 
-Set `sizes: []` for one-size pieces (hats, scarves). Swap the generated `art` panel for a
-real photo any time with `img: "assets/img/your-photo.jpg"`.
-
-That's the whole workflow: **flip `phase` → `live`, set stock, publish.** When a piece sells
-through, set its `stock` to `0`; when the season ends, flip `phase` to `sold`.
+Set `sizes: []` for one-size pieces. Swap the monochrome `tone` plate for a real
+photo any time with `img: "assets/img/your-photo.jpg"`.
 
 ---
 
-## Wiring the real stuff (optional)
+## What changed in the Shopify theme
 
-The store is fully functional as an _experience_ — the cart persists in `localStorage` and the
-checkout / waitlist are stubbed so you can launch the vibe today and connect commerce later.
-Two clearly-marked hooks in `assets/js/store.js`:
+The theme was already excellent and on-brand — no Chinese elements anywhere. The
+only factual root issue was the **city**, which appeared inconsistently:
 
-- **`checkout()`** — replace the placeholder with Stripe Checkout, a Shopify cart permalink,
-  or your own API. The current cart is logged so you can see the exact payload shape.
-- **`signup()` form submit** — currently logs the email; point it at Klaviyo / Mailchimp / your ESP.
+- `templates/password.json` — antechamber caption `TAIPEI` → **`MANILA`**
+- `templates/index.json` — homepage dispatch dateline `SEATTLE` → **`MANILA`**
+- `sections/editorial-dispatch.liquid` — schema default `TAIPEI` → **`MANILA`**
+
+Everything is now consistent on **PANTAO ATELIER · MANILA**.
+
+To push the theme live: use the [Shopify CLI](https://shopify.dev/docs/themes/tools/cli)
+(`shopify theme push` from inside `shopify-theme/`), or zip that folder and upload it
+in **Online Store → Themes**.
+
+---
+
+## Wiring commerce (optional)
+
+The sandbox is a full *experience* — the bag persists in `localStorage`; checkout and
+the application form are stubbed with clearly-marked hooks in `store.js`:
+
+- **`checkout()`** — drop in Stripe Checkout or a Shopify cart permalink. The current
+  bag is logged so you can see the payload shape.
+- **`apply()` submit** — currently logs; point it at Klaviyo / Mailchimp / your API.
+
+The real transactions happen in the Shopify theme; the sandbox is for feel and flow.
 
 ---
 
 ## Design notes
 
-- **Type:** Space Grotesk (UI) · Bodoni Moda italic (display) · Noto Serif SC (蟠桃 glyphs)
-- **Palette:** near-black ground, bone text, a single blossom-peach accent — swap the CSS
-  custom properties at the top of `styles.css` to re-skin the whole site.
+- **Type:** Inter (UI / micro-labels) · Cormorant Garamond italic (display / letters)
+- **Palette:** dark ground for the hero + footer, warm paper for the body, a single
+  restrained oxblood accent for *closed*. Swap the CSS custom properties at the top of
+  `styles.css` to re-skin everything.
 - Respects `prefers-reduced-motion`, keyboard-navigable, mobile-first responsive.
 
 ---
 
-_One drop a year · Limited forever._
+_Opens once a year · For the people · Manila._

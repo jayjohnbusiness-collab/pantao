@@ -1,0 +1,952 @@
+{% doc %}
+  @prompt
+    Generate a one-row product collection menu in button style with customizable button edges, size, hover color, outline, fill color, and transparency toggle. Add menu settings for padding, theme, background color, transparency, collection linking, and wrapping. On desktop, the menu shifts left or right when a button is selected. For mobile, include separate settings with options to stack or swipe left/right to scroll through buttons., Include settings for button text and size. Allow custom width input settings for menu width and have default page and full settings. Include settings to custom adjust button height and width. Include menu alignment settings like left, middle, and right
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-collection-menu-{{ ai_gen_id }} {
+    padding: {{ block.settings.menu_padding }}px;
+    background-color: {% if block.settings.menu_background_transparent %}transparent{% else %}{{ block.settings.menu_background_color }}{% endif %};
+    overflow: hidden;
+    {% if block.settings.menu_width == 'custom' %}
+      max-width: {{ block.settings.custom_menu_width }}px;
+    {% elsif block.settings.menu_width == 'page' %}
+      max-width:1200px;
+    {% else %}
+      max-width: 100%;
+    {% endif %}
+    margin: 0 auto;
+    {% if block.settings.menu_alignment == 'left' %}
+      margin-left: 0;
+      margin-right: auto;
+    {% elsif block.settings.menu_alignment == 'right' %}
+      margin-left: auto;
+      margin-right: 0;
+    {% endif %}
+  }
+
+  .ai-collection-menu__container-{{ ai_gen_id }} {
+    position: relative;
+    width: 100%;
+    display: flex;
+    {% if block.settings.menu_alignment == 'left' %}
+      justify-content: flex-start;{% elsif block.settings.menu_alignment == 'right' %}
+      justify-content: flex-end;
+    {% else %}
+      justify-content: center;
+    {% endif %}
+  }
+
+  .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+    display: flex;
+    gap: {{ block.settings.button_spacing }}px;
+    transition: transform 0.3s ease;{% if block.settings.menu_wrap %}
+      flex-wrap: wrap;
+    {% else %}
+      flex-wrap: nowrap;
+    {% endif %}
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }} {
+    flex-shrink: 0;
+    {% if block.settings.button_width_type == 'custom' %}
+      width: {{ block.settings.button_custom_width }}px;
+    {% elsif block.settings.button_width_type == 'auto' %}
+      width: auto;
+    {% else %}
+      min-width: {{ block.settings.button_min_width }}px;
+    {% endif %}
+    height: {{ block.settings.button_height }}px;
+    padding: {{ block.settings.button_padding_vertical }}px {{ block.settings.button_padding_horizontal }}px;
+    border: {{ block.settings.button_outline_width }}px solid {{ block.settings.button_outline_color }};
+    border-radius: {{ block.settings.button_border_radius }}px;
+    background-color: {% if block.settings.button_transparent %}transparent{% else %}{{ block.settings.button_fill_color }}{% endif %};
+    color: {{ block.settings.button_text_color }};
+    text-decoration: none;
+    font-size: {{ block.settings.button_text_size }}px;
+    font-weight: {{ block.settings.button_text_weight }};
+    transition: all 0.3s ease;
+    cursor: pointer;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    {% if block.settings.button_text_transform == 'uppercase' %}
+      text-transform: uppercase;
+    {% elsif block.settings.button_text_transform == 'lowercase' %}
+      text-transform: lowercase;
+    {% elsif block.settings.button_text_transform == 'capitalize' %}
+      text-transform: capitalize;
+    {% endif %}
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.button_hover_color }};
+    color: {{ block.settings.button_hover_text_color }};
+    border-color: {{ block.settings.button_hover_outline_color }};
+    transform: translateY(-2px);
+  }
+
+  .ai-collection-menu__button-{{ ai_gen_id }}.active {
+    background-color: {{ block.settings.button_active_color }};
+    color: {{ block.settings.button_active_text_color }};
+    border-color: {{ block.settings.button_active_outline_color }};
+  }
+
+  .ai-collection-menu__nav-button-{{ ai_gen_id }} {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: {{ block.settings.nav_button_color }};
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-collection-menu__nav-button-{{ ai_gen_id }}:hover {
+    opacity: 1;
+  }
+
+  .ai-collection-menu__nav-button-{{ ai_gen_id }}--left {
+    left: 10px;
+  }
+
+  .ai-collection-menu__nav-button-{{ ai_gen_id }}--right {
+    right: 10px;
+  }
+
+  .ai-collection-menu__nav-button-{{ ai_gen_id }} svg {
+    width: 20px;
+    height: 20px;
+    fill: {{ block.settings.nav_button_icon_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-collection-menu-{{ ai_gen_id }} {
+      {% if block.settings.mobile_menu_width == 'custom' %}
+        max-width: {{ block.settings.mobile_custom_menu_width }}px;
+      {% elsif block.settings.mobile_menu_width == 'page' %}
+        max-width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+      {% else %}
+        max-width: 100%;
+      {% endif %}
+    }
+
+    .ai-collection-menu__container-{{ ai_gen_id }} {
+      {% if block.settings.mobile_menu_alignment == 'left' %}
+        justify-content: flex-start;
+      {% elsif block.settings.mobile_menu_alignment == 'right' %}
+        justify-content: flex-end;
+      {% else %}
+        justify-content: center;
+      {% endif %}
+    }
+
+    .ai-collection-menu__wrapper-{{ ai_gen_id }} {
+      {% if block.settings.mobile_layout == 'stack' %}
+        flex-direction: column;
+        align-items: stretch;
+      {% else %}
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      {% endif %}
+    }
+
+    {% if block.settings.mobile_layout == 'scroll' %}
+      .ai-collection-menu__wrapper-{{ ai_gen_id }}::-webkit-scrollbar {
+        display: none;
+      }
+    {% endif %}
+
+    .ai-collection-menu__nav-button-{{ ai_gen_id }} {
+      {% if block.settings.mobile_layout == 'stack' %}
+        display: none;
+      {% endif %}
+    }
+
+    .ai-collection-menu__button-{{ ai_gen_id }} {
+      {% if block.settings.mobile_layout == 'stack' %}
+        text-align: center;
+        width: 100%;
+      {% else %}
+        {% if block.settings.mobile_button_width_type == 'custom' %}
+          width: {{ block.settings.mobile_button_custom_width }}px;
+        {% elsif block.settings.mobile_button_width_type == 'auto' %}
+          width: auto;
+        {% else %}
+          min-width: {{ block.settings.mobile_button_min_width }}px;
+        {% endif %}
+      {% endif %}
+      height: {{ block.settings.mobile_button_height }}px;
+      font-size: {{ block.settings.mobile_button_text_size }}px;
+    }
+  }
+{% endstyle %}<collection-menu-{{ ai_gen_id }}
+  class="ai-collection-menu-{{ ai_gen_id }}"
+  data-shift-direction="{{ block.settings.shift_direction }}"
+  data-mobile-layout="{{ block.settings.mobile_layout }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-collection-menu__container-{{ ai_gen_id }}">
+    <div class="ai-collection-menu__wrapper-{{ ai_gen_id }}" data-menu-wrapper>
+      {% for i in (1..8) %}
+        {% liquid
+          assign collection_key = 'collection_' | append: i
+          assign button_text_key = 'button_text_' | append: i
+          assign collection = block.settings[collection_key]
+          assign button_text = block.settings[button_text_key]
+        %}
+        
+        {% if collection != blank %}
+          <a
+            href="{{ collection.url }}"
+            class="ai-collection-menu__button-{{ ai_gen_id }}"
+            data-collection-id="{{ collection.id }}">
+            {% if button_text != blank %}
+              {{ button_text }}
+            {% else %}
+              {{ collection.title }}
+            {% endif %}
+          </a>
+        {% endif %}
+      {% endfor %}
+    </div><button
+      class="ai-collection-menu__nav-button-{{ ai_gen_id }} ai-collection-menu__nav-button-{{ ai_gen_id }}--left"
+      data-nav-left
+      aria-label="Scroll left"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+      </svg>
+    </button>
+
+    <button
+      class="ai-collection-menu__nav-button-{{ ai_gen_id }} ai-collection-menu__nav-button-{{ ai_gen_id }}--right"
+      data-nav-right
+      aria-label="Scroll right"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+      </svg>
+    </button>
+  </div>
+</collection-menu-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class CollectionMenu{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+        this.wrapper = this.querySelector('[data-menu-wrapper]');
+        this.leftButton = this.querySelector('[data-nav-left]');
+        this.rightButton = this.querySelector('[data-nav-right]');
+        this.buttons = this.querySelectorAll('.ai-collection-menu__button-{{ ai_gen_id }}');
+        this.shiftDirection = this.dataset.shiftDirection;
+        this.mobileLayout = this.dataset.mobileLayout;
+        this.currentIndex = 0;
+        this.isMobile = window.innerWidth <= 749;}
+
+      connectedCallback() {
+        this.setupEventListeners();
+        this.updateNavButtons();
+        this.handleResize();
+      }
+
+      setupEventListeners() {
+        this.buttons.forEach((button, index) => {
+          button.addEventListener('click', (e) => {
+            if (!this.isMobile && this.shiftDirection !== 'none') {
+              e.preventDefault();
+              this.selectButton(index);
+            }
+            this.setActiveButton(button);
+          });
+        });
+
+        this.leftButton.addEventListener('click', () => {
+          this.scrollLeft();
+        });
+
+        this.rightButton.addEventListener('click', () => {
+          this.scrollRight();
+        });
+
+        window.addEventListener('resize', () => {
+          this.handleResize();
+        });
+      }
+
+      handleResize() {
+        this.isMobile = window.innerWidth <= 749;
+        this.updateNavButtons();
+      }
+
+      setActiveButton(activeButton) {
+        this.buttons.forEach(button => {
+          button.classList.remove('active');
+        });
+        activeButton.classList.add('active');
+      }
+
+      selectButton(index) {
+        if (this.isMobile || this.shiftDirection === 'none') return;
+
+        this.currentIndex = index;
+        const buttonWidth = this.buttons[0].offsetWidth + {{ block.settings.button_spacing }};
+        const containerWidth = this.wrapper.parentElement.offsetWidth;
+        const totalWidth = this.wrapper.scrollWidth;
+
+        let translateX = 0;
+
+        if (this.shiftDirection === 'left') {
+          translateX = -index * buttonWidth;
+        } else if (this.shiftDirection === 'right') {
+          translateX = containerWidth - totalWidth + index * buttonWidth;
+        } else if (this.shiftDirection === 'center') {
+          const centerOffset = (containerWidth / 2) - (buttonWidth / 2);
+          translateX = centerOffset - (index * buttonWidth);
+        }
+
+        translateX = Math.max(Math.min(translateX, 0), containerWidth - totalWidth);
+        this.wrapper.style.transform = `translateX(${translateX}px)`;
+      }
+
+      scrollLeft() {
+        if (this.isMobile && this.mobileLayout === 'scroll') {
+          this.wrapper.scrollBy({ left: -200, behavior: 'smooth' });
+        } else if (!this.isMobile) {
+          this.currentIndex = Math.max(0, this.currentIndex - 1);
+          this.selectButton(this.currentIndex);
+        }
+      }
+
+      scrollRight() {
+        if (this.isMobile && this.mobileLayout === 'scroll') {
+          this.wrapper.scrollBy({ left: 200, behavior: 'smooth' });
+        } else if (!this.isMobile) {
+          this.currentIndex = Math.min(this.buttons.length - 1, this.currentIndex + 1);
+          this.selectButton(this.currentIndex);
+        }
+      }
+
+      updateNavButtons() {
+        const showNavButtons = !this.isMobile || this.mobileLayout === 'scroll';
+        this.leftButton.style.display = showNavButtons ? 'flex' : 'none';
+        this.rightButton.style.display = showNavButtons ? 'flex' : 'none';
+      }
+    }
+
+    customElements.define('collection-menu-{{ ai_gen_id }}', CollectionMenu{{ ai_gen_id }});
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Collection menu",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collections and labels"
+    },
+    {
+      "type": "collection",
+      "id": "collection_1",
+      "label": "Collection 1"
+    },
+    {
+      "type": "text",
+      "id": "button_text_1",
+      "label": "Button text 1"
+    },
+    {
+      "type": "collection",
+      "id": "collection_2",
+      "label": "Collection 2"
+    },
+    {
+      "type": "text",
+      "id": "button_text_2",
+      "label": "Button text 2"
+    },
+    {
+      "type": "collection",
+      "id": "collection_3",
+      "label": "Collection 3"
+    },
+    {
+      "type": "text",
+      "id": "button_text_3",
+      "label": "Button text 3"
+    },
+    {
+      "type": "collection",
+      "id": "collection_4",
+      "label": "Collection 4"
+    },
+    {
+      "type": "text",
+      "id": "button_text_4",
+      "label": "Button text 4"
+    },
+    {
+      "type": "collection",
+      "id": "collection_5",
+      "label": "Collection 5"
+    },
+    {
+      "type": "text",
+      "id": "button_text_5",
+      "label": "Button text 5"
+    },
+    {
+      "type": "collection",
+      "id": "collection_6",
+      "label": "Collection 6"
+    },
+    {
+      "type": "text",
+      "id": "button_text_6",
+      "label": "Button text 6"
+    },
+    {
+      "type": "collection",
+      "id": "collection_7",
+      "label": "Collection 7"
+    },
+    {
+      "type": "text",
+      "id": "button_text_7",
+      "label": "Button text 7"
+    },
+    {
+      "type": "collection",
+      "id": "collection_8",
+      "label": "Collection 8"
+    },
+    {
+      "type": "text",
+      "id": "button_text_8",
+      "label": "Button text 8"
+    },
+    {
+      "type": "header",
+      "content": "Menu layout"
+    },
+    {
+      "type": "select",
+      "id": "menu_width",
+      "label": "Menu width",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "page",
+          "label": "Page width"
+        },
+        {
+          "value": "custom",
+          "label": "Custom width"
+        }
+      ],
+      "default": "page"
+    },
+    {
+      "type": "range",
+      "id": "custom_menu_width",
+      "min": 300,
+      "max": 1400,
+      "step": 50,
+      "unit": "px",
+      "label": "Custom menu width",
+      "default": 800
+    },
+    {
+      "type": "select",
+      "id": "menu_alignment",
+      "label": "Menu alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "menu_padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Menu padding",
+      "default": 20
+    },
+    {
+      "type": "checkbox",
+      "id": "menu_background_transparent",
+      "label": "Transparent background",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "menu_background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "checkbox",
+      "id": "menu_wrap",
+      "label": "Allow wrapping",
+      "default": false
+    },
+    {
+      "type": "select",
+      "id": "shift_direction",
+      "label": "Desktop shift direction",
+      "options": [
+        {
+          "value": "none",
+          "label": "No shift"
+        },
+        {
+          "value": "left",
+          "label": "Shift left"
+        },
+        {
+          "value": "right",
+          "label": "Shift right"
+        },
+        {
+          "value": "center",
+          "label": "Center selected"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Button dimensions"
+    },
+    {
+      "type": "select",
+      "id": "button_width_type",
+      "label": "Button width",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto width"
+        },
+        {
+          "value": "min",
+          "label": "Minimum width"
+        },
+        {
+          "value": "custom",
+          "label": "Custom width"
+        }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "range",
+      "id": "button_min_width",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Minimum width",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "button_custom_width",
+      "min": 80,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "Custom width",
+      "default": 150
+    },
+    {
+      "type": "range",
+      "id": "button_height",
+      "min": 30,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "label": "Button height",
+      "default": 44
+    },
+    {
+      "type": "range",
+      "id": "button_padding_horizontal",
+      "min": 8,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "label": "Horizontal padding",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "button_padding_vertical",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Vertical padding",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "button_spacing",
+      "min": 4,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "label": "Button spacing",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Button style"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 8
+    },
+    {
+      "type": "checkbox",
+      "id": "button_transparent",
+      "label": "Transparent background",
+      "default": false
+    },
+    {
+      "type": "color",
+      "id": "button_fill_color",
+      "label": "Background color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "button_outline_width",
+      "min": 0,
+      "max": 4,
+      "step": 1,
+      "unit": "px",
+      "label": "Outline width",
+      "default": 1
+    },
+    {
+      "type": "color",
+      "id": "button_outline_color",
+      "label": "Outline color",
+      "default": "#e6e6e6"
+    },
+    {
+      "type": "header",
+      "content": "Button text"
+    },
+    {
+      "type": "range",
+      "id": "button_text_size",
+      "min": 12,
+      "max": 20,
+      "step": 1,
+      "unit": "px",
+      "label": "Text size",
+      "default": 14
+    },
+    {
+      "type": "select",
+      "id": "button_text_weight",
+      "label": "Text weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Regular"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semibold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "500"
+    },
+    {
+      "type": "select",
+      "id": "button_text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "none"
+    },
+    {
+      "type": "header",
+      "content": "Button hover state"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_color",
+      "label": "Hover background",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_text_color",
+      "label": "Hover text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_hover_outline_color",
+      "label": "Hover outline color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Button active state"
+    },
+    {
+      "type": "color",
+      "id": "button_active_color",
+      "label": "Active background",
+      "default": "#000f9f"
+    },
+    {
+      "type": "color",
+      "id": "button_active_text_color",
+      "label": "Active text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_active_outline_color",
+      "label": "Active outline color",
+      "default": "#000f9f"
+    },
+    {
+      "type": "header",
+      "content": "Navigation buttons"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "nav_button_icon_color",
+      "label": "Icon color",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Mobile layout"
+    },
+    {
+      "type": "select",
+      "id": "mobile_layout",
+      "label": "Mobile layout",
+      "options": [
+        {
+          "value": "stack",
+          "label": "Stack vertically"
+        },
+        {
+          "value": "scroll",
+          "label": "Horizontal scroll"
+        }
+      ],
+      "default": "scroll"
+    },
+    {
+      "type": "select",
+      "id": "mobile_menu_width",
+      "label": "Mobile menu width",
+      "options": [
+        {
+          "value": "full",
+          "label": "Full width"
+        },
+        {
+          "value": "page",
+          "label": "Page width"
+        },
+        {
+          "value": "custom",
+          "label": "Custom width"
+        }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "range",
+      "id": "mobile_custom_menu_width",
+      "min": 280,
+      "max": 500,
+      "step": 20,
+      "unit": "px",
+      "label": "Mobile custom width",
+      "default": 320
+    },
+    {
+      "type": "select",
+      "id": "mobile_menu_alignment",
+      "label": "Mobile alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "Mobile button dimensions"
+    },
+    {
+      "type": "select",
+      "id": "mobile_button_width_type",
+      "label": "Mobile button width",
+      "options": [
+        {
+          "value": "auto",
+          "label": "Auto width"
+        },
+        {
+          "value": "min",
+          "label": "Minimum width"
+        },
+        {
+          "value": "custom",
+          "label": "Custom width"
+        }
+      ],
+      "default": "auto"
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_min_width",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile minimum width",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_custom_width",
+      "min": 60,
+      "max": 200,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile custom width",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_height",
+      "min": 30,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Mobile button height",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "mobile_button_text_size",
+      "min": 10,
+      "max": 18,
+      "step": 1,
+      "unit": "px",
+      "label": "Mobile text size",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection menu"
+    }
+  ]
+}
+{% endschema %}

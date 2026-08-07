@@ -1,0 +1,203 @@
+{%- comment -%}
+  Pantao Editorial Dispatch
+  --------------------------------------------------------
+  A letter from the house. Single column, generous space, signed.
+
+  Constrained on purpose — no buttons, no images, no flexible alignment
+  controls. The merchant gets a dateline, a heading, a body, and a
+  signature. That constraint protects the voice. If you find yourself
+  wanting more options here, the right move is usually to write less,
+  not to add a setting.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<div
+  class="dispatch color-{{ s.color_scheme }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="dispatch__container">
+    <article class="dispatch__letter">
+
+      {%- if s.dateline != blank -%}
+        <p class="dispatch__dateline">{{ s.dateline | escape }}</p>
+      {%- endif -%}
+
+      {%- if s.heading != blank -%}
+        <h2 class="dispatch__heading">{{ s.heading }}</h2>
+      {%- endif -%}
+
+      {%- if s.body != blank -%}
+        <div class="dispatch__body rte">{{ s.body }}</div>
+      {%- endif -%}
+
+      {%- if s.signature != blank -%}
+        <p class="dispatch__signature">{{ s.signature }}</p>
+      {%- endif -%}
+
+      {%- if s.signature_subline != blank -%}
+        <p class="dispatch__signature-subline">{{ s.signature_subline | escape }}</p>
+      {%- endif -%}
+
+    </article>
+  </div>
+</div>
+
+{% stylesheet %}
+  .dispatch {
+    background: var(--color-background);
+    color: var(--color-foreground);
+    padding: 6rem 1.5rem;
+  }
+
+  @media (min-width: 750px) {
+    .dispatch {
+      padding: 8rem 3rem;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .dispatch {
+      padding: 10rem 5rem;
+    }
+  }
+
+  .dispatch__container {
+    max-width: 38rem;
+    margin: 0 auto;
+  }
+
+  .dispatch__letter {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+  }
+
+  .dispatch__dateline {
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--3xs);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    margin: 0 0 0.5rem 0;
+    opacity: 0.6;
+  }
+
+  .dispatch__heading {
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(1.5rem, 2.5vw + 0.5rem, 2.25rem);
+    line-height: 1.15;
+    letter-spacing: -0.005em;
+    margin: 0 0 0.5rem 0;
+    text-wrap: balance;
+  }
+
+  .dispatch__body {
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--md);
+    line-height: 1.7;
+    opacity: 0.9;
+  }
+
+  .dispatch__body p {
+    margin: 0 0 1.25em 0;
+  }
+
+  .dispatch__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Drop-cap on the first paragraph adds a printed-letter quality.
+     Only kicks in on wider screens — looks awkward on mobile. */
+  @media (min-width: 750px) {
+    .dispatch__body > p:first-child::first-letter {
+      font-family: var(--font-heading--family);
+      font-size: 3.5em;
+      line-height: 0.85;
+      float: left;
+      margin: 0.05em 0.12em 0 -0.05em;
+      font-weight: var(--font-heading--weight);
+    }
+  }
+
+  .dispatch__signature {
+    font-family: var(--font-heading--family);
+    font-style: italic;
+    font-size: var(--font-size--lg);
+    margin: 1.5rem 0 0 0;
+    opacity: 0.85;
+  }
+
+  .dispatch__signature-subline {
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--3xs);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    margin: 0;
+    opacity: 0.55;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Editorial dispatch",
+  "tag": "section",
+  "class": "section-dispatch",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Letter"
+    },
+    {
+      "type": "text",
+      "id": "dateline",
+      "label": "Dateline",
+      "info": "Small uppercase line above the heading. Often a date or location.",
+      "default": "MANILA · AUTUMN MMXXVI"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "On the fifth edition."
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body",
+      "default": "<p>Each year we ask the same question, and the answer changes. This edition asks how a garment can hold weather without showing it — how an interior surface can do the work of a coat without announcing itself. Twelve pieces follow, made in numbers that allow us to know each one.</p><p>Members will receive their pieces with a card noting which it is, and where it was made. We hope you wear them gently and often.</p>"
+    },
+    {
+      "type": "text",
+      "id": "signature",
+      "label": "Signature",
+      "default": "— Pantao"
+    },
+    {
+      "type": "text",
+      "id": "signature_subline",
+      "label": "Signature subline",
+      "info": "Optional small line beneath the signature.",
+      "default": "THE HOUSE"
+    },
+
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Editorial dispatch"
+    }
+  ]
+}
+{% endschema %}

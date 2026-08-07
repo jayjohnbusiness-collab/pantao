@@ -1,0 +1,519 @@
+{%- comment -%}
+  Pantao Arrival Hero
+  --------------------------------------------------------
+  A full-viewport hero used on the landing page after a member signs in.
+  Atmospheric image or video, almost no UI — sets the mood for the edition.
+
+  Reuses the proven media patterns from password-antechamber:
+    - Image rendering via the theme's `background-media` snippet so it
+      inherits the working .background-image-container CSS.
+    - Direct <video> element with autoplay-nudge JS for reliable playback.
+
+  No CTA button by design. The visitor scrolls. Commerce comes later.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign edition = s.edition_label | default: 'EDITION V'
+  assign year = s.year_roman | default: 'MMXXVI'
+-%}
+
+<div
+  class="arrival-hero color-{{ s.color_scheme }} arrival-hero--{{ s.height }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="arrival-hero__media arrival-hero__media--{{ s.media_type }}">
+    {%- if s.media_type == 'video' and s.video != blank -%}
+      {%- liquid
+        assign poster_url = ''
+        if s.video.preview_image != blank
+          assign poster_url = s.video.preview_image | image_url: width: 2400
+        endif
+      -%}
+      <video
+        class="arrival-hero__video arrival-hero__video--{{ s.video_position }}"
+        muted
+        playsinline
+        autoplay
+        loop
+        preload="metadata"
+        disablepictureinpicture
+        disableremoteplayback
+        {% if poster_url != blank %}poster="{{ poster_url }}"{% endif %}
+        data-arrival-video
+      >
+        {%- for source in s.video.sources -%}
+          <source src="{{ source.url }}" type="{{ source.mime_type }}">
+        {%- endfor -%}
+      </video>
+    {%- elsif s.media_type == 'image' and s.image != blank -%}
+      {% render 'background-media',
+        background_media: 'image',
+        background_image: s.image,
+        background_image_position: s.image_position_fit,
+        placeholder: 'lifestyle-1',
+        section: section
+      %}
+    {%- else -%}
+      <div class="arrival-hero__placeholder">
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'arrival-hero__placeholder-svg' }}
+      </div>
+    {%- endif -%}
+
+    {%- if s.show_overlay -%}
+      <div class="arrival-hero__overlay" style="--overlay-opacity: {{ s.overlay_opacity | divided_by: 100.0 }};"></div>
+    {%- endif -%}
+  </div>
+
+  <div class="arrival-hero__content arrival-hero__content--{{ s.content_position }}">
+    <div class="arrival-hero__inner">
+      {%- if s.eyebrow != blank -%}
+        <p class="arrival-hero__eyebrow">{{ s.eyebrow | escape }}</p>
+      {%- endif -%}
+
+      {%- if s.heading != blank -%}
+        <h1 class="arrival-hero__heading">{{ s.heading }}</h1>
+      {%- endif -%}
+
+      {%- if s.show_meta -%}
+        <p class="arrival-hero__meta">
+          <span>{{ edition }}</span>
+          <span class="arrival-hero__meta-divider">·</span>
+          <span>{{ year }}</span>
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if s.show_scroll_hint -%}
+    <p class="arrival-hero__scroll-hint" aria-hidden="true">
+      <span>{{ s.scroll_hint_text | default: 'Scroll' }}</span>
+    </p>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .arrival-hero {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    color: var(--color-foreground);
+    background: var(--color-background-secondary, #1a1a1a);
+  }
+
+  .arrival-hero--full {
+    height: 100svh;
+    min-height: 600px;
+  }
+
+  .arrival-hero--three-quarters {
+    height: 75svh;
+    min-height: 500px;
+  }
+
+  .arrival-hero--half {
+    height: 50svh;
+    min-height: 400px;
+  }
+
+  /* ---------- Media ---------- */
+  .arrival-hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .arrival-hero__video,
+  .arrival-hero__placeholder,
+  .arrival-hero__placeholder-svg,
+  .arrival-hero__placeholder svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .arrival-hero__video--contain {
+    object-fit: contain;
+  }
+
+  .arrival-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: #000;
+    opacity: var(--overlay-opacity, 0.2);
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arrival-hero__video {
+      display: none;
+    }
+  }
+
+  /* ---------- Content overlay ---------- */
+  .arrival-hero__content {
+    position: relative;
+    z-index: 1;
+    height: 100%;
+    display: flex;
+    padding: 3rem 1.5rem;
+  }
+
+  @media (min-width: 750px) {
+    .arrival-hero__content {
+      padding: 4rem 3rem;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    .arrival-hero__content {
+      padding: 5rem 5rem;
+    }
+  }
+
+  .arrival-hero__content--top-left {
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .arrival-hero__content--top-center {
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .arrival-hero__content--center {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .arrival-hero__content--bottom-left {
+    align-items: flex-end;
+    justify-content: flex-start;
+    text-align: left;
+  }
+
+  .arrival-hero__content--bottom-center {
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .arrival-hero__inner {
+    max-width: 36rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .arrival-hero__eyebrow {
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--3xs);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    margin: 0;
+    opacity: 0.85;
+  }
+
+  .arrival-hero__heading {
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: clamp(2rem, 4vw + 0.5rem, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .arrival-hero__meta {
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--3xs);
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    margin: 0;
+    opacity: 0.7;
+    display: inline-flex;
+    gap: 0.5em;
+    align-items: center;
+  }
+
+  .arrival-hero__content--top-center .arrival-hero__meta,
+  .arrival-hero__content--center .arrival-hero__meta,
+  .arrival-hero__content--bottom-center .arrival-hero__meta {
+    justify-content: center;
+  }
+
+  .arrival-hero__meta-divider {
+    opacity: 0.4;
+  }
+
+  /* ---------- Scroll hint ---------- */
+  .arrival-hero__scroll-hint {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--3xs);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin: 0;
+    opacity: 0.7;
+    animation: arrival-hint 2.4s ease-in-out infinite;
+  }
+
+  @keyframes arrival-hint {
+    0%, 100% { transform: translate(-50%, 0); opacity: 0.7; }
+    50% { transform: translate(-50%, 4px); opacity: 0.4; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .arrival-hero__scroll-hint {
+      animation: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    function prefersReducedMotion() {
+      return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    }
+
+    // Same playback nudge pattern as password-antechamber.
+    function nudgeVideoPlayback(video) {
+      if (!video || prefersReducedMotion()) return;
+
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+
+      function tryPlay() {
+        const promise = video.play();
+        if (promise && typeof promise.catch === 'function') {
+          promise.catch(function () { /* blocked, retry below */ });
+        }
+      }
+
+      if (video.readyState >= 2) {
+        tryPlay();
+      } else {
+        video.addEventListener('loadeddata', tryPlay, { once: true });
+        video.addEventListener('canplay', tryPlay, { once: true });
+      }
+
+      document.addEventListener('visibilitychange', function () {
+        if (!document.hidden && video.paused) tryPlay();
+      });
+
+      const onInteract = function () {
+        if (video.paused) tryPlay();
+        window.removeEventListener('pointerdown', onInteract);
+        window.removeEventListener('keydown', onInteract);
+        window.removeEventListener('scroll', onInteract);
+      };
+      window.addEventListener('pointerdown', onInteract, { passive: true });
+      window.addEventListener('keydown', onInteract);
+      window.addEventListener('scroll', onInteract, { passive: true });
+    }
+
+    function init(root) {
+      if (!root || root.dataset.arrivalReady === 'true') return;
+      root.dataset.arrivalReady = 'true';
+      const video = root.querySelector('[data-arrival-video]');
+      nudgeVideoPlayback(video);
+    }
+
+    function initAll() {
+      document.querySelectorAll('.arrival-hero').forEach(init);
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initAll);
+    } else {
+      initAll();
+    }
+
+    document.addEventListener('shopify:section:load', initAll);
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Arrival hero",
+  "tag": "section",
+  "class": "section-arrival-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Media type",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video" },
+        { "value": "none",  "label": "None (placeholder)" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "visible_if": "{{ section.settings.media_type == 'image' }}"
+    },
+    {
+      "type": "select",
+      "id": "image_position_fit",
+      "label": "Image fit",
+      "options": [
+        { "value": "cover", "label": "Cover" },
+        { "value": "fit",   "label": "Contain" }
+      ],
+      "default": "cover",
+      "visible_if": "{{ section.settings.media_type == 'image' }}"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "info": "MP4, looped, muted, ≤ 12 seconds works best.",
+      "visible_if": "{{ section.settings.media_type == 'video' }}"
+    },
+    {
+      "type": "select",
+      "id": "video_position",
+      "label": "Video fit",
+      "options": [
+        { "value": "cover",   "label": "Cover" },
+        { "value": "contain", "label": "Contain" }
+      ],
+      "default": "cover",
+      "visible_if": "{{ section.settings.media_type == 'video' }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overlay",
+      "label": "Darken media for legibility",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Overlay opacity",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 25,
+      "visible_if": "{{ section.settings.show_overlay }}"
+    },
+
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "height",
+      "label": "Height",
+      "options": [
+        { "value": "full",            "label": "Full viewport" },
+        { "value": "three-quarters",  "label": "Three quarters" },
+        { "value": "half",            "label": "Half" }
+      ],
+      "default": "full"
+    },
+    {
+      "type": "select",
+      "id": "content_position",
+      "label": "Content position",
+      "options": [
+        { "value": "top-left",      "label": "Top left" },
+        { "value": "top-center",    "label": "Top center" },
+        { "value": "center",        "label": "Center" },
+        { "value": "bottom-left",   "label": "Bottom left" },
+        { "value": "bottom-center", "label": "Bottom center" }
+      ],
+      "default": "bottom-left"
+    },
+
+    {
+      "type": "header",
+      "content": "Copy"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow",
+      "default": "The doors are open."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Edition V."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_meta",
+      "label": "Show edition + year line",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "edition_label",
+      "label": "Edition label",
+      "default": "EDITION V"
+    },
+    {
+      "type": "text",
+      "id": "year_roman",
+      "label": "Year",
+      "default": "MMXXVI"
+    },
+
+    {
+      "type": "header",
+      "content": "Scroll hint"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_hint",
+      "label": "Show scroll hint",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "scroll_hint_text",
+      "label": "Scroll hint text",
+      "default": "Scroll"
+    },
+
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Arrival hero"
+    }
+  ]
+}
+{% endschema %}
