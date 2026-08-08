@@ -1113,6 +1113,23 @@
     font-family: var(--menu-localization-font);
     font-size: var(--menu-localization-font-size);
   }
+  /* ------------------------------------------------------------------
+     PANTAO — liquid glass header on scroll
+     When the transparent header sticks on scroll-down, render it as glass:
+     a 0.10 translucent tint over a backdrop blur, instead of a solid fill.
+     ------------------------------------------------------------------ */
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .header[transparent='not-sticky'][data-sticky-state='active'] {
+      --color-scheme-top-row: rgb(var(--color-background-rgb) / 0.1);
+      --color-scheme-bottom-row: rgb(var(--color-background-rgb) / 0.1);
+    }
+
+    .header[transparent='not-sticky'][data-sticky-state='active'] .header__underlay-closed {
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      backdrop-filter: blur(24px) saturate(180%);
+      border-bottom: 1px solid rgb(var(--color-foreground-rgb) / 0.08);
+    }
+  }
 {% endstylesheet %}
 
 {% unless request.design_mode %}
