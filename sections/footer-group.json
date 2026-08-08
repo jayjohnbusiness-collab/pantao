@@ -147,65 +147,9 @@
         "padding-block-start": 36,
         "padding-block-end": 36
       }
-    },
-    "footer_utilities": {
-      "type": "footer-utilities",
-      "blocks": {
-        "block_45fd3d265ec2": {
-          "type": "footer-copyright",
-          "settings": {
-            "show_powered_by": false,
-            "font_size": "0.75rem",
-            "case": "none"
-          },
-          "blocks": {}
-        },
-        "block_12533654badf": {
-          "type": "footer-policy-list",
-          "settings": {
-            "font_size": "0.75rem",
-            "case": "uppercase"
-          },
-          "blocks": {}
-        },
-        "block_4864db45fbe6": {
-          "type": "social-links",
-          "settings": {
-            "facebook_url": "",
-            "instagram_url": "https://www.instagram.com/pantao.co/",
-            "youtube_url": "",
-            "tiktok_url": "",
-            "twitter_url": "",
-            "threads_url": "",
-            "linkedin_url": "",
-            "bluesky_url": "",
-            "snapchat_url": "",
-            "pinterest_url": "",
-            "tumblr_url": "",
-            "vimeo_url": "",
-            "custom_url": ""
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "block_45fd3d265ec2",
-        "block_12533654badf",
-        "block_4864db45fbe6"
-      ],
-      "disabled": true,
-      "settings": {
-        "section_width": "page-width",
-        "gap": 24,
-        "divider_thickness": 1,
-        "color_scheme": "scheme-2",
-        "padding-block-start": 20,
-        "padding-block-end": 20
-      }
     }
   },
   "order": [
-    "footer_GG96p4",
-    "footer_utilities"
+    "footer_GG96p4"
   ]
 }
