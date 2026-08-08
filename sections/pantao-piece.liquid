@@ -23,10 +23,18 @@
 {% render 'buy-buttons-styles' %}
 
 <div
-  class="pantao-piece color-{{ s.color_scheme }} pantao-piece--{{ s.layout }}"
+  class="pantao-piece color-{{ s.color_scheme }} pantao-piece--{{ s.layout }}{% if s.enable_reveal %} pantao-piece--reveal{% endif %}"
   data-section-id="{{ section.id }}"
+  {% if s.enable_reveal %}data-reveal-scene{% endif %}
 >
-  <div class="pantao-piece__grid">
+  {%- comment -%}
+    scene/stage wrappers are inert in the standard layout (plain full-width
+    blocks). In reveal mode the scene provides the tall scroll track and the
+    stage pins to the viewport so the piece can materialize as you scroll.
+  {%- endcomment -%}
+  <div class="pantao-piece__scene">
+   <div class="pantao-piece__stage">
+    <div class="pantao-piece__grid">
 
     {%- comment -%} ---------- Media ---------- {%- endcomment -%}
     <div class="pantao-piece__media" data-reveal>
@@ -100,7 +108,17 @@
 
       </div>
     </div>
+    </div>
+   </div>
   </div>
+
+  {%- comment -%} Ambient sound cue — opt-in, off until the visitor enables it {%- endcomment -%}
+  {%- if s.enable_reveal and s.enable_sound -%}
+    <button type="button" class="pantao-reveal-sound" data-reveal-sound aria-pressed="false">
+      <span class="pantao-reveal-sound__mark" aria-hidden="true">◈</span>
+      <span class="pantao-reveal-sound__label" data-reveal-sound-label>Sound off</span>
+    </button>
+  {%- endif -%}
 </div>
 
 {% stylesheet %}
@@ -285,6 +303,130 @@
     .pantao-piece [data-reveal] { opacity: 1; transform: none; transition: none; }
     .pantao-piece__img { transition: none; }
   }
+
+  /* ============================================================
+     THE REVEAL — the piece materializes over the shared backdrop
+     Active only when the controller adds `pantao-reveal-on` to
+     <html> (desktop + motion allowed + hero reveal present). Every
+     rule is scoped to that class, so the standard two-column layout
+     is completely unaffected when the reveal is off.
+     ============================================================ */
+
+  html.pantao-reveal-on .pantao-piece--reveal {
+    background: transparent;
+    padding: 0;
+  }
+
+  /* Tall scroll track — gives the pinned stage room to play through. */
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__scene {
+    position: relative;
+    min-height: 300vh;
+  }
+
+  /* Pinned viewport-filling stage. */
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__grid {
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 5rem);
+    width: 100%;
+    max-width: 1160px;
+    padding: 0 clamp(20px, 5vw, 72px);
+    align-items: center;
+  }
+
+  /* Product image on the LEFT, glass card on the RIGHT — always, in the
+     reveal, regardless of the section's media-side setting. */
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__media { order: 1; }
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__details { order: 2; }
+
+  /* Neutralize the intersection-observer reveal — the scroll position
+     drives visibility here, not viewport entry. */
+  html.pantao-reveal-on .pantao-piece--reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  /* Media clips up into view as the piece is revealed. */
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__media {
+    --mp: clamp(0, calc((var(--reveal-sp, 0) - 0.12) / 0.3), 1);
+  }
+
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__frame {
+    aspect-ratio: 4 / 5;
+    border-radius: 14px;
+    background: transparent;
+    clip-path: inset(calc((1 - var(--mp, 1)) * 100%) 0 0 0);
+    transform: scale(calc(0.96 + var(--mp, 0) * 0.04));
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Glass pricing card materializes a beat after the image. */
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__details {
+    --pp: clamp(0, calc((var(--reveal-sp, 0) - 0.34) / 0.24), 1);
+    opacity: var(--pp);
+    transform: translateY(calc((1 - var(--pp)) * 48px));
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.14) 46%),
+      rgba(245, 246, 245, 0.72);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 22px;
+    padding: clamp(24px, 3vw, 40px);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    color: var(--color-foreground);
+  }
+
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__inner {
+    max-width: none;
+  }
+
+  /* Keep the card compact — story and reassurance are stood down here. */
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__story,
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__reassurance {
+    display: none;
+  }
+
+  /* ---------- Sound toggle ---------- */
+  .pantao-reveal-sound { display: none; }
+
+  html.pantao-reveal-on .pantao-reveal-sound {
+    position: fixed;
+    right: 20px;
+    top: calc(var(--header-height, 64px) + 16px);
+    z-index: var(--layer-raised, 2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.14);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 100px;
+    padding: 8px 14px;
+    color: #f4f5f5;
+    cursor: pointer;
+    font-family: var(--font-body--family);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    mix-blend-mode: difference;
+  }
+
+  html.pantao-reveal-on .pantao-reveal-sound__mark { font-size: 12px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__frame { transition: none; }
+  }
 {% endstylesheet %}
 
 {% javascript %}
@@ -309,6 +451,133 @@
       document.addEventListener('DOMContentLoaded', initAll);
     } else { initAll(); }
     document.addEventListener('shopify:section:load', initAll);
+  })();
+
+  /* ============================================================
+     THE REVEAL — scroll controller
+     Coordinates the (separate) hero and product sections into one
+     scroll-driven hand-off. Sets three progress variables on <html>:
+       --reveal-hero : 1 -> 0  headline fade as the hero leaves
+       --reveal-sp   : 0 -> 1  product reveal progress
+       --reveal-bd   : 0 -> 1  backdrop blur / darken ramp
+     Only engages on desktop with motion allowed and when BOTH sections
+     opt in. Anything else leaves the standard layouts fully intact.
+     ============================================================ */
+  (function () {
+    var root = document.documentElement;
+    var mqDesktop = window.matchMedia('(min-width: 750px)');
+    var mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var clamp = function (v) { return Math.max(0, Math.min(1, v)); };
+
+    var hero, scene, backdrop;
+    var on = false, raf = false, lastSp = 0;
+    var soundOn = false, actx = null;
+
+    function findParts() {
+      hero = document.querySelector('.arrival-hero[data-reveal-hero]');
+      scene = document.querySelector('.pantao-piece[data-reveal-scene]');
+      backdrop = document.querySelector('[data-reveal-backdrop]');
+      return hero && scene;
+    }
+
+    function shouldRun() {
+      return mqDesktop.matches && !mqReduce.matches && findParts();
+    }
+
+    function chime() {
+      if (!soundOn || !actx) return;
+      var t = actx.currentTime;
+      [392.0, 587.33].forEach(function (f, i) {
+        var o = actx.createOscillator(), g = actx.createGain();
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(0.05, t + 0.6 + i * 0.1);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + 3.2);
+        o.connect(g).connect(actx.destination);
+        o.start(t); o.stop(t + 3.3);
+      });
+    }
+
+    function update() {
+      raf = false;
+      if (!on) return;
+      var y = window.scrollY || window.pageYOffset;
+      var heroH = hero.offsetHeight;
+      var sceneTop = scene.getBoundingClientRect().top + y;
+      var sceneScroll = scene.offsetHeight - window.innerHeight;
+      if (sceneScroll < 1) sceneScroll = 1;
+
+      var heroVis = clamp(1 - y / (heroH * 0.6));
+      var sp = clamp((y - sceneTop) / sceneScroll);
+      var bd = clamp((y - heroH * 0.35) / (sceneTop - heroH * 0.35 + sceneScroll * 0.45));
+
+      root.style.setProperty('--reveal-hero', heroVis.toFixed(4));
+      root.style.setProperty('--reveal-sp', sp.toFixed(4));
+      root.style.setProperty('--reveal-bd', bd.toFixed(4));
+
+      if (backdrop) {
+        backdrop.classList.toggle('is-past', y > sceneTop + sceneScroll + 2);
+      }
+      if (lastSp < 0.5 && sp >= 0.5) chime();
+      lastSp = sp;
+    }
+
+    function onScroll() {
+      if (!raf) { raf = true; requestAnimationFrame(update); }
+    }
+
+    function enable() {
+      if (on) return;
+      on = true;
+      root.classList.add('pantao-reveal-on');
+      update();
+    }
+
+    function disable() {
+      if (!on) return;
+      on = false;
+      root.classList.remove('pantao-reveal-on');
+      root.style.removeProperty('--reveal-hero');
+      root.style.removeProperty('--reveal-sp');
+      root.style.removeProperty('--reveal-bd');
+      if (backdrop) backdrop.classList.remove('is-past');
+    }
+
+    function sync() {
+      if (shouldRun()) { enable(); } else { disable(); }
+    }
+
+    function wireSound() {
+      var btn = document.querySelector('[data-reveal-sound]');
+      if (!btn || btn.dataset.wired === 'true') return;
+      btn.dataset.wired = 'true';
+      var label = btn.querySelector('[data-reveal-sound-label]');
+      btn.addEventListener('click', function () {
+        soundOn = !soundOn;
+        btn.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+        if (label) label.textContent = soundOn ? 'Sound on' : 'Sound off';
+        if (soundOn && !actx) {
+          try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; }
+        }
+        if (soundOn && actx && actx.state === 'suspended') actx.resume();
+      });
+    }
+
+    function boot() {
+      wireSound();
+      sync();
+      if (on) onScroll();
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', function () { sync(); if (on) onScroll(); });
+    if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', sync);
+    if (mqReduce.addEventListener) mqReduce.addEventListener('change', sync);
+    document.addEventListener('shopify:section:load', boot);
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else { boot(); }
   })();
 {% endjavascript %}
 
@@ -352,6 +621,27 @@
       "id": "reassurance",
       "label": "Reassurance line",
       "default": "Numbered · limited count · ships worldwide"
+    },
+    {
+      "type": "header",
+      "content": "The Reveal"
+    },
+    {
+      "type": "paragraph",
+      "content": "When on, the hero above hands off into this section as a single scroll-driven experience — the piece clips into view on the left and the pricing card materializes on the right (desktop only; falls back to the standard two-column layout on mobile or with reduced motion). The Arrival hero must also have The Reveal enabled."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_reveal",
+      "label": "Enable scroll reveal",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sound",
+      "label": "Offer an ambient sound cue",
+      "info": "Adds a small Sound toggle. Audio only plays after the visitor turns it on.",
+      "default": false
     },
     {
       "type": "header",

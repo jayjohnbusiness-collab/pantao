@@ -16,9 +16,26 @@
   assign s = section.settings
 -%}
 
+{%- comment -%}
+  Shared reveal backdrop — one fixed image behind both the hero and the
+  product section, so the campaign photo never cuts at the section
+  boundary. Rendered as a sibling of `.arrival-hero` (not a child) so no
+  ancestor overflow/transform interferes with its fixed positioning.
+  Hidden until the controller JS adds `html.pantao-reveal-on`, and hidden
+  again (`.is-past`) once the reveal scrolls out, so following sections
+  render normally. Degrades to the standard hero when reveal is off.
+{%- endcomment -%}
+{%- if s.enable_reveal and s.image != blank -%}
+  <div class="pantao-reveal-backdrop" data-reveal-backdrop aria-hidden="true"
+       style="background-image: url('{{ s.image | image_url: width: 2400 }}');">
+    <div class="pantao-reveal-backdrop__scrim"></div>
+  </div>
+{%- endif -%}
+
 <div
-  class="arrival-hero color-{{ s.color_scheme }} arrival-hero--{{ s.height }}"
+  class="arrival-hero color-{{ s.color_scheme }} arrival-hero--{{ s.height }}{% if s.enable_reveal %} arrival-hero--reveal{% endif %}"
   data-section-id="{{ section.id }}"
+  {% if s.enable_reveal %}data-reveal-hero{% endif %}
 >
   <div class="arrival-hero__media arrival-hero__media--{{ s.media_type }}">
     {%- if s.media_type == 'video' and s.video != blank -%}
@@ -357,6 +374,80 @@
       animation: none;
     }
   }
+
+  /* ============================================================
+     THE REVEAL — shared fixed backdrop + hero hand-off
+     Only active when the controller JS (in the product section)
+     adds `pantao-reveal-on` to <html>. That happens exclusively on
+     desktop, with motion allowed, and only when BOTH the hero and
+     the product section have reveal enabled. Otherwise every rule
+     below is inert and the hero renders exactly as it does today.
+     ============================================================ */
+
+  /* Backdrop is dormant until the controller activates it. */
+  .pantao-reveal-backdrop { display: none; }
+
+  html.pantao-reveal-on .pantao-reveal-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: -1; /* above the opaque body canvas, below all section content */
+    background-size: cover;
+    background-position: center;
+    filter:
+      blur(calc(var(--reveal-bd, 0) * 14px))
+      brightness(calc(1 - var(--reveal-bd, 0) * 0.22))
+      saturate(calc(1 + var(--reveal-bd, 0) * 0.06));
+    transform: scale(calc(1.02 + var(--reveal-bd, 0) * 0.05));
+    will-change: filter, transform;
+  }
+
+  /* Once the reveal has scrolled past, drop the backdrop entirely so
+     the footer and everything after it paint over their own backgrounds. */
+  html.pantao-reveal-on .pantao-reveal-backdrop.is-past { display: none; }
+
+  .pantao-reveal-backdrop__scrim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    /* constant directional scrim keeps the headline legible over the
+       light tarmac; the radial term deepens as you scroll into the piece */
+    background:
+      linear-gradient(180deg, rgba(12,14,17,0.34) 0%, rgba(12,14,17,0.04) 26%,
+        rgba(12,14,17,0.06) 52%, rgba(12,14,17,0.55) 100%),
+      linear-gradient(90deg, rgba(12,14,17,0.42) 0%, rgba(12,14,17,0.12) 44%, transparent 72%),
+      radial-gradient(120% 90% at 50% 42%, transparent 48%, rgba(10,12,15, calc(var(--reveal-bd, 0) * 0.40)));
+  }
+
+  /* Hero in reveal mode: transparent so the fixed backdrop shows through
+     (the hero's own media is hidden — the backdrop *is* the image, pinned,
+     so the transition from hero to piece never moves the photo). */
+  html.pantao-reveal-on .arrival-hero--reveal {
+    background: transparent;
+    overflow: visible;
+  }
+
+  html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__media {
+    display: none;
+  }
+
+  /* Headline fades and lifts as the hero scrolls away. Scroll-driven, so
+     the entrance keyframe animations are stood down. */
+  html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__inner {
+    opacity: var(--reveal-hero, 1);
+    transform: translateY(calc((1 - var(--reveal-hero, 1)) * -30px));
+  }
+
+  html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__eyebrow,
+  html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__lede,
+  html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__cta {
+    animation: none;
+    opacity: var(--reveal-hero, 1);
+  }
+
+  html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__scroll-hint {
+    opacity: calc(var(--reveal-hero, 1) * 0.7);
+  }
 {% endstylesheet %}
 
 {% javascript %}
@@ -583,6 +674,21 @@
       "id": "scroll_hint_text",
       "label": "Scroll hint text",
       "default": "Scroll"
+    },
+
+    {
+      "type": "header",
+      "content": "The Reveal"
+    },
+    {
+      "type": "paragraph",
+      "content": "When on, this hero hands off into the product section below as a single scroll-driven experience (desktop only; falls back to the standard hero on mobile or with reduced motion). The product section must also have The Reveal enabled."
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_reveal",
+      "label": "Enable scroll reveal into the product",
+      "default": false
     },
 
     {
