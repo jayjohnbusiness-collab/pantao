@@ -235,6 +235,27 @@
     margin: 1.75rem 0 0 0;
   }
 
+  /* ---------- Commerce controls: visible + rounded ---------- */
+  .pantao-piece .add-to-cart-button {
+    border-radius: 100px;
+  }
+
+  .pantao-piece .quantity-selector {
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  /* keep the sold-out / disabled button legible (never invisible) */
+  .pantao-piece .add-to-cart-button:disabled,
+  .pantao-piece .add-to-cart-button[disabled],
+  .pantao-piece .add-to-cart-button[aria-disabled='true'] {
+    opacity: 1;
+    background: rgb(var(--color-foreground-rgb) / 0.12);
+    color: var(--color-foreground);
+    border: 1px solid rgb(var(--color-foreground-rgb) / 0.22);
+    cursor: not-allowed;
+  }
+
   /* ---------- Reveal ---------- */
   .pantao-piece [data-reveal] {
     opacity: 0;
@@ -352,7 +373,7 @@
               "type": "add-to-cart",
               "static": true,
               "settings": {
-                "style_class": "button-secondary"
+                "style_class": "button"
               }
             },
             "accelerated-checkout": {
