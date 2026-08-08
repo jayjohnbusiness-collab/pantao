@@ -595,4 +595,37 @@
   .search-modal .predictive-search__search-button {
     border-radius: 12px;
   }
+
+  /* ------------------------------------------------------------------
+     PANTAO — frosted glass (iOS-style material)
+     The panel is translucent with a backdrop blur so the page shows
+     through, blurred + saturated. The bar is a lighter frosted layer.
+     ------------------------------------------------------------------ */
+  @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    /* the floating panel */
+    .search-modal .search-modal__content,
+    .search-modal .dialog-modal[open].search-modal__content {
+      background: rgb(var(--color-background-rgb) / 0.72);
+      -webkit-backdrop-filter: blur(28px) saturate(180%);
+      backdrop-filter: blur(28px) saturate(180%);
+      border: 1px solid rgb(var(--color-foreground-rgb) / 0.08);
+      box-shadow: 0 20px 60px rgb(var(--color-foreground-rgb) / 0.18),
+        inset 0 1px 0 rgb(255 255 255 / 0.14);
+    }
+
+    /* let the frost read through the component + results surfaces */
+    .search-modal predictive-search-component,
+    .search-modal .predictive-search-form__content {
+      background-color: transparent;
+    }
+
+    /* the search bar itself — a lighter frosted control on the panel */
+    .search-modal .predictive-search-form__header,
+    .search-modal .predictive-search-form__header-inner {
+      background: rgb(var(--color-foreground-rgb) / 0.04);
+      -webkit-backdrop-filter: blur(12px) saturate(150%);
+      backdrop-filter: blur(12px) saturate(150%);
+      border: 1px solid rgb(var(--color-foreground-rgb) / 0.1);
+    }
+  }
 {% endstylesheet %}
