@@ -526,6 +526,10 @@
     font-size: var(--font-size--lg);
     letter-spacing: 0.01em;
     padding-block: var(--padding-md);
+    /* let the input share the row and leave room before the Clear button */
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-inline-end: var(--padding-sm);
   }
 
   .search-modal input.search-input::placeholder {
@@ -541,8 +545,15 @@
 
   .search-modal .predictive-search__reset-button {
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.1em;
     font-size: var(--font-size--2xs);
+    white-space: nowrap;
+    flex: 0 0 auto;
+    /* size to the text (never clip it); padding gives it a tap target */
+    min-width: max-content;
+    width: auto;
+    padding-inline: var(--padding-sm);
+    margin-inline-start: var(--padding-2xs);
     opacity: 0.6;
     transition: opacity 0.25s ease;
   }
