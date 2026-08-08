@@ -41,10 +41,9 @@
 
   .media{--mp:clamp(0,(var(--sp) - 0.12)/0.3,1);
     aspect-ratio:4/5;position:relative;overflow:hidden;border-radius:14px;
-    background:linear-gradient(150deg,#eceded,#d3d6d7 55%,#aeb2b3);
+    background:#111 url(../assets/img/product.jpg) center/cover;
     clip-path:inset(calc((1 - var(--mp))*100%) 0 0 0);
     transform:scale(calc(0.96 + var(--mp)*0.04));box-shadow:0 30px 80px rgba(0,0,0,.4)}
-  .media::after{content:"PRODUCT IMAGE";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:.3em;color:rgba(0,0,0,.28)}
 
   .panel{--pp:clamp(0,(var(--sp) - 0.34)/0.24,1);
     color:#fff;opacity:var(--pp);transform:translateY(calc((1 - var(--pp))*54px));
