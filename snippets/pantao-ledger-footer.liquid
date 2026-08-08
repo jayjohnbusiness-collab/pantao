@@ -29,12 +29,20 @@
     assign show_pay = false
   endif
 
-  assign m1 = fs.col1_menu | default: 'client-care'
-  assign m2 = fs.col2_menu | default: 'legal'
-  assign m3 = fs.col3_menu | default: 'social'
-  assign col1 = linklists[m1]
-  assign col2 = linklists[m2]
-  assign col3 = linklists[m3]
+  # link_list settings resolve to a linklist object directly. When a section
+  # doesn't define the setting, fall back to a menu handle via linklists[].
+  assign col1 = fs.col1_menu
+  if col1 == blank
+    assign col1 = linklists['client-care']
+  endif
+  assign col2 = fs.col2_menu
+  if col2 == blank
+    assign col2 = linklists['legal']
+  endif
+  assign col3 = fs.col3_menu
+  if col3 == blank
+    assign col3 = linklists['social']
+  endif
 
   assign h1 = fs.col1_heading | default: 'Client Care'
   assign h2 = fs.col2_heading | default: 'Legal'

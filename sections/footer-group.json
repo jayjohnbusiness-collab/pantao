@@ -11,8 +11,8 @@
   "type": "footer",
   "name": "t:names.footer",
   "sections": {
-    "pantao_footer": {
-      "type": "pantao-footer",
+    "footer": {
+      "type": "footer",
       "settings": {
         "section_width": "page-width",
         "show_newsletter": true,
@@ -35,6 +35,6 @@
     }
   },
   "order": [
-    "pantao_footer"
+    "footer"
   ]
 }
