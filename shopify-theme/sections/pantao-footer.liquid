@@ -1,0 +1,483 @@
+{%- comment -%}
+  Pantao Footer — "The Ledger"
+  --------------------------------------------------------
+  The editorial close to the store. A once-a-year email capture on the
+  left, three menu-driven link columns (Client Care / Legal / Socials),
+  and a signed bottom bar: wordmark, copyright, real payment marks.
+
+  Everything is real commerce plumbing:
+    - The email capture posts through Shopify's `customer` form, so it
+      actually subscribes the visitor to the marketing list.
+    - Columns render from the store's own link lists (menus), so the
+      merchant edits them in Navigation, not in code.
+    - Payment marks come from `shop.enabled_payment_types`.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign col1 = linklists[s.col1_menu]
+  assign col2 = linklists[s.col2_menu]
+  assign col3 = linklists[s.col3_menu]
+-%}
+
+<div class="section-background color-{{ s.color_scheme }}"></div>
+<div
+  class="section section--{{ s.section_width }} color-{{ s.color_scheme }}"
+  {{ section.shopify_attributes }}
+>
+  <div
+    class="pantao-footer spacing-style"
+    style="{% render 'spacing-style', settings: section.settings %}"
+    data-section-id="{{ section.id }}"
+  >
+    <div class="pantao-footer__grid">
+
+      {%- comment -%} ---------- Email capture ---------- {%- endcomment -%}
+      {%- if s.show_newsletter -%}
+        <div class="pantao-footer__signup">
+          {%- if s.newsletter_kicker != blank -%}
+            <p class="pantao-footer__kicker">{{ s.newsletter_kicker | escape }}</p>
+          {%- endif -%}
+          {%- if s.newsletter_sub != blank -%}
+            <p class="pantao-footer__sub">{{ s.newsletter_sub | escape }}</p>
+          {%- endif -%}
+
+          {%- form 'customer' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            {%- if form.posted_successfully? -%}
+              <p class="pantao-footer__note pantao-footer__note--ok" role="status">
+                {{ 'blocks.email_signup.success' | t | default: 'Thanks — you’re on the list.' }}
+              </p>
+            {%- else -%}
+              <div class="pantao-footer__field">
+                <input
+                  type="email"
+                  name="contact[email]"
+                  autocomplete="email"
+                  required
+                  placeholder="{{ 'blocks.email_signup.placeholder' | t | default: 'Email address' }}"
+                  aria-label="{{ 'blocks.email_signup.label' | t | default: 'Email' }}"
+                >
+                <button type="submit" class="pantao-footer__join">{{ s.newsletter_button | default: 'Join' | escape }}</button>
+              </div>
+              {%- if form.errors -%}
+                <p class="pantao-footer__note pantao-footer__note--err" role="alert">
+                  {{ form.errors | default_errors }}
+                </p>
+              {%- endif -%}
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+      {%- endif -%}
+
+      {%- comment -%} ---------- Link columns ---------- {%- endcomment -%}
+      {%- for col in (1..3) -%}
+        {%- liquid
+          case col
+            when 1
+              assign heading = s.col1_heading
+              assign list = col1
+            when 2
+              assign heading = s.col2_heading
+              assign list = col2
+            when 3
+              assign heading = s.col3_heading
+              assign list = col3
+          endcase
+        -%}
+        {%- if list != blank and list.links.size > 0 -%}
+          <nav class="pantao-footer__col" aria-label="{{ heading | escape }}">
+            {%- if heading != blank -%}
+              <h4 class="pantao-footer__col-heading">{{ heading | escape }}</h4>
+            {%- endif -%}
+            <ul class="pantao-footer__col-list">
+              {%- for link in list.links -%}
+                <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </nav>
+        {%- endif -%}
+      {%- endfor -%}
+
+    </div>
+
+    {%- comment -%} ---------- Signed bottom bar ---------- {%- endcomment -%}
+    <div class="pantao-footer__base">
+      <span class="pantao-footer__wordmark">{{ s.brand_name | default: 'PANTAO' | escape }}</span>
+
+      <span class="pantao-footer__copy">
+        &copy; {{ 'now' | date: '%Y' }} {{ s.brand_name | default: 'PANTAO' | escape }}{% if s.copyright_suffix != blank %} &middot; {{ s.copyright_suffix | escape }}{% endif %}
+      </span>
+
+      {%- if s.show_payment_icons and shop.enabled_payment_types.size > 0 -%}
+        <span class="pantao-footer__pay" role="list" aria-label="{{ 'blocks.payment_methods' | t | default: 'Payment methods' }}">
+          {%- for type in shop.enabled_payment_types -%}
+            <span class="pantao-footer__pay-icon" role="listitem">
+              {{ type | payment_type_svg_tag: class: 'pantao-footer__pay-svg' }}
+            </span>
+          {%- endfor -%}
+        </span>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .pantao-footer {
+    width: 100%;
+    color: var(--color-foreground);
+  }
+
+  /* ---------- Top: signup + columns ---------- */
+  .pantao-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media screen and (min-width: 750px) {
+    .pantao-footer__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(2rem, 5vw, 4rem);
+    }
+  }
+
+  @media screen and (min-width: 990px) {
+    .pantao-footer__grid {
+      grid-template-columns: 1.3fr 1fr 1fr 1fr;
+    }
+  }
+
+  /* ---------- Email capture ---------- */
+  .pantao-footer__kicker {
+    font-family: var(--font-accent--family);
+    font-style: italic;
+    font-weight: var(--font-accent--weight, 500);
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    line-height: 1.1;
+    margin: 0 0 0.4rem 0;
+    text-wrap: balance;
+  }
+
+  .pantao-footer__sub {
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--sm, 0.8125rem);
+    letter-spacing: 0.02em;
+    line-height: 1.6;
+    margin: 0 0 1.4rem 0;
+    max-width: 19rem;
+    opacity: 0.62;
+  }
+
+  .pantao-footer__field {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 100px;
+    padding: 6px 6px 6px 18px;
+    max-width: 22rem;
+    background: var(--color-background);
+  }
+
+  .pantao-footer__field input {
+    flex: 1 1 auto;
+    min-width: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font-family: var(--font-body--family);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-foreground);
+  }
+
+  .pantao-footer__field input::placeholder {
+    color: var(--color-foreground);
+    opacity: 0.4;
+  }
+
+  .pantao-footer__join {
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 100px;
+    background: var(--color-foreground);
+    color: var(--color-background);
+    font-family: var(--font-body--family);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 11px 20px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+
+  .pantao-footer__join:hover { opacity: 0.85; }
+
+  .pantao-footer__note {
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--sm, 0.8125rem);
+    margin: 0.9rem 0 0 0;
+    max-width: 22rem;
+  }
+  .pantao-footer__note--ok { opacity: 0.75; }
+  .pantao-footer__note--err { color: var(--color-error, #b23b3b); }
+
+  /* ---------- Columns ---------- */
+  .pantao-footer__col-heading {
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin: 0 0 1.1rem 0;
+    color: var(--color-foreground);
+  }
+
+  .pantao-footer__col-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+
+  .pantao-footer__col-list a {
+    font-family: var(--font-body--family);
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--color-foreground);
+    opacity: 0.62;
+    text-decoration: none;
+    transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pantao-footer__col-list a:hover,
+  .pantao-footer__col-list a:focus-visible {
+    opacity: 1;
+  }
+
+  /* ---------- Signed bottom bar ---------- */
+  .pantao-footer__base {
+    margin-top: clamp(40px, 5vw, 60px);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-border);
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 1.2rem;
+    text-align: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .pantao-footer__base {
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1.5rem;
+      text-align: left;
+    }
+  }
+
+  .pantao-footer__wordmark {
+    font-family: var(--font-accent--family);
+    font-weight: var(--font-accent--weight, 500);
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    justify-self: start;
+  }
+
+  .pantao-footer__copy {
+    font-family: var(--font-body--family);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  @media screen and (min-width: 750px) {
+    .pantao-footer__copy { justify-self: center; }
+  }
+
+  .pantao-footer__pay {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .pantao-footer__pay { justify-self: end; }
+  }
+
+  .pantao-footer__pay-icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .pantao-footer__pay-svg,
+  .pantao-footer__pay-icon svg,
+  .pantao-footer__pay-icon img {
+    height: 22px;
+    width: auto;
+    display: block;
+    border-radius: 4px;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Pantao footer",
+  "tag": "div",
+  "class": "footer-pantao",
+  "enabled_on": {
+    "groups": ["footer"]
+  },
+  "settings": [
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "header",
+      "content": "Email capture"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_newsletter",
+      "label": "Show email capture",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "newsletter_kicker",
+      "label": "Kicker",
+      "default": "Be told when the doors open."
+    },
+    {
+      "type": "textarea",
+      "id": "newsletter_sub",
+      "label": "Subtext",
+      "default": "One note a year, ahead of the edition. Nothing else."
+    },
+    {
+      "type": "text",
+      "id": "newsletter_button",
+      "label": "Button label",
+      "default": "Join"
+    },
+    {
+      "type": "header",
+      "content": "Columns"
+    },
+    {
+      "type": "text",
+      "id": "col1_heading",
+      "label": "Column 1 heading",
+      "default": "Client Care"
+    },
+    {
+      "type": "link_list",
+      "id": "col1_menu",
+      "label": "Column 1 menu",
+      "default": "client-care"
+    },
+    {
+      "type": "text",
+      "id": "col2_heading",
+      "label": "Column 2 heading",
+      "default": "Legal"
+    },
+    {
+      "type": "link_list",
+      "id": "col2_menu",
+      "label": "Column 2 menu",
+      "default": "legal"
+    },
+    {
+      "type": "text",
+      "id": "col3_heading",
+      "label": "Column 3 heading",
+      "default": "Socials"
+    },
+    {
+      "type": "link_list",
+      "id": "col3_menu",
+      "label": "Column 3 menu",
+      "default": "social"
+    },
+    {
+      "type": "header",
+      "content": "Signature"
+    },
+    {
+      "type": "text",
+      "id": "brand_name",
+      "label": "Wordmark / brand name",
+      "default": "PANTAO"
+    },
+    {
+      "type": "text",
+      "id": "copyright_suffix",
+      "label": "Copyright suffix",
+      "info": "Appended after the brand in the copyright line.",
+      "default": "Manila"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_payment_icons",
+      "label": "Show payment marks",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Appearance"
+    },
+    {
+      "type": "color_scheme",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 80
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom",
+      "min": 0,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pantao footer",
+      "category": "Footer"
+    }
+  ]
+}
+{% endschema %}
