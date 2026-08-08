@@ -3,78 +3,63 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>PANTAO — Hero → Reveal (seamless)</title>
+<title>PANTAO — Hero → Product (seamless, two sections)</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
   :root{
     --paper:#f5f6f5; --ink:#16181c; --serif:"Cormorant Garamond",Georgia,serif; --sans:"Inter",Arial,sans-serif;
     --ease:cubic-bezier(.22,1,.36,1);
+    --hero:1; --sp:0; --bd:0;   /* driven by JS */
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:var(--sans);font-weight:300;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased}
+  body{font-family:var(--sans);font-weight:300;color:var(--ink);background:#0b0c0e;-webkit-font-smoothing:antialiased}
 
-  .spacer{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:0 8vw;background:#0e0f11;color:#f5f6f5}
-  .spacer .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#9aa0a6;margin-bottom:1.2rem}
-  .spacer h1{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,5vw,4rem);line-height:.98}
-  .spacer .em{font-style:italic}
-
-  /* ---------- ONE CONTINUOUS SCENE: hero -> reveal ---------- */
-  .scene{position:relative;height:360vh}
-  .stage{position:sticky;top:0;height:100vh;overflow:hidden;--p:0;background:#0b0c0e}
-
-  /* transition factor: 0 during the hero, ramps to 1 as it becomes the backdrop */
-  .stage{--trans:clamp(0,(var(--p) - 0.12)/0.24,1)}
-
-  /* the ONE image — never cuts. Hero-sharp, then blurs/darkens into backdrop. */
-  .bg{position:absolute;inset:0;background:url(../assets/img/hero.jpg) center/cover;
-    filter:blur(calc(var(--trans)*16px)) brightness(calc(0.9 - var(--trans)*0.3)) saturate(calc(1 + var(--trans)*0.08));
-    transform:scale(calc(1.04 + var(--trans)*0.1));will-change:filter,transform}
-  /* hero scrim (bottom-left) cross-dissolving into the reveal radial scrim */
-  .bg__scrim{position:absolute;inset:0;pointer-events:none;
+  /* ---- shared continuous backdrop: one image, never cuts between sections ---- */
+  .backdrop{position:fixed;inset:0;z-index:0;
+    background:url(../assets/img/hero.jpg) center/cover;
+    filter:blur(calc(var(--bd)*16px)) brightness(calc(0.92 - var(--bd)*0.32)) saturate(calc(1 + var(--bd)*0.08));
+    transform:scale(calc(1.04 + var(--bd)*0.08));will-change:filter,transform}
+  .backdrop__scrim{position:fixed;inset:0;z-index:1;pointer-events:none;
     background:
-      radial-gradient(120% 90% at 50% 42%, transparent 40%, rgba(6,8,10,calc(var(--trans)*0.55))),
-      linear-gradient(90deg, rgba(8,10,13,calc(0.4 - var(--trans)*0.1)), transparent 55%),
-      linear-gradient(0deg, rgba(8,10,13,calc(0.55 - var(--trans)*0.1)), transparent 46%)}
+      radial-gradient(120% 90% at 50% 42%, transparent 42%, rgba(6,8,10,calc(var(--bd)*0.5))),
+      linear-gradient(0deg, rgba(8,10,13,calc(0.5 - var(--bd)*0.05)), transparent 46%)}
 
-  .stage__pl{position:absolute;top:0;left:0;height:2px;background:#fff;width:calc(var(--p)*100%);z-index:9;opacity:.4}
-
-  /* ---- HERO layer (fades + lifts away as the reveal begins) ---- */
-  .hero{position:absolute;left:clamp(20px,5vw,72px);bottom:clamp(48px,10vh,120px);z-index:5;color:#f5f6f5;
-    --hero:clamp(0,(0.22 - var(--p))/0.13,1);
-    opacity:var(--hero);transform:translateY(calc((1 - var(--hero))*-46px))}
+  /* ===== SECTION 1 — HERO (its own section; scrolls over the backdrop) ===== */
+  .hero{position:relative;z-index:2;height:100vh;
+    display:flex;align-items:flex-end;padding:0 clamp(20px,5vw,72px) clamp(48px,10vh,120px);
+    color:#f5f6f5;opacity:var(--hero);transform:translateY(calc((1 - var(--hero))*-40px))}
   .hero__eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#d8c9a0;margin-bottom:1.4rem}
   .hero__title{font-family:var(--serif);font-weight:500;line-height:.92;font-size:clamp(3rem,10vw,9rem)}
-  .hero__title span{display:block}
-  .hero__title .em{font-style:italic}
+  .hero__title span{display:block}.hero__title .em{font-style:italic}
   .hero__hint{margin-top:2rem;font-size:10px;letter-spacing:.34em;text-transform:uppercase;opacity:.8}
 
-  /* ---- REVEAL layer: product image left, glass card right ---- */
-  .grid{position:absolute;inset:0;z-index:4;display:grid;grid-template-columns:1fr 1fr;
-    align-items:center;gap:clamp(2rem,5vw,5rem);max-width:1160px;margin:0 auto;padding:0 clamp(20px,5vw,72px)}
+  /* ===== SECTION 2 — PRODUCT (separate section; pins + reveals over the same backdrop) ===== */
+  .scene{position:relative;z-index:2;height:300vh}
+  .stage{position:sticky;top:0;height:100vh;overflow:hidden}
+  .grid{position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;align-items:center;
+    gap:clamp(2rem,5vw,5rem);max-width:1160px;margin:0 auto;padding:0 clamp(20px,5vw,72px)}
 
-  .media{--mp:clamp(0,(var(--p) - 0.34)/0.28,1);
+  .media{--mp:clamp(0,(var(--sp) - 0.12)/0.3,1);
     aspect-ratio:4/5;position:relative;overflow:hidden;border-radius:14px;
     background:linear-gradient(150deg,#eceded,#d3d6d7 55%,#aeb2b3);
     clip-path:inset(calc((1 - var(--mp))*100%) 0 0 0);
-    transform:scale(calc(0.96 + var(--mp)*0.04));
-    box-shadow:0 30px 80px rgba(0,0,0,.4)}
-  .media::after{content:"PRODUCT IMAGE";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    font-size:11px;letter-spacing:.3em;color:rgba(0,0,0,.28)}
+    transform:scale(calc(0.96 + var(--mp)*0.04));box-shadow:0 30px 80px rgba(0,0,0,.4)}
+  .media::after{content:"PRODUCT IMAGE";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:.3em;color:rgba(0,0,0,.28)}
 
-  .panel{--pp:clamp(0,(var(--p) - 0.54)/0.24,1);
+  .panel{--pp:clamp(0,(var(--sp) - 0.34)/0.24,1);
     color:#fff;opacity:var(--pp);transform:translateY(calc((1 - var(--pp))*54px));
     background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,0) 46%),rgba(255,255,255,.15);
     -webkit-backdrop-filter:blur(30px) saturate(180%);backdrop-filter:blur(30px) saturate(180%);
     border:1px solid rgba(255,255,255,.35);border-radius:22px;padding:clamp(26px,3vw,42px);
     box-shadow:0 24px 70px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.5)}
   .panel .kick{font-size:11px;letter-spacing:.3em;text-transform:uppercase;opacity:.85;margin-bottom:1.1rem}
-  .name{font-family:var(--serif);font-weight:500;line-height:1.0;font-size:clamp(2rem,3.2vw+.5rem,3rem);margin-bottom:.5rem}
+  .name{font-family:var(--serif);font-weight:500;line-height:1;font-size:clamp(2rem,3.2vw+.5rem,3rem);margin-bottom:.5rem}
   .name .ln{display:block;overflow:hidden}
   .name .ln i{display:block;font-style:normal}
-  .name .ln:nth-child(1) i{transform:translateY(calc((1 - clamp(0,(var(--p) - 0.56)/0.18,1))*115%))}
-  .name .ln:nth-child(2) i{font-style:italic;transform:translateY(calc((1 - clamp(0,(var(--p) - 0.61)/0.18,1))*115%))}
+  .name .ln:nth-child(1) i{transform:translateY(calc((1 - clamp(0,(var(--sp) - 0.38)/0.18,1))*115%))}
+  .name .ln:nth-child(2) i{font-style:italic;transform:translateY(calc((1 - clamp(0,(var(--sp) - 0.44)/0.18,1))*115%))}
   .price{font-family:var(--serif);font-size:1.6rem;margin-bottom:1.3rem}
-  .buy{--bp:clamp(0,(var(--p) - 0.72)/0.26,1);opacity:var(--bp);transform:translateY(calc((1 - var(--bp))*22px))}
+  .buy{--bp:clamp(0,(var(--sp) - 0.56)/0.28,1);opacity:var(--bp);transform:translateY(calc((1 - var(--bp))*22px))}
   .sizes{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
   .size{min-width:46px;padding:10px 14px;border:1px solid rgba(255,255,255,.4);color:#fff;background:transparent;font-size:12px;letter-spacing:.06em;cursor:pointer}
   .size.sel{background:#fff;color:var(--ink);border-color:#fff}
@@ -83,36 +68,41 @@
   .btn--solid{background:#fff;color:var(--ink)}.btn--solid:hover{background:transparent;color:#fff}
   .btn--line{background:transparent;color:#fff}
 
+  /* after the experience — solid content covers the fixed backdrop */
+  .outro{position:relative;z-index:2;min-height:100vh;background:#0e0f11;color:#f5f6f5;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:0 8vw}
+  .outro .eyebrow{font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:#9aa0a6;margin-bottom:1.2rem}
+  .outro h1{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,5vw,4rem);line-height:.98}
+  .outro .em{font-style:italic}
+
   .sound{position:fixed;right:20px;top:20px;z-index:20;display:flex;align-items:center;gap:8px;
     background:rgba(255,255,255,.14);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
     border:1px solid rgba(255,255,255,.4);border-radius:100px;padding:8px 14px;color:#fff;cursor:pointer;
     font-size:10px;letter-spacing:.2em;text-transform:uppercase;mix-blend-mode:difference}
 
-  @media(max-width:820px){
-    .grid{grid-template-columns:1fr;gap:1.5rem;align-content:center;padding-top:14vh}
-    .media{aspect-ratio:4/3}
-  }
+  @media(max-width:820px){ .grid{grid-template-columns:1fr;gap:1.5rem;padding-top:14vh} .media{aspect-ratio:4/3} }
 </style>
 </head>
 <body>
 
   <div class="sound" id="soundToggle">◈ <span id="soundLabel">Sound off</span></div>
 
-  <!-- ONE continuous scene: it opens AT the hero, then reveals the piece -->
+  <!-- one continuous image behind both sections -->
+  <div class="backdrop"></div>
+  <div class="backdrop__scrim"></div>
+
+  <!-- SECTION 1: hero -->
+  <section class="hero" id="hero">
+    <div>
+      <p class="hero__eyebrow">Edition V · MMXXVI · Manila</p>
+      <h1 class="hero__title"><span>The doors</span><span class="em">are open.</span></h1>
+      <p class="hero__hint">Scroll</p>
+    </div>
+  </section>
+
+  <!-- SECTION 2: product -->
   <section class="scene" id="scene">
-    <div class="stage" id="stage">
-      <div class="stage__pl"></div>
-      <div class="bg"></div>
-      <div class="bg__scrim"></div>
-
-      <!-- hero (start of the reveal) -->
-      <div class="hero">
-        <p class="hero__eyebrow">Edition V · MMXXVI · Manila</p>
-        <h1 class="hero__title"><span>The doors</span><span class="em">are open.</span></h1>
-        <p class="hero__hint">Scroll</p>
-      </div>
-
-      <!-- the piece emerges from the same image -->
+    <div class="stage">
       <div class="grid">
         <div class="media"></div>
         <div class="panel">
@@ -131,44 +121,44 @@
     </div>
   </section>
 
-  <section class="spacer">
-    <div>
-      <p class="eyebrow">Numbered · Limited count</p>
-      <h1>Once the edition<br><span class="em">closes, it does not reopen.</span></h1>
-    </div>
+  <section class="outro">
+    <div><p class="eyebrow">Numbered · Limited count</p><h1>Once the edition<br><span class="em">closes, it does not reopen.</span></h1></div>
   </section>
 
 <script>
-  var stage=document.getElementById('stage'), scene=document.getElementById('scene');
+  var root=document.documentElement;
+  var hero=document.getElementById('hero'), scene=document.getElementById('scene');
   var clamp=function(v){return Math.max(0,Math.min(1,v));};
-  var ticking=false, lastP=0;
+  var ticking=false,lastSp=0;
   function update(){
-    var r=scene.getBoundingClientRect();
-    var total=r.height-window.innerHeight;
-    var p=clamp((-r.top)/total);
-    stage.style.setProperty('--p', p.toFixed(4));
-    if(lastP<0.6 && p>=0.6) chime();
-    lastP=p; ticking=false;
+    var y=window.scrollY||window.pageYOffset;
+    var heroH=hero.offsetHeight;
+    var sceneTop=scene.offsetTop, sceneScroll=scene.offsetHeight-window.innerHeight;
+    var heroVis=clamp(1 - y/(heroH*0.6));                 // headline fades as hero leaves
+    var sp=clamp((y - sceneTop)/sceneScroll);             // product reveal progress
+    var bd=clamp((y - heroH*0.35)/(sceneTop - heroH*0.35 + sceneScroll*0.45)); // backdrop blur/darken ramp
+    root.style.setProperty('--hero', heroVis.toFixed(4));
+    root.style.setProperty('--sp', sp.toFixed(4));
+    root.style.setProperty('--bd', bd.toFixed(4));
+    if(lastSp<0.5 && sp>=0.5) chime();
+    lastSp=sp; ticking=false;
   }
-  window.addEventListener('scroll',function(){ if(!ticking){ ticking=true; requestAnimationFrame(update);} },{passive:true});
+  window.addEventListener('scroll',function(){ if(!ticking){ticking=true;requestAnimationFrame(update);} },{passive:true});
   window.addEventListener('resize',update); update();
 
-  var soundOn=false, actx=null;
-  var toggle=document.getElementById('soundToggle'), label=document.getElementById('soundLabel');
+  var soundOn=false,actx=null;
+  var toggle=document.getElementById('soundToggle'),label=document.getElementById('soundLabel');
   toggle.addEventListener('click',function(){
     soundOn=!soundOn; label.textContent=soundOn?'Sound on':'Sound off';
-    if(soundOn && !actx){ try{ actx=new (window.AudioContext||window.webkitAudioContext)(); }catch(e){} }
-    if(soundOn && actx && actx.state==='suspended') actx.resume();
+    if(soundOn&&!actx){try{actx=new (window.AudioContext||window.webkitAudioContext)();}catch(e){}}
+    if(soundOn&&actx&&actx.state==='suspended')actx.resume();
   });
   function chime(){
-    if(!soundOn||!actx) return;
-    var t=actx.currentTime;
+    if(!soundOn||!actx)return;var t=actx.currentTime;
     [392.0,587.33].forEach(function(f,i){
-      var o=actx.createOscillator(), g=actx.createGain();
-      o.type='sine'; o.frequency.value=f;
-      g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(0.06,t+0.6+i*0.1);
-      g.gain.exponentialRampToValueAtTime(0.0001,t+3.2);
-      o.connect(g).connect(actx.destination); o.start(t); o.stop(t+3.3);
+      var o=actx.createOscillator(),g=actx.createGain();o.type='sine';o.frequency.value=f;
+      g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(0.06,t+0.6+i*0.1);g.gain.exponentialRampToValueAtTime(0.0001,t+3.2);
+      o.connect(g).connect(actx.destination);o.start(t);o.stop(t+3.3);
     });
   }
 </script>
