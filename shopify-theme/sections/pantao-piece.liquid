@@ -245,6 +245,17 @@
     overflow: hidden;
   }
 
+  /* the +/- buttons carry their own corner radii — round the outer ones */
+  .pantao-piece .quantity-selector .quantity-minus {
+    border-start-start-radius: 100px;
+    border-end-start-radius: 100px;
+  }
+
+  .pantao-piece .quantity-selector .quantity-plus {
+    border-start-end-radius: 100px;
+    border-end-end-radius: 100px;
+  }
+
   /* keep the sold-out / disabled button legible (never invisible) */
   .pantao-piece .add-to-cart-button:disabled,
   .pantao-piece .add-to-cart-button[disabled],
