@@ -572,6 +572,26 @@
   }
 
   /* ------------------------------------------------------------------
+     PANTAO — vertical balance (even top/bottom inside the bar)
+     ------------------------------------------------------------------ */
+  .search-modal .predictive-search-form__header,
+  .search-modal .predictive-search-form__header-inner {
+    align-items: center;
+  }
+
+  .search-modal input.search-input {
+    padding-block: var(--padding-md);
+    line-height: 1.2;
+  }
+
+  /* center the search icon instead of top:auto */
+  .search-modal .predictive-search__icon {
+    top: 50%;
+    bottom: auto;
+    transform: translateY(-50%);
+  }
+
+  /* ------------------------------------------------------------------
      PANTAO — rounded edges
      ------------------------------------------------------------------ */
   .search-modal .search-modal__content,
@@ -629,6 +649,54 @@
       -webkit-backdrop-filter: none;
       backdrop-filter: none;
       border: 0;
+    }
+
+    /* clip the moving light + rim to the panel, own stacking context */
+    .search-modal .search-modal__content,
+    .search-modal .dialog-modal[open].search-modal__content {
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+    }
+
+    /* drifting specular light — the "liquid" in liquid glass */
+    .search-modal .search-modal__content::before {
+      content: '';
+      position: absolute;
+      inset: -45%;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(closest-side, rgb(255 255 255 / 0.22), rgb(255 255 255 / 0) 70%);
+      animation: pantao-glass-drift 15s ease-in-out infinite;
+    }
+
+    /* refractive edge lensing — a bright, uneven glass rim */
+    .search-modal .search-modal__content::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      border-radius: inherit;
+      padding: 1px;
+      background: linear-gradient(135deg,
+        rgb(255 255 255 / 0.7),
+        rgb(255 255 255 / 0.05) 38%,
+        rgb(255 255 255 / 0) 62%,
+        rgb(255 255 255 / 0.35));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    @keyframes pantao-glass-drift {
+      0%   { transform: translate(-18%, -28%) scale(1); }
+      50%  { transform: translate(22%, 18%) scale(1.28); }
+      100% { transform: translate(-18%, -28%) scale(1); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .search-modal .search-modal__content::before { animation: none; }
     }
   }
 {% endstylesheet %}
