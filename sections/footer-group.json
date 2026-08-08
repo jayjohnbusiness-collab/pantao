@@ -13,21 +13,34 @@
   "sections": {
     "footer": {
       "type": "footer",
+      "blocks": {
+        "social_links_4TpyAF": {
+          "type": "social-links",
+          "name": "t:names.social_media_links",
+          "settings": {
+            "facebook_url": "",
+            "instagram_url": "https://www.instagram.com/pantao.co/",
+            "youtube_url": "",
+            "tiktok_url": "",
+            "twitter_url": "",
+            "threads_url": "",
+            "linkedin_url": "",
+            "bluesky_url": "",
+            "snapchat_url": "",
+            "pinterest_url": "https://www.pinterest.com/pantaoclothing/",
+            "tumblr_url": "",
+            "vimeo_url": "",
+            "custom_url": ""
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "social_links_4TpyAF"
+      ],
       "settings": {
         "section_width": "page-width",
-        "show_newsletter": true,
-        "newsletter_kicker": "Be told when the doors open.",
-        "newsletter_sub": "One note a year, ahead of the edition. Nothing else.",
-        "newsletter_button": "Join",
-        "col1_heading": "Client Care",
-        "col1_menu": "client-care",
-        "col2_heading": "Legal",
-        "col2_menu": "legal",
-        "col3_heading": "Socials",
-        "col3_menu": "social",
-        "brand_name": "PANTAO",
-        "copyright_suffix": "Manila",
-        "show_payment_icons": true,
+        "gap": 0,
         "color_scheme": "scheme-1",
         "padding-block-start": 80,
         "padding-block-end": 32
