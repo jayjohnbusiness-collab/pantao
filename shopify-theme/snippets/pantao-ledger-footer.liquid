@@ -1,0 +1,186 @@
+{%- comment -%}
+  Pantao "The Ledger" footer — shared render
+  --------------------------------------------------------
+  Renders the full Ledger footer, self-contained, from whichever footer
+  section includes it (footer / footer-utilities / pantao-footer). Because
+  it lives in a section's CODE, it syncs reliably from GitHub and cannot be
+  overwritten by the theme editor (which only owns JSON config).
+
+  All content falls back to sensible defaults, so a section that doesn't
+  define the matching settings still renders the complete footer.
+
+  @param {object} section - The including section (for its settings + id)
+{%- endcomment -%}
+
+{%- liquid
+  assign fs = section.settings
+
+  assign kicker = fs.newsletter_kicker | default: 'Be told when the doors open.'
+  assign sub = fs.newsletter_sub | default: 'One note a year, ahead of the edition. Nothing else.'
+  assign btn = fs.newsletter_button | default: 'Join'
+
+  assign show_news = true
+  if fs.show_newsletter == false
+    assign show_news = false
+  endif
+
+  assign show_pay = true
+  if fs.show_payment_icons == false
+    assign show_pay = false
+  endif
+
+  assign m1 = fs.col1_menu | default: 'client-care'
+  assign m2 = fs.col2_menu | default: 'legal'
+  assign m3 = fs.col3_menu | default: 'social'
+  assign col1 = linklists[m1]
+  assign col2 = linklists[m2]
+  assign col3 = linklists[m3]
+
+  assign h1 = fs.col1_heading | default: 'Client Care'
+  assign h2 = fs.col2_heading | default: 'Legal'
+  assign h3 = fs.col3_heading | default: 'Socials'
+
+  assign brand = fs.brand_name | default: 'PANTAO'
+  assign suffix = fs.copyright_suffix | default: 'Manila'
+-%}
+
+<div class="pantao-footer" data-section-id="{{ section.id }}">
+  <div class="pantao-footer__grid">
+
+    {%- if show_news -%}
+      <div class="pantao-footer__signup">
+        {%- if kicker != blank -%}<p class="pantao-footer__kicker">{{ kicker | escape }}</p>{%- endif -%}
+        {%- if sub != blank -%}<p class="pantao-footer__sub">{{ sub | escape }}</p>{%- endif -%}
+
+        {%- form 'customer' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p class="pantao-footer__note pantao-footer__note--ok" role="status">
+              {{ 'blocks.email_signup.success' | t | default: 'Thanks — you’re on the list.' }}
+            </p>
+          {%- else -%}
+            <div class="pantao-footer__field">
+              <input
+                type="email"
+                name="contact[email]"
+                autocomplete="email"
+                required
+                placeholder="{{ 'blocks.email_signup.placeholder' | t | default: 'Email address' }}"
+                aria-label="{{ 'blocks.email_signup.label' | t | default: 'Email' }}"
+              >
+              <button type="submit" class="pantao-footer__join">{{ btn | escape }}</button>
+            </div>
+            {%- if form.errors -%}
+              <p class="pantao-footer__note pantao-footer__note--err" role="alert">{{ form.errors | default_errors }}</p>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    {%- endif -%}
+
+    {%- for col in (1..3) -%}
+      {%- liquid
+        case col
+          when 1
+            assign heading = h1
+            assign list = col1
+          when 2
+            assign heading = h2
+            assign list = col2
+          when 3
+            assign heading = h3
+            assign list = col3
+        endcase
+      -%}
+      {%- if list != blank and list.links.size > 0 -%}
+        <nav class="pantao-footer__col" aria-label="{{ heading | escape }}">
+          {%- if heading != blank -%}<h4 class="pantao-footer__col-heading">{{ heading | escape }}</h4>{%- endif -%}
+          <ul class="pantao-footer__col-list">
+            {%- for link in list.links -%}
+              <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      {%- endif -%}
+    {%- endfor -%}
+
+  </div>
+
+  <div class="pantao-footer__base">
+    <span class="pantao-footer__wordmark">{{ brand | escape }}</span>
+    <span class="pantao-footer__copy">
+      &copy; {{ 'now' | date: '%Y' }} {{ brand | escape }}{% if suffix != blank %} &middot; {{ suffix | escape }}{% endif %}
+    </span>
+    {%- if show_pay and shop.enabled_payment_types.size > 0 -%}
+      <span class="pantao-footer__pay" role="list" aria-label="{{ 'blocks.payment_methods' | t | default: 'Payment methods' }}">
+        {%- for type in shop.enabled_payment_types -%}
+          <span class="pantao-footer__pay-icon" role="listitem">{{ type | payment_type_svg_tag: class: 'pantao-footer__pay-svg' }}</span>
+        {%- endfor -%}
+      </span>
+    {%- endif -%}
+  </div>
+</div>
+
+<style>
+  .pantao-footer { width: 100%; color: var(--color-foreground); }
+  .pantao-footer__grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start; }
+  @media screen and (min-width: 750px) {
+    .pantao-footer__grid { grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); }
+  }
+  @media screen and (min-width: 990px) {
+    .pantao-footer__grid { grid-template-columns: 1.3fr 1fr 1fr 1fr; }
+  }
+  .pantao-footer__kicker {
+    font-family: var(--font-accent--family); font-style: italic; font-weight: var(--font-accent--weight, 500);
+    font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.1; margin: 0 0 0.4rem 0; text-wrap: balance;
+  }
+  .pantao-footer__sub {
+    font-family: var(--font-body--family); font-size: var(--font-size--sm, 0.8125rem); letter-spacing: 0.02em;
+    line-height: 1.6; margin: 0 0 1.4rem 0; max-width: 19rem; opacity: 0.62;
+  }
+  .pantao-footer__field {
+    display: flex; align-items: center; gap: 0.5rem; border: 1px solid var(--color-border);
+    border-radius: 100px; padding: 6px 6px 6px 18px; max-width: 22rem; background: var(--color-background);
+  }
+  .pantao-footer__field input {
+    flex: 1 1 auto; min-width: 0; border: 0; outline: 0; background: transparent;
+    font-family: var(--font-body--family); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-foreground);
+  }
+  .pantao-footer__field input::placeholder { color: var(--color-foreground); opacity: 0.4; }
+  .pantao-footer__join {
+    flex: 0 0 auto; border: 0; border-radius: 100px; background: var(--color-foreground); color: var(--color-background);
+    font-family: var(--font-body--family); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 11px 20px; cursor: pointer; transition: opacity 0.3s ease;
+  }
+  .pantao-footer__join:hover { opacity: 0.85; }
+  .pantao-footer__note { font-family: var(--font-body--family); font-size: var(--font-size--sm, 0.8125rem); margin: 0.9rem 0 0 0; max-width: 22rem; }
+  .pantao-footer__note--ok { opacity: 0.75; }
+  .pantao-footer__note--err { color: var(--color-error, #b23b3b); }
+  .pantao-footer__col-heading {
+    font-family: var(--font-body--family); font-weight: 500; font-size: 11px; letter-spacing: 0.24em;
+    text-transform: uppercase; margin: 0 0 1.1rem 0; color: var(--color-foreground);
+  }
+  .pantao-footer__col-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+  .pantao-footer__col-list a {
+    font-family: var(--font-body--family); font-size: 13px; letter-spacing: 0.02em; color: var(--color-foreground);
+    opacity: 0.62; text-decoration: none; transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .pantao-footer__col-list a:hover, .pantao-footer__col-list a:focus-visible { opacity: 1; }
+  .pantao-footer__base {
+    margin-top: clamp(40px, 5vw, 60px); padding-top: 1.5rem; border-top: 1px solid var(--color-border);
+    display: grid; grid-template-columns: 1fr; justify-items: center; gap: 1.2rem; text-align: center;
+  }
+  @media screen and (min-width: 750px) {
+    .pantao-footer__base { grid-template-columns: auto 1fr auto; align-items: center; gap: 1.5rem; text-align: left; }
+  }
+  .pantao-footer__wordmark {
+    font-family: var(--font-accent--family); font-weight: var(--font-accent--weight, 500);
+    font-size: 1.5rem; letter-spacing: 0.04em; justify-self: start;
+  }
+  .pantao-footer__copy { font-family: var(--font-body--family); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.55; }
+  @media screen and (min-width: 750px) { .pantao-footer__copy { justify-self: center; } }
+  .pantao-footer__pay { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: center; }
+  @media screen and (min-width: 750px) { .pantao-footer__pay { justify-self: end; } }
+  .pantao-footer__pay-icon { display: inline-flex; align-items: center; }
+  .pantao-footer__pay-svg, .pantao-footer__pay-icon svg, .pantao-footer__pay-icon img { height: 22px; width: auto; display: block; border-radius: 4px; }
+</style>
