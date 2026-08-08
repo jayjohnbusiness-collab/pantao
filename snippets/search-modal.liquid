@@ -565,6 +565,21 @@
   .search-modal .predictive-search__close-modal-button {
     opacity: 0.55;
     transition: opacity 0.25s ease;
+    /* true-center the X: kill baseline/line-height offset on the icon */
+    align-self: center;
+    padding: 0;
+    line-height: 0;
+  }
+
+  .search-modal .predictive-search__close-modal-button .svg-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 0;
+  }
+
+  .search-modal .predictive-search__close-modal-button svg {
+    display: block;
   }
 
   .search-modal .predictive-search__close-modal-button:hover {
