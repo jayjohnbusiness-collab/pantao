@@ -116,7 +116,7 @@
             on:click="/handleModalClick"
           >
             {% render 'predictive-search-empty-state',
-              load_empty_state: true,
+              load_empty_state: false,
               shadow_opacity: 0.1,
               products_test_id: 'products-list-default--modal'
             %}
@@ -558,5 +558,30 @@
 
   .search-modal .predictive-search__close-modal-button:hover {
     opacity: 1;
+  }
+
+  /* ------------------------------------------------------------------
+     PANTAO — rounded edges
+     ------------------------------------------------------------------ */
+  .search-modal .search-modal__content,
+  .search-modal .dialog-modal[open].search-modal__content {
+    border-radius: 20px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .search-modal .dialog-modal[open].search-modal__content {
+      /* slides up from the bottom — round the top corners only */
+      border-radius: 20px 20px 0 0;
+    }
+  }
+
+  .search-modal .predictive-search-form__header,
+  .search-modal .predictive-search-form__header-inner,
+  .search-modal input.search-input {
+    border-radius: 14px;
+  }
+
+  .search-modal .predictive-search__search-button {
+    border-radius: 12px;
   }
 {% endstylesheet %}
