@@ -70,43 +70,55 @@
       </div>
     </div>
 
-    {%- comment -%} ---------- Details ---------- {%- endcomment -%}
-    <div class="pantao-piece__details" data-reveal>
-      <div class="pantao-piece__inner">
+    {%- comment -%} ---------- Details + Story (right column) ---------- {%- endcomment -%}
+    <div class="pantao-piece__col" data-reveal>
 
-        {%- if s.eyebrow != blank -%}
-          <p class="pantao-piece__eyebrow">{{ s.eyebrow | escape }}</p>
-        {%- endif -%}
+      <div class="pantao-piece__details">
+        <div class="pantao-piece__inner">
 
-        <h2 class="pantao-piece__name">{{ product.title | default: 'The Piece' }}</h2>
-
-        <p class="pantao-piece__price">
-          {%- if product.price_varies -%}
-            <span class="pantao-piece__from">From</span> {{ product.price_min | money }}
-          {%- else -%}
-            {{ product.price | money }}
+          {%- if s.eyebrow != blank -%}
+            <p class="pantao-piece__eyebrow">{{ s.eyebrow | escape }}</p>
           {%- endif -%}
-        </p>
 
-        {%- if s.story != blank -%}
-          <div class="pantao-piece__story rte">{{ s.story }}</div>
-        {%- elsif product.description != blank -%}
-          <div class="pantao-piece__story rte">{{ product.description }}</div>
-        {%- endif -%}
+          <h2 class="pantao-piece__name">{{ product.title | default: 'The Piece' }}</h2>
 
-        <div class="pantao-piece__buy">
-          {%- comment -%} size / variant selection — theme's own block {%- endcomment -%}
-          {% content_for 'block', type: 'variant-picker', id: 'piece-variant-picker', closest.product: product %}
+          <p class="pantao-piece__price">
+            {%- if product.price_varies -%}
+              <span class="pantao-piece__from">From</span> {{ product.price_min | money }}
+            {%- else -%}
+              {{ product.price | money }}
+            {%- endif -%}
+          </p>
 
-          {%- comment -%} add-to-bag (opens cart drawer) + Buy Now — theme's own block {%- endcomment -%}
-          {% content_for 'block', type: 'buy-buttons', id: 'piece-buy-buttons', closest.product: product %}
+          <div class="pantao-piece__buy">
+            {%- comment -%} size / variant selection — theme's own block {%- endcomment -%}
+            {% content_for 'block', type: 'variant-picker', id: 'piece-variant-picker', closest.product: product %}
+
+            {%- comment -%} add-to-bag (opens cart drawer) + Buy Now — theme's own block {%- endcomment -%}
+            {% content_for 'block', type: 'buy-buttons', id: 'piece-buy-buttons', closest.product: product %}
+          </div>
+
+          {%- if s.reassurance != blank -%}
+            <p class="pantao-piece__reassurance">{{ s.reassurance | escape }}</p>
+          {%- endif -%}
+
         </div>
-
-        {%- if s.reassurance != blank -%}
-          <p class="pantao-piece__reassurance">{{ s.reassurance | escape }}</p>
-        {%- endif -%}
-
       </div>
+
+      {%- comment -%} ---------- Story: second card beneath the buy card ---------- {%- endcomment -%}
+      {%- assign piece_story = s.story -%}
+      {%- if piece_story == blank -%}
+        {%- assign piece_story = product.description -%}
+      {%- endif -%}
+      {%- if piece_story != blank -%}
+        <div class="pantao-piece__story-card">
+          {%- if s.story_heading != blank -%}
+            <p class="pantao-piece__story-heading">{{ s.story_heading | escape }}</p>
+          {%- endif -%}
+          <div class="pantao-piece__story rte">{{ piece_story }}</div>
+        </div>
+      {%- endif -%}
+
     </div>
     </div>
    </div>
@@ -236,6 +248,33 @@
   .pantao-piece__story p { margin: 0 0 1em 0; }
   .pantao-piece__story p:last-child { margin-bottom: 0; }
 
+  /* right column stacks the buy card and the story card */
+  .pantao-piece__col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Story presented as its own card beneath the buy card. */
+  .pantao-piece__story-card {
+    margin-top: 1.75rem;
+    padding: clamp(20px, 2.4vw, 30px);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+  }
+
+  .pantao-piece__story-card .pantao-piece__story {
+    margin-bottom: 0;
+  }
+
+  .pantao-piece__story-heading {
+    font-family: var(--font-body--family);
+    font-size: var(--font-size--3xs);
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin: 0 0 0.9rem 0;
+  }
+
   /* give the theme's variant + buy blocks room to breathe */
   .pantao-piece__buy {
     display: flex;
@@ -345,7 +384,7 @@
   /* Product image on the LEFT, glass card on the RIGHT — always, in the
      reveal, regardless of the section's media-side setting. */
   html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__media { order: 1; }
-  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__details { order: 2; }
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__col { order: 2; }
 
   /* Neutralize the intersection-observer reveal — the scroll position
      drives visibility here, not viewport entry. */
@@ -390,10 +429,28 @@
     max-width: none;
   }
 
-  /* Keep the card compact — story and reassurance are stood down here. */
-  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__story,
+  /* Keep the buy card compact — reassurance stays out; the story gets its
+     own card below (see .pantao-piece__story-card). */
   html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__reassurance {
     display: none;
+  }
+
+  /* Story as a second glass card, materializing a beat after the buy card. */
+  html.pantao-reveal-on .pantao-piece--reveal .pantao-piece__story-card {
+    --sc: clamp(0, calc((var(--reveal-sp, 0) - 0.5) / 0.22), 1);
+    opacity: var(--sc);
+    transform: translateY(calc((1 - var(--sc)) * 40px));
+    margin-top: clamp(14px, 1.6vw, 22px);
+    padding: clamp(20px, 2.4vw, 30px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 22px;
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.14) 46%),
+      rgba(245, 246, 245, 0.72);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    backdrop-filter: blur(30px) saturate(180%);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+    color: var(--color-foreground);
   }
 
   /* ---------- Sound toggle ---------- */
@@ -610,10 +667,17 @@
       "default": "The Piece · Edition V"
     },
     {
+      "type": "text",
+      "id": "story_heading",
+      "label": "Story card heading",
+      "info": "Small label at the top of the story card. Leave blank to hide it.",
+      "default": "The Story"
+    },
+    {
       "type": "richtext",
       "id": "story",
       "label": "Story",
-      "info": "Overrides the product description here. Leave blank to use the product's own description.",
+      "info": "Shown in its own card beneath the buy card. Leave blank to use the product's own description.",
       "default": "<p>Open-gauge merino, distressed by hand. The openwork is worked deliberately at the wrist and the throat, so a watch reads at the cuff and a chain sits clear at the collarbone. Made in a count we can name.</p>"
     },
     {
