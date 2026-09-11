@@ -82,7 +82,7 @@
         "color_scheme_transparent": "scheme-4",
         "enable_transparent_header_home": true,
         "home_color_scheme": "inverse",
-        "enable_transparent_header_product": true,
+        "enable_transparent_header_product": false,
         "product_color_scheme": "inverse",
         "enable_transparent_header_collection": false,
         "collection_color_scheme": "inverse"
