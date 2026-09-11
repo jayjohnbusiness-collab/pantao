@@ -425,7 +425,7 @@
       },
       "scheme-a788d462-2ce4-4863-ad69-6c3c821df4c7": {
         "settings": {
-          "background": "rgba(0,0,0,0)",
+          "background": "#FFFFFF",
           "foreground_heading": "#000000",
           "foreground": "#000000",
           "primary": "#000000",
