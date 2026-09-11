@@ -40,7 +40,7 @@
             "location": "Galeriya, Manila",
             "title": "PRIVATE TRACK DAY",
             "description": "<p>A morning on the circuit for owners of the edition. Cars provided. Drive, or be driven. Twelve spots, once.</p>",
-            "link_label": "RSVP",
+            "link_label": "RESERVE A SPOT",
             "link": "shopify://pages/track-day-reservation",
             "featured": true,
             "spots": "12 spots · filling"
@@ -54,7 +54,7 @@
       "settings": {
         "eyebrow": "",
         "title": "Events",
-        "lead": "<p>Openings, appointments, and the moments the doors are open. By invitation and in person, in Manila.</p>",
+        "lead": "<p>Openings, appointments, and the moments the doors are open. By invitation and in person, worldwide.</p>",
         "empty_text": "No events scheduled. Join the list to be told when the doors open."
       }
     }
