@@ -18,8 +18,18 @@
 {%- endcomment -%}
 <style>
   @media screen and (min-width: 750px) {
+    /* Inter-pill spacing.
+       The "Top nav bar" (navigation_bar variant) renders the menu with class
+       `menu-list--mobile` and an inline `--menu-horizontal-gap: 15px`, and the
+       theme rule `.menu-list--mobile .menu-list__list { gap: var(--menu-horizontal-gap) }`
+       applies that 15px at all widths. A gap near 15px looks unchanged next to
+       the theme default, so we set the `gap` PROPERTY directly to a distinctly
+       larger value. This selector (#id + 2 classes) outspecifies the theme's
+       `.menu-list--mobile .menu-list__list`, and beats the inline
+       `--menu-horizontal-gap` too because we set `gap` to a literal rather than
+       reading that variable. One mechanism only — no item margins to stack. */
     #header-component .header-menu .menu-list__list {
-      gap: clamp(0.75rem, 1.4vw, 1.35rem);
+      gap: clamp(1.25rem, 2.2vw, 2rem);
       align-items: center;
     }
 
