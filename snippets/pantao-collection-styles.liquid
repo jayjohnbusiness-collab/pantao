@@ -53,6 +53,67 @@
   }
 
   /* ============================================================
+     STOCK INDICATOR — pulsing "live" dot over the piece
+     (markup from the pantao-stock snippet). In stock + limited,
+     tightening to "Only N left", calm "Sold out" when gone.
+     ============================================================ */
+  .product-card { position: relative; }
+  .pantao-stock {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 6;
+    pointer-events: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px 6px 10px;
+    border-radius: 100px;
+    background: rgba(10, 11, 13, 0.52);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(245, 244, 241, 0.18);
+    color: #f5f4f1;
+    font-family: var(--font-body--family, -apple-system, system-ui, sans-serif);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .pantao-stock__dot {
+    position: relative;
+    flex: none;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #35b46b;
+  }
+  .pantao-stock.is-low .pantao-stock__dot { background: #e0b341; }
+  .pantao-stock.is-out { background: rgba(10, 11, 13, 0.46); color: rgba(245, 244, 241, 0.72); }
+  .pantao-stock.is-out .pantao-stock__dot { background: #9aa0a6; }
+
+  /* the pulse ring — only for live / low states */
+  .pantao-stock.is-live .pantao-stock__dot::after,
+  .pantao-stock.is-low .pantao-stock__dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: inherit;
+    animation: pantao-pulse 1.9s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  }
+  @keyframes pantao-pulse {
+    0%   { transform: scale(1); opacity: 0.55; }
+    70%  { transform: scale(3); opacity: 0; }
+    100% { transform: scale(3); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pantao-stock__dot::after { animation: none; }
+  }
+
+  /* ============================================================
      FILTER BAR — re-skin the native horizontal facets into pills
      (real faceting/AJAX is the theme's; we only restyle).
      The horizontal filters are slotted into an <overflow-list>

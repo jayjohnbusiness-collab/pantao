@@ -1,0 +1,50 @@
+{%- comment -%}
+  PANTAO stock indicator
+  ----------------------------------------------------------------
+  A small pulsing "live" dot + label that signals the piece is in stock
+  while conveying scarcity. States:
+    - In stock (available): pulsing green dot + "In stock · Limited"
+    - Low stock (tracked, <= threshold left): pulsing amber dot + "Only N left"
+    - Sold out (unavailable): static grey dot + "Sold out"
+
+  Only markup here — the styles live in pantao-collection-styles (loaded
+  once globally), so rendering this per card doesn't duplicate CSS.
+
+  @param {object} product - The product object
+  @param {number} [threshold] - Low-stock cutoff (default 20)
+{%- endcomment -%}
+
+{%- liquid
+  assign low_at = threshold | default: 20
+
+  assign is_valid = false
+  if product != blank and product.id != blank and product.id != empty
+    assign is_valid = true
+  endif
+
+  assign v = product.selected_or_first_available_variant
+  assign show_count = false
+  assign qty = 0
+  if product.available and v.inventory_management == 'shopify' and v.inventory_policy != 'continue'
+    assign qty = v.inventory_quantity
+    if qty > 0 and qty <= low_at
+      assign show_count = true
+    endif
+  endif
+-%}
+
+{%- if is_valid -%}
+  {%- if product.available -%}
+    <span class="pantao-stock {% if show_count %}is-low{% else %}is-live{% endif %}" role="status" aria-hidden="false">
+      <span class="pantao-stock__dot" aria-hidden="true"></span>
+      <span class="pantao-stock__label">
+        {%- if show_count -%}Only {{ qty }} left{%- else -%}In stock &middot; Limited{%- endif -%}
+      </span>
+    </span>
+  {%- else -%}
+    <span class="pantao-stock is-out" role="status">
+      <span class="pantao-stock__dot" aria-hidden="true"></span>
+      <span class="pantao-stock__label">Sold out</span>
+    </span>
+  {%- endif -%}
+{%- endif -%}
