@@ -275,7 +275,7 @@
           "foreground_heading": "#d90000",
           "foreground": "#d90000",
           "primary": "#ffffff",
-          "primary_hover": "#acacac",
+          "primary_hover": "#FFFFFF",
           "border": "#666666",
           "shadow": "#000000",
           "primary_button_background": "#ffffff",
