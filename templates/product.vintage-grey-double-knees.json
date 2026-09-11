@@ -1,1 +1,500 @@
-{"sections":{"main":{"type":"product-information","blocks":{"media-gallery":{"type":"_product-media-gallery","static":true,"settings":{"media_presentation":"grid","media_columns":"two","image_gap":4,"large_first_image":true,"icons_style":"arrow","slideshow_controls_style":"counter","slideshow_mobile_controls_style":"counter","thumbnail_position":"left","thumbnail_width":57,"aspect_ratio":"1\/1.25","constrain_to_viewport":false,"media_fit":"cover","media_radius":0,"extend_media":true,"zoom":false,"video_loop":false,"hide_variants":true,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"product-details":{"type":"_product-details","static":true,"settings":{"width":"fill","custom_width":100,"width_mobile":"fill","custom_width_mobile":100,"height":"fit","details_position":"flex-start","gap":12,"sticky_details_desktop":true,"inherit_color_scheme":true,"color_scheme":"","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"heading_m7KmQQ":{"type":"text","settings":{"text":"<h1>{{ closest.product.title }}<\/h1>","width":"100%","max_width":"normal","alignment":"center","type_preset":"custom","font":"var(--font-heading--family)","font_size":"2rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":50,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"price_a7krng":{"type":"price","settings":{"show_sale_price_first":true,"show_installments":false,"show_tax_info":false,"type_preset":"custom","width":"100%","alignment":"center","font":"var(--font-body--family)","font_size":"1.125rem","line_height":"normal","letter_spacing":"normal","case":"none","color":"var(--color-foreground)","padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"divider_HrJgFt":{"type":"_divider","name":"t:names.divider","disabled":true,"settings":{"thickness":1,"corner_radius":"square","width_percent":100,"padding-block-start":12,"padding-block-end":12},"blocks":{}},"variant_picker_R3rGDr":{"type":"variant-picker","settings":{"variant_style":"dropdowns","show_swatches":true,"alignment":"center","padding-block-start":10,"padding-block-end":40,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"ai_gen_block_856acef_Vzr6Qt":{"type":"ai_gen_block_856acef","name":"Image popup link","settings":{"link_text":"SIZE CHART","link_font":"sans_serif_n4","link_font_size":10,"link_color":"#000000","link_hover_color":"#666666","link_underline":"none","show_icon":true,"icon_type":"ruler","icon_position":"right","icon_size":16,"icon_spacing":8,"popup_image":"shopify:\/\/shop_images\/IMG-0471.png","image_border_radius":0,"popup_max_width":800,"popup_padding":10,"popup_border_radius":0,"popup_bg_color":"#ffffff","overlay_color":"#000000b3","close_button_position":"right","close_button_size":24,"close_button_color":"#000000"},"blocks":{}},"product_inventory_hUqniw":{"type":"product-inventory","name":"t:names.product_inventory","settings":{"inventory_threshold":10,"show_inventory_quantity":true,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"buy_buttons_eYQEYi":{"type":"buy-buttons","settings":{"stacking":false,"show_pickup_availability":true,"gift_card_form":true,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"quantity":{"type":"quantity","disabled":true,"static":true,"settings":{},"blocks":{}},"add-to-cart":{"type":"add-to-cart","static":true,"settings":{"style_class":"button"},"blocks":{}},"accelerated-checkout":{"type":"accelerated-checkout","disabled":true,"static":true,"settings":{},"blocks":{}}},"block_order":[]},"text_EDxHd4":{"type":"text","name":"t:names.text","settings":{"text":"<p>Secure checkout · Ships from Washington<\/p>","width":"100%","max_width":"normal","alignment":"center","type_preset":"rte","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"var(--color-foreground)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"text_QjXexy":{"type":"text","name":"t:names.text","settings":{"text":"{{ closest.product.description }}","width":"100%","max_width":"normal","alignment":"center","type_preset":"custom","font":"var(--font-accent--family)","font_size":"0.875rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"var(--color-foreground)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":20,"padding-block-end":20,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"selleasy_lb_upsell_widget_bac_6b3C89":{"type":"shopify:\/\/apps\/selleasy\/blocks\/lb-upsell-widget-bac\/790c1a03-a71f-4bc1-9869-00dad526d3c2","settings":{}},"accordion_NKWPiW":{"type":"accordion","name":"t:names.accordion","settings":{"icon":"caret","dividers":true,"type_preset":"h6","inherit_color_scheme":true,"color_scheme":"","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"accordion_row_YwxrCx":{"type":"_accordion-row","name":"t:names.accordion_row","settings":{"heading":"MODEL","open_by_default":true,"icon":"silhouette","width":20},"blocks":{"text_ERdTVJ":{"type":"text","settings":{"text":"<p>Model is 5'8\/172cm wearing a size 26.<\/p><p>Recommendation: Stick true-to-size for our standard fit.<\/p>","width":"100%","max_width":"normal","alignment":"left","type_preset":"rte","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"var(--color-foreground)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}}},"block_order":["text_ERdTVJ"]},"accordion_row_NdBezV":{"type":"_accordion-row","settings":{"heading":"SHIPPING","open_by_default":false,"icon":"box","width":20},"blocks":{"text_n7A9da":{"type":"text","settings":{"text":"<p>On average, orders will take 3-5 days to arrive after purchase. Please refer to our <a href=\"https:\/\/pantaoclothing.com\/policies\/shipping-policy\" target=\"_blank\" title=\"Shipping Policy\">shipping policy <\/a>for finer details.<\/p>","width":"100%","max_width":"normal","alignment":"left","type_preset":"custom","font":"var(--font-secondary--family)","font_size":"var(--font-size--body-lg)","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":12,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}}},"block_order":["text_n7A9da"]},"accordion_row_iJM37V":{"type":"_accordion-row","settings":{"heading":"CARE","open_by_default":false,"icon":"washing","width":20},"blocks":{"text_VdG98J":{"type":"text","settings":{"text":"<p>To maintain the beauty and integrity of your purchase, we recommend treating it with care. Simple maintenance practices, such as gentle washing and proper storage, can effectively preserve the longevity of your favorites. We encourage you to refer to the care instructions included with each item, designed to help you keep your purchase in top condition.<\/p>","width":"100%","max_width":"normal","alignment":"left","type_preset":"custom","font":"var(--font-secondary--family)","font_size":"var(--font-size--body-lg)","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":12,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}}},"block_order":["text_VdG98J"]},"accordion_row_DwLkNP":{"type":"_accordion-row","name":"t:names.accordion_row","settings":{"heading":"WARRANTY","open_by_default":false,"icon":"lock","width":20},"blocks":{"text_PAXNHm":{"type":"text","settings":{"text":"<p><strong>1-Year Craftsmanship Warranty<\/strong><br\/><br\/>Every Pantao piece is covered by our 12-month craftsmanship warranty. If stitching, hardware, or construction fails under normal use, we’ll repair or replace it at no cost. Please refer to our <a href=\"\/pages\/pantao-craftsmanship-warranty\" title=\"Pantao Craftsmanship Warranty\">warranty policy<\/a> for explicit details.<br\/><br\/><strong>Wear the Moment<\/strong><\/p>","width":"100%","max_width":"normal","alignment":"left","type_preset":"rte","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"var(--color-foreground)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}}},"block_order":["text_PAXNHm"]}},"block_order":["accordion_row_YwxrCx","accordion_row_NdBezV","accordion_row_iJM37V","accordion_row_DwLkNP"]},"essential_upsell_app_block_6QjTfj":{"type":"shopify:\/\/apps\/essential-upsell\/blocks\/app-block\/50627fd9-24fd-4250-8614-accc12826d80","settings":{}}},"block_order":["heading_m7KmQQ","price_a7krng","divider_HrJgFt","variant_picker_R3rGDr","ai_gen_block_856acef_Vzr6Qt","product_inventory_hUqniw","buy_buttons_eYQEYi","text_EDxHd4","text_QjXexy","selleasy_lb_upsell_widget_bac_6b3C89","accordion_NKWPiW","essential_upsell_app_block_6QjTfj"]}},"settings":{"content_width":"content-full-width","desktop_media_position":"left","equal_columns":true,"limit_details_width":true,"gap":0,"color_scheme":"scheme-2","padding-block-start":0,"padding-block-end":0}}},"order":["main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "product-information",
+      "blocks": {
+        "media-gallery": {
+          "type": "_product-media-gallery",
+          "static": true,
+          "settings": {
+            "media_presentation": "grid",
+            "media_columns": "two",
+            "image_gap": 4,
+            "large_first_image": true,
+            "icons_style": "arrow",
+            "slideshow_controls_style": "counter",
+            "slideshow_mobile_controls_style": "counter",
+            "thumbnail_position": "left",
+            "thumbnail_width": 57,
+            "thumbnail_radius": 0,
+            "aspect_ratio": "1/1.25",
+            "constrain_to_viewport": false,
+            "media_fit": "cover",
+            "media_radius": 0,
+            "extend_media": true,
+            "zoom": false,
+            "video_loop": false,
+            "hide_variants": true,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "product-details": {
+          "type": "_product-details",
+          "static": true,
+          "settings": {
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "details_position": "flex-start",
+            "gap": 12,
+            "sticky_details_desktop": true,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "heading_m7KmQQ": {
+              "type": "text",
+              "settings": {
+                "text": "<h1>{{ closest.product.title }}</h1>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "center",
+                "type_preset": "custom",
+                "font": "var(--font-heading--family)",
+                "font_size": "2rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 50,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "price_a7krng": {
+              "type": "price",
+              "settings": {
+                "show_sale_price_first": true,
+                "show_installments": false,
+                "show_tax_info": false,
+                "type_preset": "custom",
+                "width": "100%",
+                "alignment": "center",
+                "font": "var(--font-body--family)",
+                "font_size": "1.125rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "color": "var(--color-foreground)",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "divider_HrJgFt": {
+              "type": "_divider",
+              "name": "t:names.divider",
+              "disabled": true,
+              "settings": {
+                "thickness": 1,
+                "corner_radius": "square",
+                "width_percent": 100,
+                "padding-block-start": 12,
+                "padding-block-end": 12
+              },
+              "blocks": {}
+            },
+            "variant_picker_R3rGDr": {
+              "type": "variant-picker",
+              "settings": {
+                "variant_style": "dropdowns",
+                "show_swatches": true,
+                "alignment": "center",
+                "padding-block-start": 10,
+                "padding-block-end": 40,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "ai_gen_block_856acef_Vzr6Qt": {
+              "type": "ai_gen_block_856acef",
+              "name": "Image popup link",
+              "settings": {
+                "link_text": "SIZE CHART",
+                "link_font": "sans_serif_n4",
+                "link_font_size": 10,
+                "link_color": "#000000",
+                "link_hover_color": "#666666",
+                "link_underline": "none",
+                "show_icon": true,
+                "icon_type": "ruler",
+                "icon_position": "right",
+                "icon_size": 16,
+                "icon_spacing": 8,
+                "popup_image": "shopify://shop_images/IMG-0471.png",
+                "image_border_radius": 0,
+                "popup_max_width": 800,
+                "popup_padding": 10,
+                "popup_border_radius": 0,
+                "popup_bg_color": "#ffffff",
+                "overlay_color": "#000000b3",
+                "close_button_position": "right",
+                "close_button_size": 24,
+                "close_button_color": "#000000"
+              },
+              "blocks": {}
+            },
+            "product_inventory_hUqniw": {
+              "type": "product-inventory",
+              "name": "t:names.product_inventory",
+              "settings": {
+                "inventory_threshold": 10,
+                "show_inventory_quantity": true,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "buy_buttons_eYQEYi": {
+              "type": "buy-buttons",
+              "settings": {
+                "stacking": false,
+                "show_pickup_availability": true,
+                "gift_card_form": true,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "quantity": {
+                  "type": "quantity",
+                  "disabled": true,
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                },
+                "add-to-cart": {
+                  "type": "add-to-cart",
+                  "static": true,
+                  "settings": {
+                    "style_class": "button"
+                  },
+                  "blocks": {}
+                },
+                "accelerated-checkout": {
+                  "type": "accelerated-checkout",
+                  "disabled": true,
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                }
+              },
+              "block_order": []
+            },
+            "text_EDxHd4": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<p>Secure checkout · Ships from Washington</p>",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "center",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "text_QjXexy": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "{{ closest.product.description }}",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "center",
+                "type_preset": "custom",
+                "font": "var(--font-accent--family)",
+                "font_size": "0.875rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 20,
+                "padding-block-end": 20,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "selleasy_lb_upsell_widget_bac_6b3C89": {
+              "type": "shopify://apps/selleasy/blocks/lb-upsell-widget-bac/790c1a03-a71f-4bc1-9869-00dad526d3c2",
+              "settings": {}
+            },
+            "accordion_NKWPiW": {
+              "type": "accordion",
+              "name": "t:names.accordion",
+              "settings": {
+                "icon": "caret",
+                "dividers": true,
+                "type_preset": "h6",
+                "inherit_color_scheme": true,
+                "color_scheme": "",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "accordion_row_YwxrCx": {
+                  "type": "_accordion-row",
+                  "name": "t:names.accordion_row",
+                  "settings": {
+                    "heading": "MODEL",
+                    "open_by_default": true,
+                    "icon": "silhouette",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_ERdTVJ": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Model is 5'8/172cm wearing a size 26.</p><p>Recommendation: Stick true-to-size for our standard fit.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_ERdTVJ"
+                  ]
+                },
+                "accordion_row_NdBezV": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "SHIPPING",
+                    "open_by_default": false,
+                    "icon": "box",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_n7A9da": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>On average, orders will take 3-5 days to arrive after purchase. Please refer to our <a href=\"https://pantaoclothing.com/policies/shipping-policy\" target=\"_blank\" title=\"Shipping Policy\">shipping policy </a>for finer details.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "custom",
+                        "font": "var(--font-secondary--family)",
+                        "font_size": "var(--font-size--body-lg)",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 12,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_n7A9da"
+                  ]
+                },
+                "accordion_row_iJM37V": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "CARE",
+                    "open_by_default": false,
+                    "icon": "washing",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_VdG98J": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>To maintain the beauty and integrity of your purchase, we recommend treating it with care. Simple maintenance practices, such as gentle washing and proper storage, can effectively preserve the longevity of your favorites. We encourage you to refer to the care instructions included with each item, designed to help you keep your purchase in top condition.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "custom",
+                        "font": "var(--font-secondary--family)",
+                        "font_size": "var(--font-size--body-lg)",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 12,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_VdG98J"
+                  ]
+                },
+                "accordion_row_DwLkNP": {
+                  "type": "_accordion-row",
+                  "name": "t:names.accordion_row",
+                  "settings": {
+                    "heading": "WARRANTY",
+                    "open_by_default": false,
+                    "icon": "lock",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_PAXNHm": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p><strong>1-Year Craftsmanship Warranty</strong><br/><br/>Every Pantao piece is covered by our 12-month craftsmanship warranty. If stitching, hardware, or construction fails under normal use, we’ll repair or replace it at no cost. Please refer to our <a href=\"/pages/pantao-craftsmanship-warranty\" title=\"Pantao Craftsmanship Warranty\">warranty policy</a> for explicit details.<br/><br/><strong>Wear the Moment</strong></p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_PAXNHm"
+                  ]
+                }
+              },
+              "block_order": [
+                "accordion_row_YwxrCx",
+                "accordion_row_NdBezV",
+                "accordion_row_iJM37V",
+                "accordion_row_DwLkNP"
+              ]
+            },
+            "essential_upsell_app_block_6QjTfj": {
+              "type": "shopify://apps/essential-upsell/blocks/app-block/50627fd9-24fd-4250-8614-accc12826d80",
+              "settings": {}
+            }
+          },
+          "block_order": [
+            "heading_m7KmQQ",
+            "price_a7krng",
+            "divider_HrJgFt",
+            "variant_picker_R3rGDr",
+            "ai_gen_block_856acef_Vzr6Qt",
+            "product_inventory_hUqniw",
+            "buy_buttons_eYQEYi",
+            "text_EDxHd4",
+            "text_QjXexy",
+            "selleasy_lb_upsell_widget_bac_6b3C89",
+            "accordion_NKWPiW",
+            "essential_upsell_app_block_6QjTfj"
+          ]
+        }
+      },
+      "settings": {
+        "content_width": "content-full-width",
+        "desktop_media_position": "left",
+        "equal_columns": true,
+        "limit_details_width": true,
+        "gap": 0,
+        "enable_sticky_add_to_cart": true,
+        "color_scheme": "scheme-2",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
