@@ -9,6 +9,15 @@
 
 {%- liquid
   assign s = section.settings
+  assign pe_ta = s.card_align | default: 'left'
+  assign pe_self = 'flex-start'
+  assign pe_just = 'flex-start'
+  assign pe_mi = '0'
+  if pe_ta == 'center'
+    assign pe_self = 'center'
+    assign pe_just = 'center'
+    assign pe_mi = 'auto'
+  endif
 -%}
 
 <div class="pantao-events" data-section-id="{{ section.id }}">
@@ -26,7 +35,7 @@
           {%- assign b = block.settings -%}
           {%- capture meta -%}
             {%- if b.date != blank -%}{{ b.date | escape }}{%- endif -%}
-            {%- if b.date != blank and b.location != blank -%} &middot; {% endif -%}
+            {%- if b.date != blank and b.location != blank -%}&nbsp;&middot;&nbsp;{%- endif -%}
             {%- if b.location != blank -%}{{ b.location | escape }}{%- endif -%}
           {%- endcapture -%}
 
@@ -69,6 +78,16 @@
 
 <style>
   #shopify-section-{{ section.id }} { margin: 0; }
+  #shopify-section-{{ section.id }} .pantao-events {
+    --pe-ta: {{ pe_ta }};
+    --pe-self: {{ pe_self }};
+    --pe-just: {{ pe_just }};
+    --pe-mi: {{ pe_mi }};
+    --pe-h-size: {{ s.card_heading_size | default: 34 }}px;
+    --pe-fh-size: {{ s.feature_heading_size | default: 48 }}px;
+    --pe-h-gap: {{ s.card_heading_gap | default: 18 }}px;
+    --pe-meta-gap: {{ s.card_meta_gap | default: 16 }}px;
+  }
   .pantao-events {
     --pe-ink: var(--color-foreground, #16181c);
     --pe-ground: color-mix(in srgb, var(--color-foreground, #16181c) 4%, var(--color-background, #f4f4f2));
@@ -110,18 +129,21 @@
     display: flex; flex-direction: column; justify-content: space-between; gap: clamp(20px, 3vw, 32px);
     background: var(--pe-card); border: 1px solid var(--pe-line); border-radius: 22px;
     box-shadow: var(--pe-shadow); padding: clamp(26px, 3.4vw, 44px); min-height: clamp(240px, 26vw, 320px);
+    text-align: var(--pe-ta, left);
   }
-  .pantao-events__meta { margin-bottom: clamp(14px, 2vw, 20px); }
+  .pantao-events__meta { margin: 0 0 var(--pe-meta-gap, 16px); }
   .pantao-events__card-h {
     font-family: var(--pe-serif); font-weight: 500; letter-spacing: -0.01em; line-height: 1.08;
-    font-size: clamp(1.5rem, 2.6vw, 2.1rem); margin: 0 0 clamp(12px, 1.6vw, 18px); text-wrap: balance;
+    font-size: var(--pe-h-size, 2.1rem); margin: 0 0 var(--pe-h-gap, 18px); text-wrap: balance;
+    overflow-wrap: normal; word-break: normal; hyphens: none;
   }
   .pantao-events__body p { font-size: 1rem; line-height: 1.66; margin: 0 0 0.9em; max-width: 46ch;
+    margin-inline: var(--pe-mi, 0);
     color: color-mix(in srgb, var(--pe-ink) 84%, transparent); }
   .pantao-events__body p:last-child { margin-bottom: 0; }
 
   .pantao-events__link {
-    align-self: flex-start; display: inline-flex; align-items: center; gap: 0.5em;
+    align-self: var(--pe-self, flex-start); display: inline-flex; align-items: center; gap: 0.5em;
     font-family: var(--pe-sans); font-size: 11px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase;
     color: var(--pe-ink); text-decoration: none; padding: 12px 22px; border-radius: 100px;
     border: 1px solid var(--pe-line); transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
@@ -150,11 +172,11 @@
   .pantao-events__feature-bg::after{content:"";position:absolute;inset:0;background-image:var(--grain,none);background-size:180px;opacity:.06;mix-blend-mode:overlay}
   .pantao-events__feature-streak{position:absolute;left:-6%;right:-6%;top:34%;height:2px;z-index:1;transform:rotate(-3deg);filter:blur(.3px);
     background:linear-gradient(90deg,transparent,rgba(245,244,241,.14) 30%,rgba(245,244,241,.3) 56%,transparent)}
-  .pantao-events__feature-c{position:relative;z-index:2;padding:clamp(28px,4.5vw,60px);color:#f5f4f1;max-width:60ch}
-  .pantao-events__feature-meta{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,244,241,.68);margin:0 0 18px}
-  .pantao-events__feature-h{font-family:var(--pe-serif);font-weight:500;font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 16px;text-wrap:balance;overflow-wrap:normal;word-break:normal;hyphens:none}
-  .pantao-events__feature-body p{color:rgba(245,244,241,.68);font-size:clamp(.98rem,1.4vw,1.1rem);line-height:1.62;max-width:44ch;margin:0 0 clamp(24px,3vw,34px)}
-  .pantao-events__feature-foot{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px}
+  .pantao-events__feature-c{position:relative;z-index:2;padding:clamp(28px,4.5vw,60px);color:#f5f4f1;max-width:min(60ch,88%);text-align:var(--pe-ta,left);margin-inline:var(--pe-mi,0)}
+  .pantao-events__feature-meta{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,244,241,.68);margin:0 0 var(--pe-meta-gap,18px)}
+  .pantao-events__feature-h{font-family:var(--pe-serif);font-weight:500;font-size:var(--pe-fh-size,3.4rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 var(--pe-h-gap,16px);text-wrap:balance;overflow-wrap:normal;word-break:normal;hyphens:none}
+  .pantao-events__feature-body p{color:rgba(245,244,241,.68);font-size:clamp(.98rem,1.4vw,1.1rem);line-height:1.62;max-width:44ch;margin:0 0 clamp(24px,3vw,34px);margin-inline:var(--pe-mi,0)}
+  .pantao-events__feature-foot{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px;justify-content:var(--pe-just,flex-start)}
   .pantao-events__feature-link{display:inline-flex;align-items:center;gap:.6em;font-family:var(--pe-sans);font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
     padding:15px 28px;border-radius:100px;background:#f5f4f1;color:#16181c;border:1px solid #f5f4f1;transition:background-color .3s,color .3s,border-color .3s}
   .pantao-events__feature-link:hover,.pantao-events__feature-link:focus-visible{background:var(--manila,#b5271f);border-color:var(--manila,#b5271f);color:#f5f4f1}
@@ -175,7 +197,13 @@
     { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Events · Manila" },
     { "type": "text", "id": "title", "label": "Title", "default": "Events" },
     { "type": "richtext", "id": "lead", "label": "Lead", "default": "<p>Openings, appointments, and the moments the doors are open. By invitation and in person, in Manila.</p>" },
-    { "type": "text", "id": "empty_text", "label": "Empty state text", "default": "No events scheduled. Join the list to be told when the doors open." }
+    { "type": "text", "id": "empty_text", "label": "Empty state text", "default": "No events scheduled. Join the list to be told when the doors open." },
+    { "type": "header", "content": "Card headers" },
+    { "type": "select", "id": "card_align", "label": "Alignment", "options": [ { "value": "left", "label": "Left" }, { "value": "center", "label": "Center" } ], "default": "left" },
+    { "type": "range", "id": "card_heading_size", "label": "Card heading size", "min": 18, "max": 44, "step": 1, "unit": "px", "default": 34 },
+    { "type": "range", "id": "feature_heading_size", "label": "Featured heading size", "min": 28, "max": 72, "step": 2, "unit": "px", "default": 48 },
+    { "type": "range", "id": "card_heading_gap", "label": "Space below heading", "min": 6, "max": 40, "step": 1, "unit": "px", "default": 18 },
+    { "type": "range", "id": "card_meta_gap", "label": "Space below label", "min": 6, "max": 40, "step": 1, "unit": "px", "default": 16 }
   ],
   "blocks": [
     {
