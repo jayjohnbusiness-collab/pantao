@@ -1,0 +1,159 @@
+{%- comment -%}
+  PANTAO collection styles
+  ----------------------------------------------------------------
+  Re-skins the theme's NATIVE product card and horizontal filter bar into
+  the PANTAO look, without touching their markup or JavaScript — so real
+  faceting, sorting, the column switcher, cart/variant handling all keep
+  working. Loaded once from the layout; every selector is scoped to the
+  theme's own classes, inert where those elements aren't present.
+
+  Robustness notes:
+  - Scoped to .product-card / .facets so it can't leak onto other UI.
+  - Uses theme design tokens (--color-foreground, --style-border-radius-*,
+    --font-*), falling back to literals where a token may be absent.
+{%- endcomment -%}
+<style>
+  /* ============================================================
+     PRODUCT CARD — rounded media, hover zoom, refined type
+     ============================================================ */
+  .product-card { --pantao-card-radius: 16px; }
+
+  /* Round the media frame and clip the image to it. */
+  .product-card .card-gallery {
+    border-radius: var(--pantao-card-radius);
+    overflow: hidden;
+  }
+
+  /* Subtle hover zoom on the product image (desktop pointer only). */
+  @media (hover: hover) {
+    .product-card .card-gallery img {
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
+    }
+    .product-card:hover .card-gallery img {
+      transform: scale(1.04);
+    }
+  }
+
+  /* Typography: quiet, editorial. Title in body face, price muted. */
+  .product-card .product-title,
+  .product-card [class*="product-title"] {
+    font-family: var(--font-body--family);
+    font-weight: 500;
+    letter-spacing: 0.01em;
+  }
+  .product-card .price,
+  .product-card [class*="price"] {
+    color: var(--color-foreground-muted, rgb(var(--color-foreground-rgb) / 0.6));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .product-card .card-gallery img,
+    .product-card:hover .card-gallery img { transition: none; transform: none; }
+  }
+
+  /* ============================================================
+     FILTER BAR — re-skin the native horizontal facets into pills
+     (real faceting/AJAX is the theme's; we only restyle).
+     The horizontal filters are slotted into an <overflow-list>
+     shadow root, so the row gap is set via ::part(list).
+     ============================================================ */
+  @media screen and (min-width: 750px) {
+    /* Each filter (Size / Length / Color / Sort) trigger -> pill */
+    .facets--horizontal .facets__summary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+      border-radius: 100px;
+      line-height: 1;
+      cursor: pointer;
+      white-space: nowrap;
+      list-style: none;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
+    }
+    .facets--horizontal .facets__summary::-webkit-details-marker { display: none; }
+    .facets--horizontal .facets__summary:hover {
+      border-color: color-mix(in srgb, currentColor 48%, transparent);
+      background: color-mix(in srgb, currentColor 5%, transparent);
+    }
+    /* Open panel = emphasized pill */
+    .facets--horizontal .facets__panel[open] > .facets__summary {
+      border-color: currentColor;
+      background: color-mix(in srgb, currentColor 6%, transparent);
+    }
+    .facets--horizontal .facets__label {
+      font-family: var(--font-body--family);
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* Row gap between the slotted filter pills (shadow container). */
+    .facets--horizontal .facets__overflow-list::part(list) {
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Clear-all reads as a quiet inline link, not a pill. */
+    .facets__clear-all-link--horizontal {
+      font-family: var(--font-body--family);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      opacity: 0.6;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: opacity 0.25s ease;
+    }
+    .facets__clear-all-link--horizontal:hover { opacity: 1; }
+
+    /* Products count — muted, spaced. */
+    .facets--horizontal .products-count-wrapper {
+      font-family: var(--font-body--family);
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--color-foreground-muted, rgb(var(--color-foreground-rgb) / 0.55));
+    }
+  }
+
+  /* Column-count switcher -> segmented pill control (all viewports). */
+  .column-options {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px;
+    border: 0;
+    margin: 0;
+    border-radius: 100px;
+    background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+  .column-options__option {
+    display: inline-flex;
+    margin: 0;
+    cursor: pointer;
+  }
+  .column-options .column-picker {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 9px;
+    border-radius: 100px;
+    opacity: 0.5;
+    transition: background-color 0.25s ease, opacity 0.25s ease, box-shadow 0.25s ease;
+  }
+  .column-options__option:hover .column-picker { opacity: 0.85; }
+  .column-options__option:has(.column-options__option-input:checked) .column-picker {
+    background: var(--color-background, #fff);
+    opacity: 1;
+    box-shadow: 0 2px 6px color-mix(in srgb, currentColor 14%, transparent);
+  }
+
+  /* Softer popover for the open filter value list. */
+  .facets--horizontal .facets__inputs {
+    border-radius: var(--style-border-radius-lg, 14px);
+    border: 1px solid var(--color-border, color-mix(in srgb, currentColor 14%, transparent));
+  }
+</style>
