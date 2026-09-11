@@ -81,6 +81,7 @@
       {{ product.title }}
     </span>
   </a>
+  {% unless onboarding %}{% render 'pantao-stock', product: product %}{% endunless %}
   <div
     class="
       product-card__content
