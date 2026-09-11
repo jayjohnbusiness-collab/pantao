@@ -1,51 +1,68 @@
 {%- comment -%}
-  Pantao top nav — hover slide animation + editorial spacing.
+  Pantao top nav — pill items with a hover slide fill.
   ----------------------------------------------------------------
   Styles the desktop horizontal menu (.header-menu, shown when the menu
-  block's style is "Menu"). Adds a hover "slide": an underline that wipes
-  in from the left under each nav item. Loads once (rendered from the
-  header menu block). Inert on mobile and when the drawer is used.
+  block's style is "Menu"). Each item rests in a pill; on hover the pill
+  fills from the left (a slide) and the label inverts. Loads once
+  (rendered from the header menu block). Inert on mobile / drawer.
 {%- endcomment -%}
 <style>
   @media screen and (min-width: 750px) {
-    /* Editorial spacing between top-level items. */
     #header-component .header-menu .menu-list__list {
-      gap: clamp(1.5rem, 2.4vw, 2.75rem);
+      gap: clamp(0.4rem, 1vw, 0.85rem);
+      align-items: center;
     }
 
+    /* Rest state: each item sits in a pill. */
     #header-component .header-menu .menu-list__link {
       position: relative;
-      padding-block: 0.4rem;
+      overflow: hidden;
+      border: 1px solid rgb(var(--color-foreground-rgb, 22 24 28) / 0.22);
+      border-radius: 100px;
+      padding: 0.5rem 1.15rem;
+      transition: border-color 0.35s ease;
     }
 
-    /* The slide: a hairline underline wipes in from the left on hover. */
-    #header-component .header-menu .menu-list__link::after {
+    /* The slide: the pill fills from the left on hover. */
+    #header-component .header-menu .menu-list__link::before {
       content: '';
       position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 1px;
-      background: currentColor;
+      inset: 0;
+      background: var(--color-foreground);
       transform: scaleX(0);
       transform-origin: left center;
       transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
       pointer-events: none;
     }
 
-    #header-component .header-menu .menu-list__link:hover::after,
-    #header-component .header-menu .menu-list__link:focus-visible::after {
+    /* Label rides above the fill and inverts as it slides in. */
+    #header-component .header-menu .menu-list__link-title,
+    #header-component .header-menu .menu-list__link > span {
+      position: relative;
+      z-index: 1;
+      transition: color 0.3s ease;
+    }
+
+    #header-component .header-menu .menu-list__link:hover::before,
+    #header-component .header-menu .menu-list__link:focus-visible::before {
       transform: scaleX(1);
     }
 
-    /* Current page keeps a quiet, static underline. */
-    #header-component .header-menu .menu-list__link--active::after {
-      transform: scaleX(1);
-      opacity: 0.35;
+    #header-component .header-menu .menu-list__link:hover,
+    #header-component .header-menu .menu-list__link:focus-visible,
+    #header-component .header-menu .menu-list__link:hover .menu-list__link-title,
+    #header-component .header-menu .menu-list__link:focus-visible .menu-list__link-title {
+      color: var(--color-background);
+      border-color: var(--color-foreground);
+    }
+
+    /* Current page: a quietly emphasized pill outline. */
+    #header-component .header-menu .menu-list__link--active {
+      border-color: rgb(var(--color-foreground-rgb, 22 24 28) / 0.55);
     }
 
     @media (prefers-reduced-motion: reduce) {
-      #header-component .header-menu .menu-list__link::after {
+      #header-component .header-menu .menu-list__link::before {
         transition: none;
       }
     }
