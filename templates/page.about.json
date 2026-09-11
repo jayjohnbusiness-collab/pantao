@@ -1,9 +1,32 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "about": {
       "type": "pantao-about",
-      "settings": {}
+      "settings": {
+        "eyebrow": "About · Pantao Galeriya",
+        "title": "The House",
+        "lead": "<p>Pantao specializes in luxury contemporary wear and leather goods — designed in Manila, made to be kept.</p>",
+        "card1_label": "The House",
+        "card1_heading": "A house that grew from the essentials.",
+        "card1_body": "<p>Pantao began with a collection of high-quality, everyday pieces — the essentials, made properly. As the house found its footing, it expanded its world into leather and luxury goods.</p><p>Today the studio works the way it always has: quietly, deliberately, and in numbers small enough to keep our hand on every piece.</p>",
+        "card2_label": "Eco",
+        "card2_heading": "Sustainability at the forefront.",
+        "card2_body_top": "<p>At Pantao, one of our goals is to reduce our environmental impact. It's our responsibility to design garments with sustainability and quality at the forefront.</p>",
+        "card2_pull": "And it doesn't stop there.",
+        "card2_body_bottom": "<p>We're taking the initiative to research new sustainable practices to ensure the longevity of each piece, so you can trust that our garments will last for years — whether through the fabric or the packing, we're committed to making a positive impact.</p><p>We understand that transparency is crucial. As we adopt these new practices, we plan to share our developments with the community.</p>"
+      }
     }
   },
-  "order": ["about"]
+  "order": [
+    "about"
+  ]
 }
