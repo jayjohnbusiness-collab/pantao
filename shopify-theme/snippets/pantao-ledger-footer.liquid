@@ -1,194 +1,180 @@
 {%- comment -%}
-  Pantao "The Ledger" footer — shared render
+  Pantao minimal footer — shared render
   --------------------------------------------------------
-  Renders the full Ledger footer, self-contained, from whichever footer
-  section includes it (footer / footer-utilities / pantao-footer). Because
-  it lives in a section's CODE, it syncs reliably from GitHub and cannot be
-  overwritten by the theme editor (which only owns JSON config).
+  A single slim line of links + copyright, in the Gentle Monster minimal
+  register, on the PANTAO paper palette. Rendered from whichever footer
+  section includes it (footer / footer-utilities), so it is driven by
+  section CODE (syncs reliably from GitHub) and cannot be overwritten by
+  the theme editor's group JSON.
 
-  All content falls back to sensible defaults, so a section that doesn't
-  define the matching settings still renders the complete footer.
+  The including section wraps this in a color-scheme `.section` with large
+  inline padding; we neutralise that wrapper (scoped to this section id) so
+  the footer stays slim and on paper regardless of the assigned scheme.
+
+  Links come from a chosen "Footer menu" (section setting `footer_menu`);
+  if unset, they fall back to the legacy Client Care / Legal / Socials
+  menus combined, then to the shop's policy pages — so real links always
+  render without any editor action.
 
   @param {object} section - The including section (for its settings + id)
 {%- endcomment -%}
 
 {%- liquid
-  assign fs = section.settings
-
-  assign kicker = fs.newsletter_kicker | default: 'Be told when the doors open.'
-  assign sub = fs.newsletter_sub | default: 'One note a year, ahead of the edition. Nothing else.'
-  assign btn = fs.newsletter_button | default: 'Join'
-
-  assign show_news = true
-  if fs.show_newsletter == false
-    assign show_news = false
+  assign fmenu = section.settings.footer_menu
+  assign use_combined = false
+  if fmenu == blank or fmenu.links.size == 0
+    assign use_combined = true
   endif
 
-  assign show_pay = true
-  if fs.show_payment_icons == false
-    assign show_pay = false
+  assign col1 = section.settings.col1_menu
+  assign col2 = section.settings.col2_menu
+  assign col3 = section.settings.col3_menu
+  assign has_cols = false
+  if col1 != blank or col2 != blank or col3 != blank
+    assign has_cols = true
   endif
 
-  # link_list settings resolve to a linklist object directly. When a section
-  # doesn't define the setting, fall back to a menu handle via linklists[].
-  assign col1 = fs.col1_menu
-  if col1 == blank
-    assign col1 = linklists['client-care']
-  endif
-  assign col2 = fs.col2_menu
-  if col2 == blank
-    assign col2 = linklists['legal']
-  endif
-  assign col3 = fs.col3_menu
-  if col3 == blank
-    assign col3 = linklists['social']
-  endif
-
-  assign h1 = fs.col1_heading | default: 'Client Care'
-  assign h2 = fs.col2_heading | default: 'Legal'
-  assign h3 = fs.col3_heading | default: 'Socials'
-
-  assign brand = fs.brand_name | default: 'PANTAO'
-  assign suffix = fs.copyright_suffix | default: 'Manila'
+  assign brand = section.settings.brand_name | default: 'PANTAO'
+  assign suffix = section.settings.copyright_suffix | default: 'Manila'
+  assign year = 'now' | date: '%Y'
 -%}
 
-<div class="pantao-footer" data-section-id="{{ section.id }}">
-  <div class="pantao-footer__grid">
-
-    {%- if show_news -%}
-      <div class="pantao-footer__signup">
-        {%- if kicker != blank -%}<p class="pantao-footer__kicker">{{ kicker | escape }}</p>{%- endif -%}
-        {%- if sub != blank -%}<p class="pantao-footer__sub">{{ sub | escape }}</p>{%- endif -%}
-
-        {%- form 'customer' -%}
-          <input type="hidden" name="contact[tags]" value="newsletter">
-          {%- if form.posted_successfully? -%}
-            <p class="pantao-footer__note pantao-footer__note--ok" role="status">
-              {{ 'blocks.email_signup.success' | t | default: 'Thanks — you’re on the list.' }}
-            </p>
-          {%- else -%}
-            <div class="pantao-footer__field">
-              <input
-                type="email"
-                name="contact[email]"
-                autocomplete="email"
-                required
-                placeholder="{{ 'blocks.email_signup.placeholder' | t | default: 'Email address' }}"
-                aria-label="{{ 'blocks.email_signup.label' | t | default: 'Email' }}"
-              >
-              <button type="submit" class="pantao-footer__join">{{ btn | escape }}</button>
-            </div>
-            {%- if form.errors -%}
-              <p class="pantao-footer__note pantao-footer__note--err" role="alert">{{ form.errors | default_errors }}</p>
-            {%- endif -%}
-          {%- endif -%}
-        {%- endform -%}
-      </div>
-    {%- endif -%}
-
-    {%- for col in (1..3) -%}
-      {%- liquid
-        case col
-          when 1
-            assign heading = h1
-            assign list = col1
-          when 2
-            assign heading = h2
-            assign list = col2
-          when 3
-            assign heading = h3
-            assign list = col3
-        endcase
-      -%}
-      {%- if list != blank and list.links.size > 0 -%}
-        <nav class="pantao-footer__col" aria-label="{{ heading | escape }}">
-          {%- if heading != blank -%}<h4 class="pantao-footer__col-heading">{{ heading | escape }}</h4>{%- endif -%}
-          <ul class="pantao-footer__col-list">
-            {%- for link in list.links -%}
-              <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a></li>
-            {%- endfor -%}
-          </ul>
-        </nav>
+<div class="pantao-minfoot" data-section-id="{{ section.id }}">
+  <div class="pantao-minfoot__wrap">
+    <nav class="pantao-minfoot__links" aria-label="{{ 'sections.footer.navigation' | t | default: 'Footer' }}">
+      {%- if use_combined -%}
+        {%- if has_cols -%}
+          {%- for link in col1.links -%}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>{%- endfor -%}
+          {%- for link in col2.links -%}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>{%- endfor -%}
+          {%- for link in col3.links -%}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>{%- endfor -%}
+        {%- else -%}
+          {%- for policy in shop.policies -%}
+            {%- if policy != blank -%}<a href="{{ policy.url }}">{{ policy.title | escape }}</a>{%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- else -%}
+        {%- for link in fmenu.links -%}<a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title | escape }}</a>{%- endfor -%}
       {%- endif -%}
-    {%- endfor -%}
 
-  </div>
+      {%- if localization.available_countries and localization.available_countries.size > 1 -%}
+        {%- form 'localization', class: 'pantao-minfoot__loc' -%}
+          <span class="pantao-minfoot__loc-label">{{ 'localization.country_label' | t | default: 'Country' }}:</span>
+          <span class="pantao-minfoot__loc-field">
+            <select name="country_code" aria-label="{{ 'localization.country_label' | t | default: 'Country' }}" onchange="this.form.submit()">
+              {%- for country in localization.available_countries -%}
+                <option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>{{ country.name }}</option>
+              {%- endfor -%}
+            </select>
+          </span>
+          <input type="hidden" name="return_to" value="{{ request.path }}">
+        {%- endform -%}
+      {%- endif -%}
+    </nav>
 
-  <div class="pantao-footer__base">
-    <span class="pantao-footer__wordmark">{{ brand | escape }}</span>
-    <span class="pantao-footer__copy">
-      &copy; {{ 'now' | date: '%Y' }} {{ brand | escape }}{% if suffix != blank %} &middot; {{ suffix | escape }}{% endif %}
-    </span>
-    {%- if show_pay and shop.enabled_payment_types.size > 0 -%}
-      <span class="pantao-footer__pay" role="list" aria-label="{{ 'blocks.payment_methods' | t | default: 'Payment methods' }}">
-        {%- for type in shop.enabled_payment_types -%}
-          <span class="pantao-footer__pay-icon" role="listitem">{{ type | payment_type_svg_tag: class: 'pantao-footer__pay-svg' }}</span>
-        {%- endfor -%}
-      </span>
-    {%- endif -%}
+    <div class="pantao-minfoot__copy">&copy; {{ year }} {{ brand | escape }}{% if suffix != blank %} &middot; {{ suffix | escape }}{% endif %}</div>
   </div>
 </div>
 
 <style>
-  .pantao-footer { width: 100%; color: var(--color-foreground); }
-  .pantao-footer__grid { display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: start; }
-  @media screen and (min-width: 750px) {
-    .pantao-footer__grid { grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); }
+  /* Neutralise the theme's section wrapper so the footer is slim + on paper,
+     regardless of the color scheme / padding the editor assigns. Scoped to
+     this section id. Padding is applied inline by the section, so !important
+     is required to override it. */
+  #shopify-section-{{ section.id }} { background: #f4f4f2; }
+  #shopify-section-{{ section.id }} .section-background { display: none !important; }
+  #shopify-section-{{ section.id }} .section {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
   }
-  @media screen and (min-width: 990px) {
-    .pantao-footer__grid { grid-template-columns: 1.3fr 1fr 1fr 1fr; }
+
+  .pantao-minfoot {
+    --pf-ink: #16181c;
+    --pf-paper: #f4f4f2;
+    --pf-muted: rgba(22, 24, 28, 0.52);
+    --pf-line: rgba(22, 24, 28, 0.12);
+    --pf-accent: #b5271f;
+    background: var(--pf-paper);
+    color: var(--pf-ink);
+    border-top: 1px solid var(--pf-line);
+    font-family: var(--font-body--family, -apple-system, system-ui, sans-serif);
   }
-  .pantao-footer__kicker {
-    font-family: var(--font-accent--family); font-style: italic; font-weight: var(--font-accent--weight, 500);
-    font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.1; margin: 0 0 0.4rem 0; text-wrap: balance;
+  .pantao-minfoot__wrap {
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 14px clamp(20px, 4vw, 48px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px 30px;
+    flex-wrap: wrap;
   }
-  .pantao-footer__sub {
-    font-family: var(--font-body--family); font-size: var(--font-size--sm, 0.8125rem); letter-spacing: 0.02em;
-    line-height: 1.6; margin: 0 0 1.4rem 0; max-width: 19rem; opacity: 0.62;
+  .pantao-minfoot__links {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(14px, 1.9vw, 28px);
   }
-  .pantao-footer__field {
-    display: flex; align-items: center; gap: 0.5rem; border: 1px solid var(--color-border);
-    border-radius: 100px; padding: 6px 6px 6px 18px; max-width: 22rem; background: var(--color-background);
+  .pantao-minfoot__links > a {
+    font-size: 12px;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    color: var(--pf-ink);
+    text-decoration: none;
+    transition: color 0.2s ease;
   }
-  .pantao-footer__field input {
-    flex: 1 1 auto; min-width: 0; border: 0; outline: 0; background: transparent;
-    font-family: var(--font-body--family); font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-foreground);
+  .pantao-minfoot__links > a:hover,
+  .pantao-minfoot__links > a:focus-visible { color: var(--pf-accent); }
+
+  /* Country selector — styled as inline text: "Country: Value" underlined. */
+  .pantao-minfoot__loc {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-size: 12px;
+    color: var(--pf-muted);
   }
-  .pantao-footer__field input::placeholder { color: var(--color-foreground); opacity: 0.4; }
-  .pantao-footer__join {
-    flex: 0 0 auto; border: 0; border-radius: 100px; background: var(--color-foreground); color: var(--color-background);
-    font-family: var(--font-body--family); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-    padding: 11px 20px; cursor: pointer; transition: opacity 0.3s ease;
+  .pantao-minfoot__loc-field {
+    position: relative;
+    color: var(--pf-ink);
+    border-bottom: 1px solid var(--pf-line);
   }
-  .pantao-footer__join:hover { opacity: 0.85; }
-  .pantao-footer__note { font-family: var(--font-body--family); font-size: var(--font-size--sm, 0.8125rem); margin: 0.9rem 0 0 0; max-width: 22rem; }
-  .pantao-footer__note--ok { opacity: 0.75; }
-  .pantao-footer__note--err { color: var(--color-error, #b23b3b); }
-  .pantao-footer__col-heading {
-    font-family: var(--font-body--family); font-weight: 500; font-size: 11px; letter-spacing: 0.24em;
-    text-transform: uppercase; margin: 0 0 1.1rem 0; color: var(--color-foreground);
+  .pantao-minfoot__loc select {
+    appearance: none;
+    -webkit-appearance: none;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: var(--pf-ink);
+    padding: 2px 16px 2px 0;
+    cursor: pointer;
   }
-  .pantao-footer__col-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
-  .pantao-footer__col-list a {
-    font-family: var(--font-body--family); font-size: 13px; letter-spacing: 0.02em; color: var(--color-foreground);
-    opacity: 0.62; text-decoration: none; transition: opacity 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+  .pantao-minfoot__loc-field::after {
+    content: "";
+    position: absolute;
+    right: 2px;
+    top: 50%;
+    width: 6px; height: 6px;
+    border-right: 1px solid var(--pf-muted);
+    border-bottom: 1px solid var(--pf-muted);
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
   }
-  .pantao-footer__col-list a:hover, .pantao-footer__col-list a:focus-visible { opacity: 1; }
-  .pantao-footer__base {
-    margin-top: clamp(40px, 5vw, 60px); padding-top: 1.5rem; border-top: 1px solid var(--color-border);
-    display: grid; grid-template-columns: 1fr; justify-items: center; gap: 1.2rem; text-align: center;
+  .pantao-minfoot__loc select:hover { color: var(--pf-accent); }
+
+  .pantao-minfoot__copy {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pf-muted);
+    white-space: nowrap;
   }
-  @media screen and (min-width: 750px) {
-    .pantao-footer__base { grid-template-columns: auto 1fr auto; align-items: center; gap: 1.5rem; text-align: left; }
+
+  @media screen and (max-width: 720px) {
+    .pantao-minfoot__wrap { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .pantao-minfoot__links { gap: 12px 18px; }
   }
-  .pantao-footer__wordmark {
-    font-family: var(--font-accent--family); font-weight: var(--font-accent--weight, 500);
-    font-size: 1.5rem; letter-spacing: 0.04em; justify-self: start;
-  }
-  .pantao-footer__copy { font-family: var(--font-body--family); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0.55; }
-  @media screen and (min-width: 750px) { .pantao-footer__copy { justify-self: center; } }
-  .pantao-footer__pay { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; justify-content: center; }
-  @media screen and (min-width: 750px) { .pantao-footer__pay { justify-self: end; } }
-  .pantao-footer__pay-icon { display: inline-flex; align-items: center; }
-  .pantao-footer__pay-svg, .pantao-footer__pay-icon svg, .pantao-footer__pay-icon img { height: 22px; width: auto; display: block; border-radius: 4px; }
 </style>
