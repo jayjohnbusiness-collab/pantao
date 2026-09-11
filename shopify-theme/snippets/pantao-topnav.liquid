@@ -2,28 +2,43 @@
   Pantao top nav — pill items with a hover slide fill.
   ----------------------------------------------------------------
   Styles the desktop horizontal menu (.header-menu, shown when the menu
-  block's style is "Menu"). Each item rests in a pill; on hover the pill
-  fills from the left (a slide) and the label inverts. Loads once
-  (rendered from the header menu block). Inert on mobile / drawer.
+  block's style is "Menu"). Each item rests in a compact pill; on hover the
+  pill fills from the left (a slide) and the label inverts.
+
+  The theme sets .menu-list__link { height: 100% } so links stretch to the
+  full header height — we reset that to keep the pills compact, and move the
+  horizontal padding onto the pill itself. Loads once (rendered from the
+  header menu block). Inert on mobile / drawer.
 {%- endcomment -%}
 <style>
   @media screen and (min-width: 750px) {
     #header-component .header-menu .menu-list__list {
-      gap: clamp(0.4rem, 1vw, 0.85rem);
+      gap: clamp(0.4rem, 1vw, 0.8rem);
       align-items: center;
     }
 
-    /* Rest state: each item sits in a pill. */
+    /* Compact pill — override the theme's full-height link. */
     #header-component .header-menu .menu-list__link {
+      height: auto;
+      align-self: center;
       position: relative;
       overflow: hidden;
+      line-height: 1;
       border: 1px solid rgb(var(--color-foreground-rgb, 22 24 28) / 0.22);
       border-radius: 100px;
-      padding: 0.5rem 1.15rem;
+      padding: 0.5rem 1.1rem;
       transition: border-color 0.35s ease;
     }
 
-    /* The slide: the pill fills from the left on hover. */
+    /* Text carries no extra inline padding — the pill controls it. */
+    #header-component .header-menu .menu-list__link-title {
+      padding-inline: 0;
+      position: relative;
+      z-index: 1;
+      transition: color 0.3s ease;
+    }
+
+    /* The slide: pill fills from the left on hover. */
     #header-component .header-menu .menu-list__link::before {
       content: '';
       position: absolute;
@@ -35,24 +50,18 @@
       pointer-events: none;
     }
 
-    /* Label rides above the fill and inverts as it slides in. */
-    #header-component .header-menu .menu-list__link-title,
-    #header-component .header-menu .menu-list__link > span {
-      position: relative;
-      z-index: 1;
-      transition: color 0.3s ease;
-    }
-
     #header-component .header-menu .menu-list__link:hover::before,
     #header-component .header-menu .menu-list__link:focus-visible::before {
       transform: scaleX(1);
     }
 
-    #header-component .header-menu .menu-list__link:hover,
-    #header-component .header-menu .menu-list__link:focus-visible,
     #header-component .header-menu .menu-list__link:hover .menu-list__link-title,
     #header-component .header-menu .menu-list__link:focus-visible .menu-list__link-title {
       color: var(--color-background);
+    }
+
+    #header-component .header-menu .menu-list__link:hover,
+    #header-component .header-menu .menu-list__link:focus-visible {
       border-color: var(--color-foreground);
     }
 
