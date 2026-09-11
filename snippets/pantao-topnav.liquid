@@ -1,17 +1,18 @@
 {%- comment -%}
-  Pantao top nav — pill items with a hover slide fill.
+  Pantao top nav — clean items with an outline hover.
   ----------------------------------------------------------------
-  Styles the desktop horizontal menu (.header-menu). Each item rests in a
-  compact pill; on hover the pill fills from the left (slide) with a fixed
-  brand ink + paper pair so it is always legible over any header state.
+  Styles the desktop horizontal menu (.header-menu). Each item rests as
+  clean text (no border, no fill); on hover a pill outline and a faint
+  background fade in — the understated, editorial treatment from the
+  homepage design language.
 
   Robustness notes:
-  - Border uses currentColor via color-mix (the scheme's *-rgb vars resolve
-    to `inherit` in the transparent/sticky header states, which silently
-    breaks rgb(var(--…-rgb) / …) borders).
-  - Hover fill/text use fixed brand colors, not --color-background, because
-    over the hero --color-background is white — a white fill + white text
-    made the hover look like it obscured the menu.
+  - The rest border is transparent (not 0) so it reserves the 1px and the
+    hover outline never shifts neighbouring items.
+  - Outline + fill use currentColor via color-mix, because the scheme's
+    *-rgb vars resolve to `inherit` in the transparent/sticky header states,
+    which silently breaks rgb(var(--…-rgb) / …). This keeps the hover legible
+    over any header colour without hardcoding a brand colour.
   - The theme sets .menu-list__link { height:100% }; we reset to auto to keep
     the pills compact. Loads once (from the header menu block); inert on
     mobile / drawer.
@@ -63,61 +64,37 @@
       justify-content: center;
     }
 
-    /* Compact pill — override the theme's full-height link. */
+    /* Clean at rest — transparent border reserves the 1px so the hover
+       outline never nudges the row. Compact (override theme height:100%). */
     #header-component .header-menu .menu-list__link {
       height: auto;
       align-self: center;
-      position: relative;
-      overflow: hidden;
       line-height: 1;
-      border: 1px solid color-mix(in srgb, currentColor 26%, transparent);
+      border: 1px solid transparent;
       border-radius: 100px;
       padding: 0.5rem {{ pill_pad }}px;
-      transition: border-color 0.35s ease;
+      background-color: transparent;
+      transition: border-color 0.3s ease, background-color 0.3s ease;
     }
 
     #header-component .header-menu .menu-list__link-title {
       padding-inline: 0;
-      position: relative;
-      z-index: 1;
-      transition: color 0.3s ease;
     }
 
-    /* The slide: pill fills from the left on hover (fixed brand ink). */
-    #header-component .header-menu .menu-list__link::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      background: #16181c;
-      transform: scaleX(0);
-      transform-origin: left center;
-      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-      pointer-events: none;
-    }
-
-    #header-component .header-menu .menu-list__link:hover::before,
-    #header-component .header-menu .menu-list__link:focus-visible::before {
-      transform: scaleX(1);
-    }
-
-    #header-component .header-menu .menu-list__link:hover .menu-list__link-title,
-    #header-component .header-menu .menu-list__link:focus-visible .menu-list__link-title {
-      color: #f5f6f5;
-    }
-
+    /* Hover / focus: a pill outline and a faint fill fade in. */
     #header-component .header-menu .menu-list__link:hover,
     #header-component .header-menu .menu-list__link:focus-visible {
-      border-color: #16181c;
+      border-color: color-mix(in srgb, currentColor 24%, transparent);
+      background-color: color-mix(in srgb, currentColor 5%, transparent);
     }
 
-    /* Current page: a quietly emphasized pill outline. */
+    /* Current page: a quiet resting outline. */
     #header-component .header-menu .menu-list__link--active {
-      border-color: color-mix(in srgb, currentColor 55%, transparent);
+      border-color: color-mix(in srgb, currentColor 22%, transparent);
     }
 
     @media (prefers-reduced-motion: reduce) {
-      #header-component .header-menu .menu-list__link::before {
+      #header-component .header-menu .menu-list__link {
         transition: none;
       }
     }
