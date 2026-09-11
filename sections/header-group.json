@@ -80,7 +80,7 @@
         "color_scheme_top": "scheme-a788d462-2ce4-4863-ad69-6c3c821df4c7",
         "color_scheme_bottom": "",
         "color_scheme_transparent": "scheme-4",
-        "enable_transparent_header_home": true,
+        "enable_transparent_header_home": false,
         "home_color_scheme": "inverse",
         "enable_transparent_header_product": false,
         "product_color_scheme": "inverse",
