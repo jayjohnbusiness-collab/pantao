@@ -37,7 +37,7 @@
           "type": "event",
           "settings": {
             "date": "INVITE ONLY",
-            "location": "Galeriya, Manila",
+            "location": "LOCATION (PRIVATE)",
             "title": "PRIVATE TRACK DAY",
             "description": "<p>A morning on the circuit for owners of the edition. Cars provided. Drive, or be driven. Twelve spots, once.</p>",
             "link_label": "RESERVE A SPOT",
@@ -45,10 +45,24 @@
             "featured": true,
             "spots": "12 spots · filling"
           }
+        },
+        "event_bmy8cD": {
+          "type": "event",
+          "settings": {
+            "date": "INVITE ONLY",
+            "location": "LOCATION (PRIVATE)",
+            "title": "PRIVATE WINE TASTING",
+            "description": "<p>The doors open for one evening. The year's edition, shown in the room it was made in.</p>",
+            "link_label": "RSVP",
+            "link": "",
+            "featured": false,
+            "spots": ""
+          }
         }
       },
       "block_order": [
-        "event_KKNxMN"
+        "event_KKNxMN",
+        "event_bmy8cD"
       ],
       "name": "PANTAO Events",
       "settings": {
