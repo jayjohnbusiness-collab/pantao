@@ -1,14 +1,20 @@
 {%- comment -%}
   Pantao top nav — pill items with a hover slide fill.
   ----------------------------------------------------------------
-  Styles the desktop horizontal menu (.header-menu, shown when the menu
-  block's style is "Menu"). Each item rests in a compact pill; on hover the
-  pill fills from the left (a slide) and the label inverts.
+  Styles the desktop horizontal menu (.header-menu). Each item rests in a
+  compact pill; on hover the pill fills from the left (slide) with a fixed
+  brand ink + paper pair so it is always legible over any header state.
 
-  The theme sets .menu-list__link { height: 100% } so links stretch to the
-  full header height — we reset that to keep the pills compact, and move the
-  horizontal padding onto the pill itself. Loads once (rendered from the
-  header menu block). Inert on mobile / drawer.
+  Robustness notes:
+  - Border uses currentColor via color-mix (the scheme's *-rgb vars resolve
+    to `inherit` in the transparent/sticky header states, which silently
+    breaks rgb(var(--…-rgb) / …) borders).
+  - Hover fill/text use fixed brand colors, not --color-background, because
+    over the hero --color-background is white — a white fill + white text
+    made the hover look like it obscured the menu.
+  - The theme sets .menu-list__link { height:100% }; we reset to auto to keep
+    the pills compact. Loads once (from the header menu block); inert on
+    mobile / drawer.
 {%- endcomment -%}
 <style>
   @media screen and (min-width: 750px) {
@@ -24,13 +30,12 @@
       position: relative;
       overflow: hidden;
       line-height: 1;
-      border: 1px solid rgb(var(--color-foreground-rgb, 22 24 28) / 0.22);
+      border: 1px solid color-mix(in srgb, currentColor 26%, transparent);
       border-radius: 100px;
       padding: 0.5rem 1.1rem;
       transition: border-color 0.35s ease;
     }
 
-    /* Text carries no extra inline padding — the pill controls it. */
     #header-component .header-menu .menu-list__link-title {
       padding-inline: 0;
       position: relative;
@@ -38,12 +43,13 @@
       transition: color 0.3s ease;
     }
 
-    /* The slide: pill fills from the left on hover. */
+    /* The slide: pill fills from the left on hover (fixed brand ink). */
     #header-component .header-menu .menu-list__link::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: var(--color-foreground);
+      z-index: 0;
+      background: #16181c;
       transform: scaleX(0);
       transform-origin: left center;
       transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
@@ -57,17 +63,17 @@
 
     #header-component .header-menu .menu-list__link:hover .menu-list__link-title,
     #header-component .header-menu .menu-list__link:focus-visible .menu-list__link-title {
-      color: var(--color-background);
+      color: #f5f6f5;
     }
 
     #header-component .header-menu .menu-list__link:hover,
     #header-component .header-menu .menu-list__link:focus-visible {
-      border-color: var(--color-foreground);
+      border-color: #16181c;
     }
 
     /* Current page: a quietly emphasized pill outline. */
     #header-component .header-menu .menu-list__link--active {
-      border-color: rgb(var(--color-foreground-rgb, 22 24 28) / 0.55);
+      border-color: color-mix(in srgb, currentColor 55%, transparent);
     }
 
     @media (prefers-reduced-motion: reduce) {
