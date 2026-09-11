@@ -10,7 +10,7 @@
   assign block_settings = block.settings
 %}
 
-{% render 'pantao-topnav' %}
+{% render 'pantao-topnav', block: block %}
 
 {% case variant %}
   {% when 'mobile' %}
@@ -706,6 +706,32 @@
       "id": "color_scheme",
       "label": "t:settings.color_scheme",
       "default": "primary"
+    },
+    {
+      "type": "header",
+      "content": "PANTAO pill menu"
+    },
+    {
+      "type": "range",
+      "id": "pantao_pill_spacing",
+      "label": "Pill spacing",
+      "min": 0,
+      "max": 48,
+      "step": 1,
+      "unit": "px",
+      "default": 24,
+      "info": "Space between the menu pills on desktop."
+    },
+    {
+      "type": "range",
+      "id": "pantao_pill_padding",
+      "label": "Pill horizontal padding",
+      "min": 8,
+      "max": 40,
+      "step": 1,
+      "unit": "px",
+      "default": 18,
+      "info": "Inner left/right padding — controls how wide each pill is."
     },
     {
       "type": "header",
