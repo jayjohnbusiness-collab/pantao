@@ -57,6 +57,7 @@
     "cart_type": "drawer",
     "cart_price_font": "body",
     "show_add_discount_code": false,
+    "drawer_color_scheme": "",
     "icon_stroke": "thin",
     "input_border_width": 1,
     "inputs_border_radius": 0,
