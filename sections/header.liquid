@@ -1138,28 +1138,45 @@
   }
 
   /* ============================================================
-     PANTAO — slim, Apple-height header
-     Tighten the header to a compact bar: smaller logo + tight
-     vertical padding. Applies at all widths.
+     PANTAO — compact header, legible logo
+     A wordmark can't be Apple-tiny AND legible, so we keep a slim
+     bar with a readable logo (~44px) rather than the 28px cap that
+     made the wordmark illegible. Tune --pantao-logo-height to taste.
      ============================================================ */
+  #header-component {
+    --pantao-logo-height: 44px;
+    --pantao-logo-height-mobile: 34px;
+  }
+
   body {
-    --header-height: 48px;
+    --header-height: 60px;
   }
 
   #header-component .header {
-    --header-padding: 9px;
+    --header-padding: 8px;
   }
 
+  /* Image logo: legible height, proportional width. */
   #header-component .header-logo__image {
-    height: 28px;
-    max-height: 28px;
+    height: var(--pantao-logo-height);
+    max-height: var(--pantao-logo-height);
     width: auto;
+  }
+
+  /* Text-fallback logo (shown when the regular logo isn't set): keep it a
+     legible wordmark, not tiny body text. */
+  #header-component .header-logo {
+    font-size: 1.3rem;
+    letter-spacing: 0.1em;
   }
 
   @media screen and (max-width: 749px) {
     #header-component .header-logo__image {
-      height: 24px;
-      max-height: 24px;
+      height: var(--pantao-logo-height-mobile);
+      max-height: var(--pantao-logo-height-mobile);
+    }
+    #header-component .header-logo {
+      font-size: 1.1rem;
     }
   }
 {% endstylesheet %}
