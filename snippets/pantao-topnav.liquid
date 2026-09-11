@@ -15,7 +15,24 @@
   - The theme sets .menu-list__link { height:100% }; we reset to auto to keep
     the pills compact. Loads once (from the header menu block); inert on
     mobile / drawer.
+
+  Editable in the theme editor: the Header menu block exposes "Pill spacing"
+  and "Pill horizontal padding" ranges (schema ids pantao_pill_spacing /
+  pantao_pill_padding). They flow in here as px. Defaults apply if the block
+  isn't passed. Note: `default` does not override 0, so 0px spacing is allowed.
+
+  @param {object} [block] - The header menu block (for its pill settings)
 {%- endcomment -%}
+{%- liquid
+  assign pill_gap = 24
+  assign pill_pad = 18
+  if block.settings.pantao_pill_spacing != blank or block.settings.pantao_pill_spacing == 0
+    assign pill_gap = block.settings.pantao_pill_spacing
+  endif
+  if block.settings.pantao_pill_padding != blank
+    assign pill_pad = block.settings.pantao_pill_padding
+  endif
+-%}
 <style>
   @media screen and (min-width: 750px) {
     /* Inter-pill spacing.
@@ -28,7 +45,7 @@
        reach the shadow container from the outer document via ::part(list),
        the one selector that crosses the shadow boundary. */
     #header-component .header-menu overflow-list::part(list) {
-      gap: clamp(1.25rem, 2.2vw, 2rem);
+      gap: {{ pill_gap }}px;
       align-items: center;
     }
 
@@ -36,7 +53,7 @@
        light-DOM `<ul class="menu-list__list">` with no shadow root. Only one
        path renders at a time, so this never stacks with the ::part rule. */
     #header-component .header-menu .menu-list__list {
-      gap: clamp(1.25rem, 2.2vw, 2rem);
+      gap: {{ pill_gap }}px;
       align-items: center;
     }
 
@@ -55,7 +72,7 @@
       line-height: 1;
       border: 1px solid color-mix(in srgb, currentColor 26%, transparent);
       border-radius: 100px;
-      padding: 0.5rem 1.1rem;
+      padding: 0.5rem {{ pill_pad }}px;
       transition: border-color 0.35s ease;
     }
 
