@@ -271,7 +271,7 @@
       "scheme-5": {
         "settings": {
           "background": "#0000001c",
-          "foreground_heading": "#ffffff",
+          "foreground_heading": "#D90000",
           "foreground": "#ffffff",
           "primary": "#ffffff",
           "primary_hover": "#acacac",
@@ -426,7 +426,7 @@
       },
       "scheme-a788d462-2ce4-4863-ad69-6c3c821df4c7": {
         "settings": {
-          "background": "#FFFFFF",
+          "background": "#ffffff",
           "foreground_heading": "#000000",
           "foreground": "#000000",
           "primary": "#000000",
