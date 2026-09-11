@@ -1137,6 +1137,34 @@
     }
   }
 
+  /* ============================================================
+     PANTAO — fixed slim header, logo adjustable within it
+     The header height stays constant. The logo is sized by Shopify's
+     native "Logo height" setting, but capped with max-height so it
+     fits the fixed header and never grows it. Raise --header-height
+     and the max-height together for a taller bar + bigger logo.
+     ============================================================ */
+  body {
+    --header-height: 60px;
+  }
+
+  #header-component .header {
+    --header-padding: 9px;
+  }
+
+  /* Native Logo-height setting still controls the size (up to the cap);
+     width:auto keeps it proportional when the cap engages. */
+  #header-component .header-logo__image {
+    max-height: 42px;
+    width: auto;
+  }
+
+  @media screen and (max-width: 749px) {
+    #header-component .header-logo__image {
+      max-height: 32px;
+    }
+  }
+
 {% endstylesheet %}
 
 {% unless request.design_mode %}
