@@ -48,6 +48,10 @@
     endif
   endif
 
+  # PANTAO: force a solid (non-transparent) header on every template — the
+  # header never overlaps content and always renders its own scheme background.
+  assign transparent = false
+
   capture logo
     content_for 'block', type: '_header-logo', id: 'header-logo'
   endcapture
@@ -1130,6 +1134,32 @@
 
     .header[transparent='not-sticky'][data-sticky-state='active'] .header__underlay-closed {
       background: transparent;
+    }
+  }
+
+  /* ============================================================
+     PANTAO — slim, Apple-height header
+     Tighten the header to a compact bar: smaller logo + tight
+     vertical padding. Applies at all widths.
+     ============================================================ */
+  body {
+    --header-height: 48px;
+  }
+
+  #header-component .header {
+    --header-padding: 9px;
+  }
+
+  #header-component .header-logo__image {
+    height: 28px;
+    max-height: 28px;
+    width: auto;
+  }
+
+  @media screen and (max-width: 749px) {
+    #header-component .header-logo__image {
+      height: 24px;
+      max-height: 24px;
     }
   }
 {% endstylesheet %}
