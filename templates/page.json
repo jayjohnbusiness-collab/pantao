@@ -41,7 +41,7 @@
             "title": "PRIVATE TRACK DAY",
             "description": "<p>A morning on the circuit for owners of the edition. Cars provided. Drive, or be driven. Twelve spots, once.</p>",
             "link_label": "RSVP",
-            "link": "",
+            "link": "shopify://pages/track-day-reservation",
             "featured": true,
             "spots": "12 spots · filling"
           }
