@@ -24,22 +24,40 @@
       <div class="pantao-events__grid">
         {%- for block in section.blocks -%}
           {%- assign b = block.settings -%}
-          <article class="pantao-events__card" {{ block.shopify_attributes }}>
-            <div>
-              {%- if b.date != blank or b.location != blank -%}
-                <p class="pantao-events__eyebrow pantao-events__meta">
-                  {%- if b.date != blank -%}{{ b.date | escape }}{%- endif -%}
-                  {%- if b.date != blank and b.location != blank -%} &middot; {% endif -%}
-                  {%- if b.location != blank -%}{{ b.location | escape }}{%- endif -%}
-                </p>
+          {%- capture meta -%}
+            {%- if b.date != blank -%}{{ b.date | escape }}{%- endif -%}
+            {%- if b.date != blank and b.location != blank -%} &middot; {% endif -%}
+            {%- if b.location != blank -%}{{ b.location | escape }}{%- endif -%}
+          {%- endcapture -%}
+
+          {%- if b.featured -%}
+            <article class="pantao-events__card pantao-events__feature" {{ block.shopify_attributes }}>
+              <div class="pantao-events__feature-bg"></div>
+              <div class="pantao-events__feature-streak"></div>
+              <div class="pantao-events__feature-c">
+                {%- if b.date != blank or b.location != blank -%}<p class="pantao-events__feature-meta">{{ meta }}</p>{%- endif -%}
+                {%- if b.title != blank -%}<h2 class="pantao-events__feature-h">{{ b.title }}</h2>{%- endif -%}
+                {%- if b.description != blank -%}<div class="pantao-events__feature-body">{{ b.description }}</div>{%- endif -%}
+                <div class="pantao-events__feature-foot">
+                  {%- if b.link_label != blank and b.link != blank -%}
+                    <a class="pantao-events__feature-link" href="{{ b.link }}">{{ b.link_label | escape }}</a>
+                  {%- endif -%}
+                  {%- if b.spots != blank -%}<span class="pantao-events__spots"><i></i>{{ b.spots | escape }}</span>{%- endif -%}
+                </div>
+              </div>
+            </article>
+          {%- else -%}
+            <article class="pantao-events__card" {{ block.shopify_attributes }}>
+              <div>
+                {%- if b.date != blank or b.location != blank -%}<p class="pantao-events__eyebrow pantao-events__meta">{{ meta }}</p>{%- endif -%}
+                {%- if b.title != blank -%}<h2 class="pantao-events__card-h">{{ b.title }}</h2>{%- endif -%}
+                {%- if b.description != blank -%}<div class="pantao-events__body">{{ b.description }}</div>{%- endif -%}
+              </div>
+              {%- if b.link_label != blank and b.link != blank -%}
+                <a class="pantao-events__link" href="{{ b.link }}">{{ b.link_label | escape }}</a>
               {%- endif -%}
-              {%- if b.title != blank -%}<h2 class="pantao-events__card-h">{{ b.title }}</h2>{%- endif -%}
-              {%- if b.description != blank -%}<div class="pantao-events__body">{{ b.description }}</div>{%- endif -%}
-            </div>
-            {%- if b.link_label != blank and b.link != blank -%}
-              <a class="pantao-events__link" href="{{ b.link }}">{{ b.link_label | escape }}</a>
-            {%- endif -%}
-          </article>
+            </article>
+          {%- endif -%}
         {%- endfor -%}
       </div>
     {%- else -%}
@@ -116,6 +134,34 @@
     font-family: var(--pe-serif); font-weight: 400; font-size: clamp(1.3rem, 2.6vw, 1.9rem);
     line-height: 1.3; color: var(--pe-muted); max-width: 26ch; margin: 0;
   }
+
+  /* Featured (cinematic dark) event card — spans the grid, committed dark. */
+  .pantao-events__feature{
+    grid-column: 1 / -1; position: relative; display: flex; flex-direction: column; justify-content: flex-end;
+    min-height: clamp(420px, 52vw, 580px); border-radius: 24px; overflow: hidden; isolation: isolate;
+    padding: 0; border: 0;
+  }
+  .pantao-events__feature-bg{position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(120% 80% at 78% 12%, rgba(120,126,138,.4), transparent 55%),
+      radial-gradient(90% 60% at 96% 100%, rgba(181,39,31,.24), transparent 60%),
+      linear-gradient(168deg,#26292f 0%,#141519 48%,#080a0d 100%);}
+  .pantao-events__feature-bg::after{content:"";position:absolute;inset:0;background-image:var(--grain,none);background-size:180px;opacity:.06;mix-blend-mode:overlay}
+  .pantao-events__feature-streak{position:absolute;left:-6%;right:-6%;top:34%;height:2px;z-index:1;transform:rotate(-3deg);filter:blur(.3px);
+    background:linear-gradient(90deg,transparent,rgba(245,244,241,.14) 30%,rgba(245,244,241,.3) 56%,transparent)}
+  .pantao-events__feature-c{position:relative;z-index:2;padding:clamp(28px,4.5vw,60px);color:#f5f4f1;max-width:60ch}
+  .pantao-events__feature-meta{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,244,241,.68);margin:0 0 18px}
+  .pantao-events__feature-h{font-family:var(--pe-serif);font-weight:500;font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.02;letter-spacing:-.01em;margin:0 0 16px;text-wrap:balance}
+  .pantao-events__feature-body p{color:rgba(245,244,241,.68);font-size:clamp(.98rem,1.4vw,1.1rem);line-height:1.62;max-width:44ch;margin:0 0 clamp(24px,3vw,34px)}
+  .pantao-events__feature-foot{display:flex;flex-wrap:wrap;align-items:center;gap:16px 24px}
+  .pantao-events__feature-link{display:inline-flex;align-items:center;gap:.6em;font-family:var(--pe-sans);font-size:11px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+    padding:15px 28px;border-radius:100px;background:#f5f4f1;color:#16181c;border:1px solid #f5f4f1;transition:background-color .3s,color .3s,border-color .3s}
+  .pantao-events__feature-link:hover,.pantao-events__feature-link:focus-visible{background:var(--manila,#b5271f);border-color:var(--manila,#b5271f);color:#f5f4f1}
+  .pantao-events__spots{display:inline-flex;align-items:center;gap:8px;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(245,244,241,.68)}
+  .pantao-events__spots i{position:relative;width:7px;height:7px;border-radius:50%;background:#e0b341;flex:none}
+  .pantao-events__spots i::after{content:"";position:absolute;inset:0;border-radius:50%;background:inherit;animation:pe-pulse 1.9s cubic-bezier(.22,1,.36,1) infinite}
+  @keyframes pe-pulse{0%{transform:scale(1);opacity:.55}70%{transform:scale(3);opacity:0}100%{opacity:0}}
+  @media (prefers-reduced-motion: reduce){.pantao-events__spots i::after{animation:none}}
 </style>
 
 {% schema %}
@@ -140,7 +186,9 @@
         { "type": "text", "id": "title", "label": "Title", "default": "Edition V — Opening Night" },
         { "type": "richtext", "id": "description", "label": "Description", "default": "<p>The doors open for one evening. The year's edition, shown in the room it was made in.</p>" },
         { "type": "text", "id": "link_label", "label": "Link label", "default": "RSVP" },
-        { "type": "url", "id": "link", "label": "Link" }
+        { "type": "url", "id": "link", "label": "Link", "info": "For reservations, point this at your reservation page." },
+        { "type": "checkbox", "id": "featured", "label": "Featured (large dark card)", "default": false },
+        { "type": "text", "id": "spots", "label": "Spots note", "info": "e.g. 12 spots · filling — shown on featured cards" }
       ]
     }
   ],

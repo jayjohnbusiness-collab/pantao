@@ -1,0 +1,18 @@
+{
+  "sections": {
+    "reserve": {
+      "type": "pantao-reserve",
+      "settings": {
+        "back_url": "/pages/events",
+        "back_label": "Back to events",
+        "eyebrow": "Reserve · Private Track Day",
+        "title": "Reserve your spot.",
+        "event_name": "Private Track Day",
+        "date": "07 Feb 2026",
+        "location": "Clark Int'l Speedway",
+        "spots": "12 · filling"
+      }
+    }
+  },
+  "order": ["reserve"]
+}
