@@ -10,6 +10,8 @@
   assign block_settings = block.settings
 %}
 
+{% render 'pantao-topnav' %}
+
 {% case variant %}
   {% when 'mobile' %}
     {% render 'logo-trigger-styles', block: block %}

@@ -1,0 +1,53 @@
+{%- comment -%}
+  Pantao top nav — hover slide animation + editorial spacing.
+  ----------------------------------------------------------------
+  Styles the desktop horizontal menu (.header-menu, shown when the menu
+  block's style is "Menu"). Adds a hover "slide": an underline that wipes
+  in from the left under each nav item. Loads once (rendered from the
+  header menu block). Inert on mobile and when the drawer is used.
+{%- endcomment -%}
+<style>
+  @media screen and (min-width: 750px) {
+    /* Editorial spacing between top-level items. */
+    #header-component .header-menu .menu-list__list {
+      gap: clamp(1.5rem, 2.4vw, 2.75rem);
+    }
+
+    #header-component .header-menu .menu-list__link {
+      position: relative;
+      padding-block: 0.4rem;
+    }
+
+    /* The slide: a hairline underline wipes in from the left on hover. */
+    #header-component .header-menu .menu-list__link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 1px;
+      background: currentColor;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+
+    #header-component .header-menu .menu-list__link:hover::after,
+    #header-component .header-menu .menu-list__link:focus-visible::after {
+      transform: scaleX(1);
+    }
+
+    /* Current page keeps a quiet, static underline. */
+    #header-component .header-menu .menu-list__link--active::after {
+      transform: scaleX(1);
+      opacity: 0.35;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      #header-component .header-menu .menu-list__link::after {
+        transition: none;
+      }
+    }
+  }
+</style>
