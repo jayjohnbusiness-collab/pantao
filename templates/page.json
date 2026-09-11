@@ -45,38 +45,10 @@
             "featured": true,
             "spots": "12 spots · filling"
           }
-        },
-        "event_b9LCUP": {
-          "type": "event",
-          "settings": {
-            "date": "14 Nov 2026",
-            "location": "Galeriya, Manila",
-            "title": "Edition V — Opening Night",
-            "description": "<p>The doors open for one evening. The year's edition, shown in the room it was made in.</p>",
-            "link_label": "RSVP",
-            "link": "",
-            "featured": false,
-            "spots": ""
-          }
-        },
-        "event_LTgazj": {
-          "type": "event",
-          "settings": {
-            "date": "14 Nov 2026",
-            "location": "Galeriya, Manila",
-            "title": "Edition V — Opening Night",
-            "description": "<p>The doors open for one evening. The year's edition, shown in the room it was made in.</p>",
-            "link_label": "RSVP",
-            "link": "",
-            "featured": false,
-            "spots": ""
-          }
         }
       },
       "block_order": [
-        "event_KKNxMN",
-        "event_b9LCUP",
-        "event_LTgazj"
+        "event_KKNxMN"
       ],
       "name": "PANTAO Events",
       "settings": {
