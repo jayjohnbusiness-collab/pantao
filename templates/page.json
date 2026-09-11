@@ -1,1 +1,79 @@
-{"sections":{"main":{"type":"main-page","blocks":{"page-content":{"type":"page-content","settings":{},"blocks":{}}},"block_order":["page-content"],"settings":{"content_direction":"column","gap":32,"color_scheme":"","padding-block-start":40,"padding-block-end":80}}},"order":["main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "blocks": {
+        "page-content": {
+          "type": "page-content",
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "page-content"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "gap": 32,
+        "color_scheme": "",
+        "padding-block-start": 40,
+        "padding-block-end": 80
+      }
+    },
+    "pantao_events_dYpJ9E": {
+      "type": "pantao-events",
+      "blocks": {
+        "event_b9LCUP": {
+          "type": "event",
+          "settings": {
+            "date": "14 Nov 2026",
+            "location": "Galeriya, Manila",
+            "title": "Edition V — Opening Night",
+            "description": "<p>The doors open for one evening. The year's edition, shown in the room it was made in.</p>",
+            "link_label": "RSVP",
+            "link": "",
+            "featured": false,
+            "spots": ""
+          }
+        },
+        "event_LTgazj": {
+          "type": "event",
+          "settings": {
+            "date": "14 Nov 2026",
+            "location": "Galeriya, Manila",
+            "title": "Edition V — Opening Night",
+            "description": "<p>The doors open for one evening. The year's edition, shown in the room it was made in.</p>",
+            "link_label": "RSVP",
+            "link": "",
+            "featured": false,
+            "spots": ""
+          }
+        }
+      },
+      "block_order": [
+        "event_b9LCUP",
+        "event_LTgazj"
+      ],
+      "name": "PANTAO Events",
+      "settings": {
+        "eyebrow": "Events · Manila",
+        "title": "Events",
+        "lead": "<p>Openings, appointments, and the moments the doors are open. By invitation and in person, in Manila.</p>",
+        "empty_text": "No events scheduled. Join the list to be told when the doors open."
+      }
+    }
+  },
+  "order": [
+    "main",
+    "pantao_events_dYpJ9E"
+  ]
+}
