@@ -1,0 +1,144 @@
+{%- comment -%}
+  PANTAO About
+  ----------------------------------------------------------------
+  The About page in the product-page design language: an uppercase serif
+  title (sticky) beside rounded "story" cards, muted letterspaced eyebrows,
+  on paper. Uses the theme's own type + colour tokens so it matches the live
+  product page. All copy is editable in the theme editor.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+-%}
+
+<div class="pantao-about" data-section-id="{{ section.id }}">
+  <div class="pantao-about__wrap">
+    <div class="pantao-about__grid">
+
+      <div class="pantao-about__left">
+        {%- if s.eyebrow != blank -%}<p class="pantao-about__eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+        {%- if s.title != blank -%}<h1 class="pantao-about__title">{{ s.title }}</h1>{%- endif -%}
+        {%- if s.lead != blank -%}<div class="pantao-about__lead">{{ s.lead }}</div>{%- endif -%}
+      </div>
+
+      <div class="pantao-about__cards">
+        {%- if s.card1_heading != blank or s.card1_body != blank -%}
+          <article class="pantao-about__card">
+            {%- if s.card1_label != blank -%}<p class="pantao-about__eyebrow pantao-about__card-eyebrow">{{ s.card1_label | escape }}</p>{%- endif -%}
+            {%- if s.card1_heading != blank -%}<h2 class="pantao-about__card-h">{{ s.card1_heading }}</h2>{%- endif -%}
+            {%- if s.card1_body != blank -%}<div class="pantao-about__body">{{ s.card1_body }}</div>{%- endif -%}
+          </article>
+        {%- endif -%}
+
+        {%- if s.card2_heading != blank or s.card2_body_top != blank or s.card2_body_bottom != blank -%}
+          <article class="pantao-about__card">
+            {%- if s.card2_label != blank -%}<p class="pantao-about__eyebrow pantao-about__card-eyebrow">{{ s.card2_label | escape }}</p>{%- endif -%}
+            {%- if s.card2_heading != blank -%}<h2 class="pantao-about__card-h">{{ s.card2_heading }}</h2>{%- endif -%}
+            {%- if s.card2_body_top != blank -%}<div class="pantao-about__body">{{ s.card2_body_top }}</div>{%- endif -%}
+            {%- if s.card2_pull != blank -%}<p class="pantao-about__pull">{{ s.card2_pull | escape }}</p>{%- endif -%}
+            {%- if s.card2_body_bottom != blank -%}<div class="pantao-about__body">{{ s.card2_body_bottom }}</div>{%- endif -%}
+          </article>
+        {%- endif -%}
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<style>
+  #shopify-section-{{ section.id }} { margin: 0; }
+  .pantao-about {
+    --pa-ink: var(--color-foreground, #16181c);
+    --pa-ground: color-mix(in srgb, var(--color-foreground, #16181c) 4%, var(--color-background, #f4f4f2));
+    --pa-card: var(--color-background, #f4f4f2);
+    --pa-muted: color-mix(in srgb, var(--color-foreground, #16181c) 52%, transparent);
+    --pa-line: color-mix(in srgb, var(--color-foreground, #16181c) 10%, transparent);
+    --pa-serif: var(--font-accent--family, Georgia, serif);
+    --pa-sans: var(--font-body--family, -apple-system, system-ui, sans-serif);
+    --pa-shadow: 0 30px 70px color-mix(in srgb, var(--color-foreground, #16181c) 7%, transparent),
+                 0 2px 10px color-mix(in srgb, var(--color-foreground, #16181c) 3%, transparent);
+    background: var(--pa-ground);
+    color: var(--pa-ink);
+    font-family: var(--pa-sans);
+  }
+  .pantao-about__wrap { max-width: 1360px; margin: 0 auto; padding-inline: clamp(20px, 5vw, 64px); }
+  .pantao-about__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.44fr) minmax(0, 0.56fr);
+    gap: clamp(28px, 5vw, 80px);
+    align-items: start;
+    padding-block: clamp(48px, 8vw, 104px);
+  }
+  @media screen and (max-width: 860px) {
+    .pantao-about__grid { grid-template-columns: 1fr; gap: clamp(28px, 5vw, 40px); }
+  }
+
+  .pantao-about__eyebrow {
+    font-family: var(--pa-sans); font-size: 11px; font-weight: 500; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--pa-muted); margin: 0;
+  }
+  .pantao-about__left { position: sticky; top: 96px; }
+  @media screen and (max-width: 860px) { .pantao-about__left { position: static; top: auto; } }
+  .pantao-about__left .pantao-about__eyebrow { margin-bottom: clamp(20px, 3vw, 30px); }
+  .pantao-about__title {
+    font-family: var(--pa-serif); font-weight: 500; text-transform: uppercase;
+    letter-spacing: -0.01em; line-height: 0.92; margin: 0;
+    font-size: clamp(3rem, 8vw, 7rem);
+  }
+  .pantao-about__lead {
+    margin-top: clamp(22px, 3vw, 34px); max-width: 34ch;
+    font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.62; color: var(--pa-muted);
+  }
+  .pantao-about__lead p { margin: 0; }
+
+  .pantao-about__cards { display: flex; flex-direction: column; gap: clamp(16px, 2.2vw, 26px); }
+  .pantao-about__card {
+    background: var(--pa-card);
+    border: 1px solid var(--pa-line);
+    border-radius: 22px;
+    box-shadow: var(--pa-shadow);
+    padding: clamp(28px, 4vw, 52px);
+  }
+  .pantao-about__card-eyebrow { margin-bottom: clamp(16px, 2vw, 22px); }
+  .pantao-about__card-h {
+    font-family: var(--pa-serif); font-weight: 500; letter-spacing: -0.01em; line-height: 1.08;
+    font-size: clamp(1.5rem, 2.6vw, 2.15rem); margin: 0 0 clamp(16px, 2vw, 24px); text-wrap: balance;
+  }
+  .pantao-about__body { color: var(--pa-ink); }
+  .pantao-about__body p {
+    font-size: 1.02rem; line-height: 1.72; margin: 0 0 1.1em; max-width: 60ch;
+    color: color-mix(in srgb, var(--pa-ink) 86%, transparent);
+  }
+  .pantao-about__body p:last-child { margin-bottom: 0; }
+  .pantao-about__pull {
+    font-family: var(--pa-serif); font-weight: 400; font-style: italic;
+    font-size: clamp(1.4rem, 2.6vw, 1.95rem); line-height: 1.12; letter-spacing: -0.01em;
+    color: var(--pa-ink); margin: clamp(20px, 2.6vw, 30px) 0;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "PANTAO About",
+  "tag": "section",
+  "class": "section-wrapper",
+  "enabled_on": { "templates": ["page"] },
+  "settings": [
+    { "type": "header", "content": "Masthead" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "About · Galeriya, Manila" },
+    { "type": "text", "id": "title", "label": "Title", "default": "The House" },
+    { "type": "richtext", "id": "lead", "label": "Lead", "default": "<p>Pantao specializes in luxury contemporary wear and leather goods — designed in Manila, made to be kept.</p>" },
+    { "type": "header", "content": "Card 1" },
+    { "type": "text", "id": "card1_label", "label": "Label", "default": "The House" },
+    { "type": "text", "id": "card1_heading", "label": "Heading", "default": "A house that grew from the essentials." },
+    { "type": "richtext", "id": "card1_body", "label": "Body", "default": "<p>Pantao began with a collection of high-quality, everyday pieces — the essentials, made properly. As the house found its footing, it expanded its world into leather and luxury goods.</p><p>Today the studio works the way it always has: quietly, deliberately, and in numbers small enough to keep our hand on every piece.</p>" },
+    { "type": "header", "content": "Card 2" },
+    { "type": "text", "id": "card2_label", "label": "Label", "default": "Eco" },
+    { "type": "text", "id": "card2_heading", "label": "Heading", "default": "Sustainability at the forefront." },
+    { "type": "richtext", "id": "card2_body_top", "label": "Body (top)", "default": "<p>At Pantao, one of our goals is to reduce our environmental impact. It's our responsibility to design garments with sustainability and quality at the forefront.</p>" },
+    { "type": "text", "id": "card2_pull", "label": "Pull quote", "default": "And it doesn't stop there." },
+    { "type": "richtext", "id": "card2_body_bottom", "label": "Body (bottom)", "default": "<p>We're taking the initiative to research new sustainable practices to ensure the longevity of each piece, so you can trust that our garments will last for years — whether through the fabric or the packing, we're committed to making a positive impact.</p><p>We understand that transparency is crucial. As we adopt these new practices, we plan to share our developments with the community.</p>" }
+  ],
+  "presets": [ { "name": "PANTAO About" } ]
+}
+{% endschema %}
