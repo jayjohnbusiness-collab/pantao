@@ -32,6 +32,19 @@
     "pantao_events_dYpJ9E": {
       "type": "pantao-events",
       "blocks": {
+        "event_KKNxMN": {
+          "type": "event",
+          "settings": {
+            "date": "14 Nov 2026",
+            "location": "Galeriya, Manila",
+            "title": "PRIVATE TRACK DAY",
+            "description": "<p>A morning on the circuit for owners of the edition. Cars provided. Drive, or be driven. Twelve spots, once.</p>",
+            "link_label": "RSVP",
+            "link": "",
+            "featured": true,
+            "spots": ""
+          }
+        },
         "event_b9LCUP": {
           "type": "event",
           "settings": {
@@ -60,12 +73,13 @@
         }
       },
       "block_order": [
+        "event_KKNxMN",
         "event_b9LCUP",
         "event_LTgazj"
       ],
       "name": "PANTAO Events",
       "settings": {
-        "eyebrow": "Events · Manila",
+        "eyebrow": "",
         "title": "Events",
         "lead": "<p>Openings, appointments, and the moments the doors are open. By invitation and in person, in Manila.</p>",
         "empty_text": "No events scheduled. Join the list to be told when the doors open."
