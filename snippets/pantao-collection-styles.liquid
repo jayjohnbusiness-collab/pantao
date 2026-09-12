@@ -57,7 +57,9 @@
      (markup from the pantao-stock snippet). In stock + limited,
      tightening to "Only N left", calm "Sold out" when gone.
      ============================================================ */
-  .product-card { position: relative; }
+  /* container-type makes each card a query container so the pill can adapt
+     to the card's own width (e.g. the denser grid-density / zoom-out view). */
+  .product-card { position: relative; container: pantao-card / inline-size; }
   .pantao-stock {
     position: absolute;
     top: 12px;
@@ -67,6 +69,7 @@
     display: inline-flex;
     align-items: center;
     gap: 7px;
+    max-width: calc(100% - 20px);
     padding: 6px 11px 6px 10px;
     border-radius: 100px;
     background: rgba(10, 11, 13, 0.52);
@@ -80,6 +83,13 @@
     letter-spacing: 0.14em;
     text-transform: uppercase;
     line-height: 1;
+  }
+  /* label truncates within the card rather than spilling; the dot never clips
+     (no overflow on the pill itself, so the pulse ring stays intact). */
+  .pantao-stock__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   }
   .pantao-stock__dot {
@@ -89,6 +99,14 @@
     height: 7px;
     border-radius: 50%;
     background: #35b46b;
+  }
+  /* Narrow cards (dense grid): shrink the pill; tiniest cards go dot-only. */
+  @container pantao-card (max-width: 250px) {
+    .pantao-stock { top: 8px; left: 8px; gap: 5px; padding: 5px 9px 5px 8px; font-size: 9px; letter-spacing: 0.08em; }
+  }
+  @container pantao-card (max-width: 180px) {
+    .pantao-stock { padding: 6px; gap: 0; }
+    .pantao-stock__label { display: none; }
   }
   .pantao-stock.is-low .pantao-stock__dot { background: #e0b341; }
   .pantao-stock.is-out { background: rgba(10, 11, 13, 0.46); color: rgba(245, 244, 241, 0.72); }
