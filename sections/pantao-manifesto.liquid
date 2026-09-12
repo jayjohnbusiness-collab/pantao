@@ -1,0 +1,35 @@
+{%- comment -%}
+  PANTAO manifesto — an ink statement band in the house serif.
+{%- endcomment -%}
+{%- liquid assign s = section.settings -%}
+<div class="pantao-mani" data-section-id="{{ section.id }}">
+  <div class="pantao-mani__wrap">
+    {%- if s.eyebrow != blank -%}<p class="pantao-mani__eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+    {%- if s.statement != blank -%}<div class="pantao-mani__statement">{{ s.statement }}</div>{%- endif -%}
+    {%- if s.signature != blank -%}<p class="pantao-mani__sig">{{ s.signature }}</p>{%- endif -%}
+  </div>
+</div>
+<style>
+  #shopify-section-{{ section.id }} { margin: 0; }
+  .pantao-mani{ background: var(--color-foreground, #16181c); color: #f5f4f1; font-family: var(--font-body--family, sans-serif); }
+  .pantao-mani__wrap{ max-width: 1440px; margin: 0 auto; padding: clamp(80px,12vw,170px) clamp(20px,5vw,64px); }
+  .pantao-mani__eyebrow{ font-size:11px; font-weight:500; letter-spacing:.26em; text-transform:uppercase; color:rgba(245,244,241,.66); margin:0 0 clamp(28px,5vw,44px); }
+  .pantao-mani__statement{ font-family: var(--font-accent--family, Georgia, serif); font-weight:360; line-height:1.14; letter-spacing:-.01em; font-size:clamp(1.8rem,4.6vw,3.6rem); max-width:18ch; }
+  .pantao-mani__statement :where(p){ margin:0; }
+  .pantao-mani__statement :where(em){ font-style:italic; color:#fff; }
+  .pantao-mani__sig{ margin: clamp(30px,5vw,52px) 0 0; font-size:11px; letter-spacing:.22em; text-transform:uppercase; color:rgba(245,244,241,.66); }
+  .pantao-mani__sig :where(em){ color: var(--manila,#b5271f); font-style:normal; }
+</style>
+{% schema %}
+{
+  "name": "PANTAO Manifesto",
+  "tag": "section",
+  "class": "section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The House" },
+    { "type": "richtext", "id": "statement", "label": "Statement", "default": "<p>Pantao opens <em>once a year.</em> Then the doors close until the next.</p>" },
+    { "type": "richtext", "id": "signature", "label": "Signature", "default": "<p>Pantao — Galeriya, Manila</p>" }
+  ],
+  "presets": [ { "name": "PANTAO Manifesto" } ]
+}
+{% endschema %}

@@ -1,0 +1,70 @@
+{%- comment -%}
+  PANTAO list — inline newsletter capture wired to Shopify's native
+  {% form 'customer' %} (subscribes to the email-marketing list).
+{%- endcomment -%}
+{%- liquid assign s = section.settings -%}
+<div class="pantao-list" data-section-id="{{ section.id }}">
+  <div class="pantao-list__wrap">
+    <div class="pantao-list__box">
+      <div class="pantao-list__intro">
+        {%- if s.eyebrow != blank -%}<p class="pantao-list__eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+        {%- if s.heading != blank -%}<h2 class="pantao-list__heading">{{ s.heading }}</h2>{%- endif -%}
+        {%- if s.subtext != blank -%}<p class="pantao-list__sub">{{ s.subtext }}</p>{%- endif -%}
+      </div>
+      <div class="pantao-list__form-col">
+        {%- form 'customer', id: 'pantao-list-form', class: 'pantao-list__form' -%}
+          {%- if form.posted_successfully? -%}
+            <p class="pantao-list__ok" role="status">{{ s.success_text | default: "You're on the list. One note a year, ahead of the next edition." }}</p>
+          {%- else -%}
+            <input type="hidden" name="contact[tags]" value="{{ s.tag | default: 'newsletter' }}">
+            <div class="pantao-list__field">
+              <input type="email" name="contact[email]" required autocomplete="email"
+                placeholder="{{ s.placeholder | default: 'Email address' | escape }}"
+                aria-label="{{ s.placeholder | default: 'Email address' | escape }}">
+              <button type="submit" name="commit">{{ s.button | default: 'Join' | escape }}</button>
+            </div>
+            {%- if form.errors -%}<p class="pantao-list__err" role="alert">{{ form.errors | default_errors }}</p>{%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+        {%- if s.note != blank -%}<p class="pantao-list__note">{{ s.note | escape }}</p>{%- endif -%}
+      </div>
+    </div>
+  </div>
+</div>
+<style>
+  #shopify-section-{{ section.id }} { margin: 0; }
+  .pantao-list{ background: var(--color-background, #f4f4f2); color: var(--color-foreground, #16181c); font-family: var(--font-body--family, sans-serif); }
+  .pantao-list__wrap{ max-width: 1440px; margin: 0 auto; padding: clamp(56px,8vw,110px) clamp(20px,5vw,64px); }
+  .pantao-list__box{ display:grid; grid-template-columns:1.1fr .9fr; gap:clamp(28px,5vw,56px); align-items:center;
+    border:1px solid color-mix(in srgb, var(--color-foreground,#16181c) 12%, transparent); border-radius:22px; padding:clamp(32px,6vw,72px); }
+  @media(max-width:760px){ .pantao-list__box{ grid-template-columns:1fr; } }
+  .pantao-list__eyebrow{ font-size:11px; font-weight:500; letter-spacing:.26em; text-transform:uppercase; color:var(--manila,#b5271f); margin:0 0 18px; }
+  .pantao-list__heading{ font-family:var(--font-accent--family,Georgia,serif); font-weight:500; font-size:clamp(1.9rem,3.6vw,3rem); line-height:1.04; letter-spacing:-.01em; margin:0 0 14px; text-wrap:balance; }
+  .pantao-list__sub{ color:color-mix(in srgb, var(--color-foreground,#16181c) 54%, transparent); max-width:32ch; line-height:1.6; margin:0; }
+  .pantao-list__field{ display:flex; align-items:center; gap:8px; border:1px solid color-mix(in srgb, var(--color-foreground,#16181c) 12%, transparent); border-radius:100px; padding:6px 6px 6px 22px; background:var(--color-background,#f4f4f2); }
+  .pantao-list__field input{ flex:1; min-width:0; border:0; outline:0; background:transparent; font-family:inherit; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--color-foreground,#16181c); }
+  .pantao-list__field input::placeholder{ color:color-mix(in srgb, var(--color-foreground,#16181c) 50%, transparent); }
+  .pantao-list__field button{ flex:none; border:0; cursor:pointer; background:var(--color-foreground,#16181c); color:var(--color-background,#f4f4f2); font-family:inherit; font-size:11px; letter-spacing:.18em; text-transform:uppercase; padding:13px 24px; border-radius:100px; transition:background-color .3s; }
+  .pantao-list__field button:hover{ background:var(--manila,#b5271f); }
+  .pantao-list__ok{ font-family:var(--font-accent--family,Georgia,serif); font-size:1.15rem; line-height:1.4; margin:0; }
+  .pantao-list__err{ color:var(--color-error,#8B0000); font-size:12px; margin:12px 0 0; }
+  .pantao-list__note{ margin:14px 0 0; font-size:10px; letter-spacing:.14em; text-transform:uppercase; color:color-mix(in srgb, var(--color-foreground,#16181c) 50%, transparent); }
+</style>
+{% schema %}
+{
+  "name": "PANTAO List (signup)",
+  "tag": "section",
+  "class": "section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The List" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Be told when the doors open." },
+    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "One note a year, ahead of the edition. Nothing else." },
+    { "type": "text", "id": "placeholder", "label": "Field placeholder", "default": "Email address" },
+    { "type": "text", "id": "button", "label": "Button label", "default": "Join" },
+    { "type": "text", "id": "note", "label": "Fine print", "default": "Manila · Once a year · Unsubscribe anytime" },
+    { "type": "text", "id": "tag", "label": "Subscriber tag", "default": "newsletter" },
+    { "type": "textarea", "id": "success_text", "label": "Success text", "default": "You're on the list. One note a year, ahead of the next edition." }
+  ],
+  "presets": [ { "name": "PANTAO List (signup)" } ]
+}
+{% endschema %}
