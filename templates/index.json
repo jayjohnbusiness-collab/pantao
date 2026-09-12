@@ -32,6 +32,17 @@
         "color_scheme": "scheme-5"
       }
     },
+    "pantao_collection_row_8DcKwU": {
+      "type": "pantao-collection-row",
+      "name": "PANTAO Collection row",
+      "settings": {
+        "eyebrow": "The Collection",
+        "collection": "",
+        "count": 4,
+        "view_all_label": "View all",
+        "view_all_link": ""
+      }
+    },
     "piece": {
       "type": "pantao-piece",
       "blocks": {
@@ -93,20 +104,18 @@
         "story_heading": "The Story",
         "story": "<p>Open-gauge merino, distressed by hand. The openwork is worked deliberately at the wrist and the throat, so a watch reads at the cuff and a chain sits clear at the collarbone. Made in a count we can name.</p>",
         "reassurance": "Numbered · limited count · ships worldwide",
-        "enable_reveal": true,
+        "enable_reveal": false,
         "enable_sound": true,
         "color_scheme": "scheme-1"
       }
     },
-    "pantao_collection_row_8DcKwU": {
-      "type": "pantao-collection-row",
-      "name": "PANTAO Collection row",
+    "pantao_manifesto_Fh8hpC": {
+      "type": "pantao-manifesto",
+      "name": "PANTAO Manifesto",
       "settings": {
-        "eyebrow": "The Collection",
-        "collection": "",
-        "count": 4,
-        "view_all_label": "View all",
-        "view_all_link": ""
+        "eyebrow": "The House",
+        "statement": "<p>Pantao opens <em>once a year.</em> Then the doors close until the next.</p>",
+        "signature": "<p>Pantao — Galeriya, Manila</p>"
       }
     },
     "pantao_list_BNPFzm": {
@@ -121,15 +130,6 @@
         "note": "Manila · Once a year · Unsubscribe anytime",
         "tag": "newsletter",
         "success_text": "You're on the list. One note a year, ahead of the next edition."
-      }
-    },
-    "pantao_manifesto_Fh8hpC": {
-      "type": "pantao-manifesto",
-      "name": "PANTAO Manifesto",
-      "settings": {
-        "eyebrow": "The House",
-        "statement": "<p>Pantao opens <em>once a year.</em> Then the doors close until the next.</p>",
-        "signature": "<p>Pantao — Galeriya, Manila</p>"
       }
     }
   },
