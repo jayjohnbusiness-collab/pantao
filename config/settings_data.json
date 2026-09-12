@@ -82,7 +82,7 @@
         "type": "pantao-signup-popup",
         "settings": {
           "enable": true,
-          "delay_seconds": 30,
+          "delay_seconds": 0,
           "reset_key": "v1",
           "eyebrow": "The List",
           "heading": "Be told when the doors open.",
