@@ -77,6 +77,25 @@
     "variant_swatch_radius": 0,
     "variant_button_radius": 0,
     "variant_button_width": "default-width-buttons",
+    "sections": {
+      "pantao-signup-popup": {
+        "type": "pantao-signup-popup",
+        "settings": {
+          "enable": true,
+          "delay_seconds": 30,
+          "reset_key": "v1",
+          "eyebrow": "The List",
+          "heading": "Be told when the doors open.",
+          "subtext": "One note a year, ahead of the edition. Nothing else.",
+          "placeholder": "Email address",
+          "button": "Join",
+          "fineprint": "Once a year · Unsubscribe anytime",
+          "tag": "newsletter",
+          "success_heading": "You're on the list.",
+          "success_text": "One note a year, ahead of the next edition. Watch for it."
+        }
+      }
+    },
     "content_for_index": [],
     "blocks": {
       "144831480468751239": {
