@@ -114,7 +114,7 @@
             "filter_width": "centered",
             "text_label_case": "uppercase",
             "show_swatch_label": true,
-            "show_filter_label": true,
+            "show_filter_label": false,
             "enable_sorting": true,
             "enable_grid_density": true,
             "inherit_color_scheme": true,
