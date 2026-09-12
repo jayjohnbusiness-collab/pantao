@@ -87,10 +87,20 @@
     .pantao-signup.is-open{ opacity: 1; visibility: visible; pointer-events: auto; }
     .pantao-signup__backdrop{ position: absolute; inset: 0; background: rgba(8,9,11,.5); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
     .pantao-signup__card{
-      position: relative; width: min(460px, 100%); background: var(--ps-paper); color: var(--ps-ink);
-      border: 1px solid var(--ps-line); border-radius: 22px; padding: clamp(28px, 5vw, 48px);
-      box-shadow: 0 40px 90px rgba(8,9,11,.28); transform: translateY(10px) scale(.985);
+      position: relative; width: min(460px, 100%); color: var(--ps-ink);
+      /* frosted glass */
+      background: color-mix(in srgb, var(--ps-paper) 68%, transparent);
+      -webkit-backdrop-filter: blur(22px) saturate(1.3);
+      backdrop-filter: blur(22px) saturate(1.3);
+      border: 1px solid color-mix(in srgb, #ffffff 42%, var(--ps-line));
+      border-radius: 22px; padding: clamp(28px, 5vw, 48px);
+      box-shadow: 0 40px 90px rgba(8,9,11,.32), inset 0 1px 0 rgba(255,255,255,.35);
+      transform: translateY(10px) scale(.985);
       transition: transform .45s cubic-bezier(.22,1,.36,1);
+    }
+    /* fallback: if backdrop-filter isn't supported, use a more opaque ground */
+    @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+      .pantao-signup__card{ background: color-mix(in srgb, var(--ps-paper) 96%, transparent); }
     }
     .pantao-signup.is-open .pantao-signup__card{ transform: none; }
     .pantao-signup__close{
@@ -101,7 +111,7 @@
     .pantao-signup__eyebrow{ font-family: var(--ps-sans); font-size: 11px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--ps-accent); margin: 0 0 14px; }
     .pantao-signup__heading{ font-family: var(--ps-serif); font-weight: 500; font-size: clamp(1.6rem, 3.2vw, 2.2rem); line-height: 1.06; letter-spacing: -.01em; margin: 0 0 12px; text-wrap: balance; }
     .pantao-signup__sub{ font-family: var(--ps-sans); font-size: .95rem; line-height: 1.6; color: var(--ps-muted); margin: 0 0 24px; max-width: 34ch; }
-    .pantao-signup__field{ display: flex; align-items: center; gap: 6px; border: 1px solid var(--ps-line); border-radius: 100px; padding: 6px 6px 6px 20px; background: var(--ps-paper); }
+    .pantao-signup__field{ display: flex; align-items: center; gap: 6px; border: 1px solid color-mix(in srgb, #ffffff 30%, var(--ps-line)); border-radius: 100px; padding: 6px 6px 6px 20px; background: color-mix(in srgb, #ffffff 30%, transparent); }
     .pantao-signup__field input{ flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: var(--ps-sans); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ps-ink); }
     .pantao-signup__field input::placeholder{ color: var(--ps-muted); }
     .pantao-signup__field button{ flex: none; border: 0; cursor: pointer; background: var(--ps-ink); color: var(--ps-paper); font-family: var(--ps-sans); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; padding: 13px 24px; border-radius: 100px; transition: background-color .3s; }
