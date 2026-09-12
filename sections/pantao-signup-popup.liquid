@@ -1,0 +1,176 @@
+{%- comment -%}
+  PANTAO signup pop-up
+  ----------------------------------------------------------------
+  A newsletter modal wired to Shopify's native {% form 'customer' %} — on
+  submit it subscribes the visitor to the customer / email-marketing list
+  (the list Shopify Email uses). Rendered site-wide from layout/theme.liquid.
+
+  Behaviour:
+  - Opens after a delay, once per visitor (dismissal remembered in
+    localStorage; a version key lets you reset it).
+  - Closes on the X, backdrop click, or Esc.
+  - Native form reloads the page on submit; on that reload
+    form.posted_successfully? is true, so we re-open the modal in its
+    success state and mark it dismissed.
+  - In the theme editor (design mode) it stays open so it can be styled.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign show = s.enable
+  if show == nil
+    assign show = true
+  endif
+-%}
+
+{%- if show -%}
+  <pantao-signup
+    class="pantao-signup"
+    data-delay="{{ s.delay_seconds | default: 6 }}"
+    data-key="pantao-signup-{{ s.reset_key | default: 'v1' }}"
+    {% if form.posted_successfully? %}data-success="true"{% endif %}
+    {% if request.design_mode %}data-preview="true"{% endif %}
+    role="dialog"
+    aria-modal="true"
+    aria-label="{{ s.heading | default: 'Newsletter' | escape }}"
+    hidden
+  >
+    <div class="pantao-signup__backdrop" data-close></div>
+    <div class="pantao-signup__card" role="document">
+      <button class="pantao-signup__close" type="button" aria-label="Close" data-close>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+
+      {%- form 'customer', id: 'pantao-signup-form', class: 'pantao-signup__form' -%}
+        {%- if form.posted_successfully? -%}
+          <div class="pantao-signup__success">
+            <div class="pantao-signup__check" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5 5L20 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h2 class="pantao-signup__heading">{{ s.success_heading | default: "You're on the list." }}</h2>
+            <p class="pantao-signup__sub">{{ s.success_text | default: "One note a year, ahead of the next edition. Watch for it." }}</p>
+          </div>
+        {%- else -%}
+          <input type="hidden" name="contact[tags]" value="{{ s.tag | default: 'newsletter' }}">
+          {%- if s.eyebrow != blank -%}<p class="pantao-signup__eyebrow">{{ s.eyebrow | escape }}</p>{%- endif -%}
+          {%- if s.heading != blank -%}<h2 class="pantao-signup__heading">{{ s.heading }}</h2>{%- endif -%}
+          {%- if s.subtext != blank -%}<p class="pantao-signup__sub">{{ s.subtext }}</p>{%- endif -%}
+
+          <div class="pantao-signup__field">
+            <input type="email" name="contact[email]" required autocomplete="email"
+              placeholder="{{ s.placeholder | default: 'Email address' | escape }}"
+              aria-label="{{ s.placeholder | default: 'Email address' | escape }}">
+            <button type="submit" name="commit">{{ s.button | default: 'Join' | escape }}</button>
+          </div>
+          {%- if form.errors -%}
+            <p class="pantao-signup__err" role="alert">{{ form.errors | default_errors }}</p>
+          {%- endif -%}
+          {%- if s.fineprint != blank -%}<p class="pantao-signup__fine">{{ s.fineprint | escape }}</p>{%- endif -%}
+        {%- endif -%}
+      {%- endform -%}
+    </div>
+  </pantao-signup>
+
+  <style>
+    .pantao-signup{
+      --ps-ink: var(--color-foreground, #16181c);
+      --ps-paper: var(--color-background, #f4f4f2);
+      --ps-muted: color-mix(in srgb, var(--color-foreground, #16181c) 54%, transparent);
+      --ps-line: color-mix(in srgb, var(--color-foreground, #16181c) 14%, transparent);
+      --ps-serif: var(--font-accent--family, Georgia, serif);
+      --ps-sans: var(--font-body--family, -apple-system, system-ui, sans-serif);
+      --ps-accent: #b5271f;
+      position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center;
+      padding: 20px; opacity: 0; visibility: hidden; pointer-events: none;
+      transition: opacity .4s ease, visibility .4s ease;
+    }
+    .pantao-signup.is-open{ opacity: 1; visibility: visible; pointer-events: auto; }
+    .pantao-signup__backdrop{ position: absolute; inset: 0; background: rgba(8,9,11,.5); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+    .pantao-signup__card{
+      position: relative; width: min(460px, 100%); background: var(--ps-paper); color: var(--ps-ink);
+      border: 1px solid var(--ps-line); border-radius: 22px; padding: clamp(28px, 5vw, 48px);
+      box-shadow: 0 40px 90px rgba(8,9,11,.28); transform: translateY(10px) scale(.985);
+      transition: transform .45s cubic-bezier(.22,1,.36,1);
+    }
+    .pantao-signup.is-open .pantao-signup__card{ transform: none; }
+    .pantao-signup__close{
+      position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; display: grid; place-items: center;
+      border: 0; border-radius: 50%; background: transparent; color: var(--ps-muted); cursor: pointer; transition: color .25s, background-color .25s;
+    }
+    .pantao-signup__close:hover{ color: var(--ps-ink); background: color-mix(in srgb, var(--ps-ink) 6%, transparent); }
+    .pantao-signup__eyebrow{ font-family: var(--ps-sans); font-size: 11px; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--ps-accent); margin: 0 0 14px; }
+    .pantao-signup__heading{ font-family: var(--ps-serif); font-weight: 500; font-size: clamp(1.6rem, 3.2vw, 2.2rem); line-height: 1.06; letter-spacing: -.01em; margin: 0 0 12px; text-wrap: balance; }
+    .pantao-signup__sub{ font-family: var(--ps-sans); font-size: .95rem; line-height: 1.6; color: var(--ps-muted); margin: 0 0 24px; max-width: 34ch; }
+    .pantao-signup__field{ display: flex; align-items: center; gap: 6px; border: 1px solid var(--ps-line); border-radius: 100px; padding: 6px 6px 6px 20px; background: var(--ps-paper); }
+    .pantao-signup__field input{ flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; font-family: var(--ps-sans); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--ps-ink); }
+    .pantao-signup__field input::placeholder{ color: var(--ps-muted); }
+    .pantao-signup__field button{ flex: none; border: 0; cursor: pointer; background: var(--ps-ink); color: var(--ps-paper); font-family: var(--ps-sans); font-size: 11px; letter-spacing: .18em; text-transform: uppercase; padding: 13px 24px; border-radius: 100px; transition: background-color .3s; }
+    .pantao-signup__field button:hover{ background: var(--ps-accent); }
+    .pantao-signup__err{ color: var(--color-error, #8B0000); font-size: 12px; margin: 12px 0 0; }
+    .pantao-signup__fine{ font-family: var(--ps-sans); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--ps-muted); margin: 16px 0 0; }
+    .pantao-signup__success{ text-align: center; padding: clamp(8px, 2vw, 20px) 0; }
+    .pantao-signup__check{ width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--ps-line); display: grid; place-items: center; margin: 0 auto 20px; color: var(--ps-accent); }
+    .pantao-signup__success .pantao-signup__sub{ margin-inline: auto; }
+    @media (prefers-reduced-motion: reduce){
+      .pantao-signup, .pantao-signup__card{ transition: none; }
+      .pantao-signup__card{ transform: none; }
+    }
+  </style>
+
+  <script>
+    (function(){
+      var el = document.querySelector('pantao-signup');
+      if (!el) return;
+
+      var key = el.getAttribute('data-key') || 'pantao-signup';
+      var preview = el.hasAttribute('data-preview');
+      var success = el.hasAttribute('data-success');
+
+      function store(v){ try { localStorage.setItem(key, v); } catch(e){} }
+      function stored(){ try { return localStorage.getItem(key); } catch(e){ return null; } }
+
+      function open(){ el.hidden = false; requestAnimationFrame(function(){ el.classList.add('is-open'); });
+        var input = el.querySelector('input[type="email"]');
+        if (input) { try { input.focus({preventScroll:true}); } catch(e){} }
+      }
+      function close(dismiss){
+        el.classList.remove('is-open');
+        if (dismiss) store('dismissed');
+        setTimeout(function(){ el.hidden = true; }, 450);
+      }
+
+      /* close handlers */
+      el.querySelectorAll('[data-close]').forEach(function(n){ n.addEventListener('click', function(){ close(true); }); });
+      document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && el.classList.contains('is-open')) close(true); });
+
+      if (preview) { open(); return; }               /* editor: always show */
+      if (success) { store('dismissed'); open(); return; } /* just subscribed: show success, don't nag again */
+      if (stored() === 'dismissed') return;           /* already dismissed/subscribed */
+
+      var delay = (parseInt(el.getAttribute('data-delay'), 10) || 6) * 1000;
+      setTimeout(open, delay);
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "PANTAO Signup pop-up",
+  "settings": [
+    { "type": "checkbox", "id": "enable", "label": "Enable pop-up", "default": true },
+    { "type": "range", "id": "delay_seconds", "label": "Show after", "min": 0, "max": 30, "step": 1, "unit": "s", "default": 6 },
+    { "type": "text", "id": "reset_key", "label": "Reset key", "info": "Change this (e.g. v2) to show the pop-up again to people who dismissed it.", "default": "v1" },
+    { "type": "header", "content": "Content" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The List" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Be told when the doors open." },
+    { "type": "textarea", "id": "subtext", "label": "Subtext", "default": "One note a year, ahead of the edition. Nothing else." },
+    { "type": "text", "id": "placeholder", "label": "Field placeholder", "default": "Email address" },
+    { "type": "text", "id": "button", "label": "Button label", "default": "Join" },
+    { "type": "text", "id": "fineprint", "label": "Fine print", "default": "Manila · Once a year · Unsubscribe anytime" },
+    { "type": "text", "id": "tag", "label": "Subscriber tag", "info": "Applied to the customer created on signup.", "default": "newsletter" },
+    { "type": "header", "content": "Confirmation" },
+    { "type": "text", "id": "success_heading", "label": "Success heading", "default": "You're on the list." },
+    { "type": "textarea", "id": "success_text", "label": "Success text", "default": "One note a year, ahead of the next edition. Watch for it." }
+  ]
+}
+{% endschema %}
