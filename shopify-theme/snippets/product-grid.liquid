@@ -56,9 +56,11 @@
         }
     {% endcase %}
 
-    /* When zoomed out, fit as many 100px-wide columns as possible */
+    /* When zoomed out, fit as many ~100px columns as possible and stretch
+       them to fill the row (auto-fit collapses empty trailing tracks so a
+       small collection still spans the full width instead of leaving a gap). */
     .product-grid--{{ section.id }}[product-grid-view='zoom-out'] {
-      --product-grid-columns-desktop: repeat(auto-fill, minmax(6.25rem, 1fr));
+      --product-grid-columns-desktop: repeat(auto-fit, minmax(6.25rem, 1fr));
     }
 
     .product-grid--{{ section.id }}[product-grid-view='zoom-out'] .product-grid-view-zoom-out--details {
