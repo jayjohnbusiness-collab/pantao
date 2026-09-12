@@ -1,1 +1,154 @@
-{"sections":{"arrival":{"type":"arrival-hero","settings":{"media_type":"image","image":"shopify://shop_images/hf_20260504_193859_117d50ac-42f3-4be9-be0e-5b9a554db20c2.png","image_position_fit":"cover","video_position":"cover","show_overlay":false,"overlay_opacity":25,"height":"full","content_position":"bottom-left","eyebrow":"EDITION V · MMXXVI · MANILA","show_scroll_hint":true,"scroll_hint_text":"Scroll","color_scheme":"scheme-5","heading_line_1":"The doors","heading_line_2":"are open.","lede":"Pantao opens once a year. A single edition, made in numbers small enough to know each piece by hand — then the doors close until the next.","cta_label":"Enter the edition","cta_link":"/collections/all","enable_reveal":true}},"piece":{"type":"pantao-piece","settings":{"layout":"media-left","eyebrow":"The Piece · Edition V","story":"<p>Open-gauge merino, distressed by hand. The openwork is worked deliberately at the wrist and the throat, so a watch reads at the cuff and a chain sits clear at the collarbone. Made in a count we can name.</p>","reassurance":"Numbered · limited count · ships worldwide","color_scheme":"scheme-1","enable_reveal":true,"enable_sound":true}}},"order":["arrival","piece"]}
+{
+  "sections": {
+    "arrival": {
+      "type": "arrival-hero",
+      "settings": {
+        "media_type": "image",
+        "image": "shopify://shop_images/hf_20260504_193859_117d50ac-42f3-4be9-be0e-5b9a554db20c2.png",
+        "image_position_fit": "cover",
+        "video_position": "cover",
+        "show_overlay": false,
+        "overlay_opacity": 25,
+        "height": "full",
+        "content_position": "bottom-left",
+        "eyebrow": "EDITION V · MMXXVI · MANILA",
+        "heading_line_1": "The doors",
+        "heading_line_2": "are open.",
+        "lede": "Pantao opens once a year. A single edition, made in numbers small enough to know each piece by hand — then the doors close until the next.",
+        "cta_label": "Enter the edition",
+        "cta_link": "/collections/all",
+        "show_scroll_hint": true,
+        "scroll_hint_text": "Scroll",
+        "enable_reveal": true,
+        "color_scheme": "scheme-5"
+      }
+    },
+    "collection": {
+      "type": "pantao-collection-row",
+      "settings": {
+        "eyebrow": "The Collection",
+        "collection": "shop-all",
+        "count": 4,
+        "view_all_label": "View all",
+        "view_all_link": "/collections/all"
+      }
+    },
+    "piece": {
+      "type": "pantao-piece",
+      "blocks": {
+        "piece-variant-picker": {
+          "type": "variant-picker",
+          "static": true,
+          "settings": {
+            "variant_style": "buttons",
+            "show_swatches": true,
+            "alignment": "left",
+            "padding-block-start": 0,
+            "padding-block-end": 8,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "piece-buy-buttons": {
+          "type": "buy-buttons",
+          "static": true,
+          "settings": {
+            "stacking": false,
+            "show_pickup_availability": true,
+            "gift_card_form": true,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "quantity": {
+              "type": "quantity",
+              "static": true,
+              "settings": {},
+              "blocks": {}
+            },
+            "add-to-cart": {
+              "type": "add-to-cart",
+              "static": true,
+              "settings": {
+                "style_class": "button-secondary"
+              },
+              "blocks": {}
+            },
+            "accelerated-checkout": {
+              "type": "accelerated-checkout",
+              "static": true,
+              "settings": {},
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
+      "settings": {
+        "product": "distressed-logo-hoodie",
+        "layout": "media-left",
+        "eyebrow": "The Piece · Edition V",
+        "story_heading": "The Story",
+        "story": "<p>Open-gauge merino, distressed by hand. The openwork is worked deliberately at the wrist and the throat, so a watch reads at the cuff and a chain sits clear at the collarbone. Made in a count we can name.</p>",
+        "reassurance": "Numbered · limited count · ships worldwide",
+        "enable_reveal": true,
+        "enable_sound": true,
+        "color_scheme": "scheme-1"
+      }
+    },
+    "manifesto": {
+      "type": "pantao-manifesto",
+      "settings": {
+        "eyebrow": "The House",
+        "statement": "<p>Pantao opens <em>once a year.</em> Then the doors close until the next.</p>",
+        "signature": "<p>Pantao — Galeriya, Manila</p>"
+      }
+    },
+    "events": {
+      "type": "pantao-events",
+      "blocks": {
+        "track-day": {
+          "type": "event",
+          "settings": {
+            "date": "07 Feb 2026",
+            "location": "Clark Int'l Speedway",
+            "title": "Private Track Day",
+            "description": "<p>A morning on the circuit for owners of the edition. Cars provided — drive, or be driven. Twelve spots, once.</p>",
+            "link_label": "Reserve a spot",
+            "link": "/pages/track-day-reservation",
+            "featured": true,
+            "spots": "12 spots · filling"
+          }
+        }
+      },
+      "block_order": ["track-day"],
+      "settings": {
+        "eyebrow": "Events · Manila",
+        "title": "",
+        "lead": "",
+        "card_align": "left"
+      }
+    },
+    "list": {
+      "type": "pantao-list",
+      "settings": {
+        "eyebrow": "The List",
+        "heading": "Be told when the doors open.",
+        "subtext": "One note a year, ahead of the edition. Nothing else.",
+        "button": "Join",
+        "note": "Manila · Once a year · Unsubscribe anytime"
+      }
+    }
+  },
+  "order": [
+    "arrival",
+    "collection",
+    "piece",
+    "manifesto",
+    "events",
+    "list"
+  ]
+}

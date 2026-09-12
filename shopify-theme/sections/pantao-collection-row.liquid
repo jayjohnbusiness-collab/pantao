@@ -1,0 +1,100 @@
+{%- comment -%}
+  PANTAO collection row
+  ----------------------------------------------------------------
+  A homepage product row from a chosen collection, using the house card
+  language (rounded media, hover zoom, the pantao-stock pill). Real products
+  and images. Theme tokens for type/colour so it matches the site.
+{%- endcomment -%}
+
+{%- liquid
+  assign s = section.settings
+  assign coll = s.collection
+  if coll == blank
+    assign coll = collections.all
+  endif
+  assign count = s.count | default: 4
+-%}
+
+<div class="pantao-collrow" data-section-id="{{ section.id }}">
+  <div class="pantao-collrow__wrap">
+    <div class="pantao-collrow__head">
+      {%- if s.eyebrow != blank -%}<span class="pantao-collrow__eyebrow">{{ s.eyebrow | escape }}</span>{%- endif -%}
+      {%- if s.view_all_link != blank and s.view_all_label != blank -%}
+        <a class="pantao-collrow__all" href="{{ s.view_all_link }}">{{ s.view_all_label | escape }}</a>
+      {%- endif -%}
+    </div>
+
+    <div class="pantao-collrow__grid" style="--collrow-count: {{ count }};">
+      {%- for product in coll.products limit: count -%}
+        <a class="pantao-collrow__card" href="{{ product.url }}">
+          <div class="pantao-collrow__media">
+            {% render 'pantao-stock', product: product %}
+            {%- if product.featured_media != blank -%}
+              <img class="pantao-collrow__img"
+                src="{{ product.featured_media | image_url: width: 700 }}"
+                srcset="{{ product.featured_media | image_url: width: 500 }} 500w, {{ product.featured_media | image_url: width: 800 }} 800w, {{ product.featured_media | image_url: width: 1100 }} 1100w"
+                sizes="(min-width: 990px) 22vw, (min-width: 750px) 45vw, 90vw"
+                alt="{{ product.featured_media.alt | default: product.title | escape }}" loading="lazy"
+                width="{{ product.featured_media.width }}" height="{{ product.featured_media.height }}">
+            {%- else -%}
+              <div class="pantao-collrow__ph">{{ 'product-1' | placeholder_svg_tag: 'pantao-collrow__ph-svg' }}</div>
+            {%- endif -%}
+          </div>
+          <div class="pantao-collrow__info">
+            <p class="pantao-collrow__title">{{ product.title | escape }}</p>
+            <span class="pantao-collrow__price">{{ product.price | money }}</span>
+          </div>
+        </a>
+      {%- else -%}
+        <p class="pantao-collrow__empty">Add a collection to show products here.</p>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+<style>
+  #shopify-section-{{ section.id }} { margin: 0; }
+  .pantao-collrow{
+    --cr-ink: var(--color-foreground, #16181c);
+    --cr-muted: color-mix(in srgb, var(--color-foreground, #16181c) 54%, transparent);
+    --cr-line: color-mix(in srgb, var(--color-foreground, #16181c) 12%, transparent);
+    --cr-surface: color-mix(in srgb, var(--color-foreground, #16181c) 8%, var(--color-background, #f4f4f2));
+    --cr-sans: var(--font-body--family, -apple-system, system-ui, sans-serif);
+    background: var(--color-background, #f4f4f2); color: var(--cr-ink); font-family: var(--cr-sans);
+  }
+  .pantao-collrow__wrap{ max-width: 1440px; margin: 0 auto; padding: clamp(56px,8vw,110px) clamp(20px,5vw,64px); }
+  .pantao-collrow__head{ display:flex; align-items:baseline; justify-content:space-between; gap:20px; border-top:1px solid var(--cr-line); padding-top:18px; margin-bottom:clamp(28px,4vw,48px); }
+  .pantao-collrow__eyebrow{ font-size:11px; font-weight:500; letter-spacing:.26em; text-transform:uppercase; color:var(--cr-muted); }
+  .pantao-collrow__all{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--cr-ink); text-decoration:none; border-bottom:1px solid var(--cr-line); padding-bottom:3px; transition:color .25s, border-color .25s; }
+  .pantao-collrow__all:hover{ color:var(--manila,#b5271f); border-color:var(--manila,#b5271f); }
+  .pantao-collrow__grid{ display:grid; grid-template-columns:repeat(var(--collrow-count,4),1fr); gap:clamp(14px,1.8vw,22px); }
+  @media(max-width:860px){ .pantao-collrow__grid{ grid-template-columns:1fr 1fr; } }
+  @media(max-width:460px){ .pantao-collrow__grid{ grid-template-columns:1fr; } }
+  .pantao-collrow__card{ text-decoration:none; color:inherit; display:block; }
+  .pantao-collrow__media{ position:relative; container:pantao-card / inline-size; aspect-ratio:4/5; border-radius:16px; overflow:hidden; background:var(--cr-surface); }
+  .pantao-collrow__img, .pantao-collrow__ph{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.22,1,.36,1); }
+  .pantao-collrow__ph{ display:flex; }
+  .pantao-collrow__ph-svg{ width:100%; height:100%; object-fit:cover; opacity:.4; }
+  @media(hover:hover){ .pantao-collrow__card:hover .pantao-collrow__img, .pantao-collrow__card:hover .pantao-collrow__ph{ transform:scale(1.04); } }
+  .pantao-collrow__info{ padding:14px 2px 0; }
+  .pantao-collrow__title{ font-size:.95rem; font-weight:500; letter-spacing:.01em; margin:0 0 4px; }
+  .pantao-collrow__price{ font-size:.9rem; color:var(--cr-muted); }
+  .pantao-collrow__empty{ color:var(--cr-muted); grid-column:1/-1; }
+  @media(prefers-reduced-motion:reduce){ .pantao-collrow__img,.pantao-collrow__ph{ transition:none!important; } }
+</style>
+
+{% schema %}
+{
+  "name": "PANTAO Collection row",
+  "tag": "section",
+  "class": "section-wrapper",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "The Collection" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "count", "label": "Products to show", "min": 2, "max": 8, "step": 1, "default": 4 },
+    { "type": "text", "id": "view_all_label", "label": "View-all label", "default": "View all" },
+    { "type": "url", "id": "view_all_link", "label": "View-all link" }
+  ],
+  "presets": [ { "name": "PANTAO Collection row" } ]
+}
+{% endschema %}
