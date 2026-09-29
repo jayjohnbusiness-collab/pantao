@@ -76,16 +76,18 @@
 
       <button
         type="button"
-        class="column-toggle"
+        class="column-switch"
         data-grid-toggle
         data-view="default"
-        aria-pressed="false"
+        role="switch"
+        aria-checked="false"
         aria-label="{{ 'content.grid_view.grid_fieldset' | t }}"
       >
-        <span class="column-toggle__icon column-toggle__icon--default">
+        <span class="column-switch__thumb" aria-hidden="true"></span>
+        <span class="column-switch__icon column-switch__icon--default">
           {{- 'icon-grid-default.svg' | inline_asset_content -}}
         </span>
-        <span class="column-toggle__icon column-toggle__icon--zoom-out">
+        <span class="column-switch__icon column-switch__icon--zoom-out">
           {{- 'icon-grid-dense.svg' | inline_asset_content -}}
         </span>
       </button>
@@ -116,7 +118,7 @@
     const syncButton = (btn, grid) => {
       const isZoom = currentView(grid) === 'zoom-out';
       btn.dataset.view = isZoom ? 'zoom-out' : 'default';
-      btn.setAttribute('aria-pressed', isZoom ? 'true' : 'false');
+      btn.setAttribute('aria-checked', isZoom ? 'true' : 'false');
     };
 
     // Click flips to the other view through the hidden radios so the native
@@ -136,9 +138,9 @@
       target.checked = true;
       target.dispatchEvent(new Event('change', { bubbles: true }));
 
-      // Optimistic icon update; the observer confirms once the view applies.
+      // Optimistic thumb slide; the observer confirms once the view applies.
       btn.dataset.view = nextView;
-      btn.setAttribute('aria-pressed', goingZoom ? 'true' : 'false');
+      btn.setAttribute('aria-checked', goingZoom ? 'true' : 'false');
 
       // Safety net: if the native handler didn't apply the view, set it here.
       setTimeout(() => {
@@ -296,52 +298,80 @@
     background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
   }
 
-  /* Single grid-density toggle (desktop) */
-  .column-toggle {
+  /* Grid-density switch (desktop): two-icon pill with a sliding thumb */
+  .column-switch {
+    --switch-pad: 3px;
+    --switch-cell: calc(var(--minimum-touch-target) - var(--switch-pad) * 2);
+
     display: none;
+    position: relative;
     align-items: center;
-    justify-content: center;
-    padding: var(--padding-2xs);
+    gap: 0;
+    padding: var(--switch-pad);
     height: var(--minimum-touch-target);
-    min-width: var(--minimum-touch-target);
-    color: rgb(var(--color-foreground-rgb) / var(--opacity-50));
-    background: transparent;
-    border: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-15, 0.15));
-    border-radius: var(--style-border-radius-sm, 999px);
+    background: rgb(var(--color-foreground-rgb) / var(--opacity-10, 0.1));
+    border: none;
+    border-radius: 999px;
     cursor: pointer;
-    transition: background-color var(--animation-speed) ease,
-      border-color var(--animation-speed) ease, color var(--animation-speed) ease;
+    -webkit-tap-highlight-color: transparent;
   }
 
   @media screen and (min-width: 750px) {
-    .column-toggle {
+    .column-switch {
       display: inline-flex;
     }
   }
 
-  .column-toggle:hover {
-    color: rgb(var(--color-foreground-rgb));
-    background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
-    border-color: rgb(var(--color-foreground-rgb) / var(--opacity-30, 0.3));
-  }
-
-  .column-toggle:focus-visible {
+  .column-switch:focus-visible {
     outline: 2px solid rgb(var(--color-foreground-rgb));
     outline-offset: 2px;
   }
 
-  .column-toggle__icon {
-    display: none;
-    line-height: 0;
-    color: inherit;
+  /* The sliding thumb sits behind the active icon and animates across. */
+  .column-switch__thumb {
+    position: absolute;
+    top: var(--switch-pad);
+    left: var(--switch-pad);
+    width: var(--switch-cell);
+    height: var(--switch-cell);
+    border-radius: 999px;
+    background: rgb(var(--color-foreground-rgb));
+    transform: translateX(0);
+    transition: transform var(--animation-speed) var(--animation-easing, ease);
+    z-index: 0;
   }
 
-  .column-toggle__icon svg {
-    display: block;
+  .column-switch[data-view='zoom-out'] .column-switch__thumb {
+    transform: translateX(100%);
   }
 
-  .column-toggle[data-view='default'] .column-toggle__icon--default,
-  .column-toggle[data-view='zoom-out'] .column-toggle__icon--zoom-out {
+  .column-switch__icon {
+    position: relative;
+    z-index: 1;
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--switch-cell);
+    height: var(--switch-cell);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-50, 0.5));
+    transition: color var(--animation-speed) ease;
+  }
+
+  .column-switch__icon svg {
+    display: block;
+    width: 1rem;
+    height: 1rem;
+  }
+
+  /* Active icon rides on the dark thumb, so it takes the background color. */
+  .column-switch[data-view='default'] .column-switch__icon--default,
+  .column-switch[data-view='zoom-out'] .column-switch__icon--zoom-out {
+    color: rgb(var(--color-background-rgb));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .column-switch__thumb {
+      transition: none;
+    }
   }
 {% endstylesheet %}
