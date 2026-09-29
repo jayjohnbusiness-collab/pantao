@@ -45,40 +45,135 @@
       </label>
 
     {% elsif viewport == 'desktop' %}
-      <label class="column-options__option">
+      {%- comment -%}
+        Single toggle button: one click sets the large card view, clicking
+        again switches to the smaller (dense) view. The two radios below are
+        kept but visually hidden so the theme's native layout plumbing keeps
+        working — the view-transition animation and sessionStorage persistence
+        (results-list/updateLayout), the restore-on-load script, and the
+        media-query reset handler all still target these inputs by name.
+      {%- endcomment -%}
+      <span class="column-options__radios visually-hidden" aria-hidden="true">
         <input
           type="radio"
           name="grid"
           value="default"
-          class="column-options__option-input"
           checked
-          aria-label="{{ 'content.grid_view.default_view' | t }}"
+          tabindex="-1"
           data-grid-layout="desktop-default-option"
           on:change="results-list/updateLayout"
           data-skip-node-update
         >
-        <span class="column-picker column-picker--default">
-          {{- 'icon-grid-default.svg' | inline_asset_content -}}
-        </span>
-      </label>
-
-      <label class="column-options__option">
         <input
           type="radio"
           name="grid"
           value="zoom-out"
-          class="column-options__option-input"
-          aria-label="{{ 'content.grid_view.zoom_out' | t }}"
+          tabindex="-1"
           on:change="results-list/updateLayout"
           data-skip-node-update
         >
-        <span class="column-picker column-picker--zoom-out">
+      </span>
+
+      <button
+        type="button"
+        class="column-toggle"
+        data-grid-toggle
+        data-view="default"
+        aria-pressed="false"
+        aria-label="{{ 'content.grid_view.grid_fieldset' | t }}"
+      >
+        <span class="column-toggle__icon column-toggle__icon--default">
+          {{- 'icon-grid-default.svg' | inline_asset_content -}}
+        </span>
+        <span class="column-toggle__icon column-toggle__icon--zoom-out">
           {{- 'icon-grid-dense.svg' | inline_asset_content -}}
         </span>
-      </label>
+      </button>
     {% endif %}
   </fieldset>
 </div>
+
+{%- comment -%} Wire the single toggle button to the hidden radios. {%- endcomment -%}
+<script>
+  (() => {
+    if (window.__pantaoGridToggle) return;
+    window.__pantaoGridToggle = true;
+
+    const getGrid = (btn) =>
+      btn.closest('results-list')?.querySelector('.product-grid') ||
+      document.querySelector('.product-grid');
+
+    const getRadios = (btn) => {
+      const wrap = btn.closest('.column-options-wrapper');
+      return {
+        def: wrap?.querySelector('input[name="grid"][value="default"]'),
+        zoom: wrap?.querySelector('input[name="grid"][value="zoom-out"]'),
+      };
+    };
+
+    const currentView = (grid) => grid?.getAttribute('product-grid-view') || 'default';
+
+    const syncButton = (btn, grid) => {
+      const isZoom = currentView(grid) === 'zoom-out';
+      btn.dataset.view = isZoom ? 'zoom-out' : 'default';
+      btn.setAttribute('aria-pressed', isZoom ? 'true' : 'false');
+    };
+
+    // Click flips to the other view through the hidden radios so the native
+    // animation + persistence run exactly as they do for the stock control.
+    document.addEventListener('click', (event) => {
+      const btn = event.target.closest?.('[data-grid-toggle]');
+      if (!btn) return;
+      event.preventDefault();
+
+      const grid = getGrid(btn);
+      const { def, zoom } = getRadios(btn);
+      if (!grid || !def || !zoom) return;
+
+      const goingZoom = currentView(grid) !== 'zoom-out';
+      const nextView = goingZoom ? 'zoom-out' : 'default';
+      const target = goingZoom ? zoom : def;
+      target.checked = true;
+      target.dispatchEvent(new Event('change', { bubbles: true }));
+
+      // Optimistic icon update; the observer confirms once the view applies.
+      btn.dataset.view = nextView;
+      btn.setAttribute('aria-pressed', goingZoom ? 'true' : 'false');
+
+      // Safety net: if the native handler didn't apply the view, set it here.
+      setTimeout(() => {
+        if (currentView(grid) === nextView) return;
+        grid.setAttribute('product-grid-view', nextView);
+        try {
+          const viewport = window.matchMedia('(min-width: 750px)').matches ? 'desktop' : 'mobile';
+          sessionStorage.setItem(`product-grid-view-${viewport}`, nextView);
+        } catch (e) {
+          /* sessionStorage may be unavailable */
+        }
+      }, 120);
+    });
+
+    // Keep every toggle's icon in step with the grid, however the view changes
+    // (toggle, restore-on-load, or the media-query reset to default).
+    const wire = () => {
+      document.querySelectorAll('[data-grid-toggle]').forEach((btn) => {
+        const grid = getGrid(btn);
+        if (!grid) return;
+        syncButton(btn, grid);
+        if (btn.__gridObserved) return;
+        btn.__gridObserved = true;
+        new MutationObserver(() => syncButton(btn, grid)).observe(grid, {
+          attributes: true,
+          attributeFilter: ['product-grid-view'],
+        });
+      });
+    };
+
+    if (document.readyState !== 'loading') wire();
+    else document.addEventListener('DOMContentLoaded', wire);
+    document.addEventListener('shopify:section:load', wire);
+  })();
+</script>
 
 {% stylesheet %}
   .column-options-wrapper {
@@ -199,5 +294,54 @@
   .column-options__option-input:checked ~ .column-picker {
     color: rgb(var(--color-foreground-rgb));
     background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
+  }
+
+  /* Single grid-density toggle (desktop) */
+  .column-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: var(--padding-2xs);
+    height: var(--minimum-touch-target);
+    min-width: var(--minimum-touch-target);
+    color: rgb(var(--color-foreground-rgb) / var(--opacity-50));
+    background: transparent;
+    border: 1px solid rgb(var(--color-foreground-rgb) / var(--opacity-15, 0.15));
+    border-radius: var(--style-border-radius-sm, 999px);
+    cursor: pointer;
+    transition: background-color var(--animation-speed) ease,
+      border-color var(--animation-speed) ease, color var(--animation-speed) ease;
+  }
+
+  @media screen and (min-width: 750px) {
+    .column-toggle {
+      display: inline-flex;
+    }
+  }
+
+  .column-toggle:hover {
+    color: rgb(var(--color-foreground-rgb));
+    background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
+    border-color: rgb(var(--color-foreground-rgb) / var(--opacity-30, 0.3));
+  }
+
+  .column-toggle:focus-visible {
+    outline: 2px solid rgb(var(--color-foreground-rgb));
+    outline-offset: 2px;
+  }
+
+  .column-toggle__icon {
+    display: none;
+    line-height: 0;
+    color: inherit;
+  }
+
+  .column-toggle__icon svg {
+    display: block;
+  }
+
+  .column-toggle[data-view='default'] .column-toggle__icon--default,
+  .column-toggle[data-view='zoom-out'] .column-toggle__icon--zoom-out {
+    display: inline-flex;
   }
 {% endstylesheet %}
