@@ -94,6 +94,12 @@
           "success_heading": "You're on the list.",
           "success_text": "One note a year, ahead of the next edition. Watch for it."
         }
+      },
+      "password-footer": {
+        "type": "password-footer",
+        "settings": {
+          "color_scheme": ""
+        }
       }
     },
     "content_for_index": [],
@@ -369,20 +375,20 @@
       "scheme-f7a8828d-05ad-4191-bd0e-8b244e3a9af2": {
         "settings": {
           "background": "#d00000",
-          "foreground_heading": "#ffffff",
-          "foreground": "#ffffff",
+          "foreground_heading": "#D90000",
+          "foreground": "#D90000",
           "primary": "#666666",
           "primary_hover": "#000000",
           "border": "#e6e6e6",
           "shadow": "#000000",
           "primary_button_background": "#000000",
-          "primary_button_text": "#ffffff",
+          "primary_button_text": "#D90000",
           "primary_button_border": "#000000",
           "primary_button_hover_background": "#383838",
           "primary_button_hover_text": "#ffffff",
           "primary_button_hover_border": "#383838",
           "secondary_button_background": "rgba(0,0,0,0)",
-          "secondary_button_text": "#ffffff",
+          "secondary_button_text": "#D90000",
           "secondary_button_border": "#ffffff",
           "secondary_button_hover_background": "#dedede",
           "secondary_button_hover_text": "#000000",
@@ -398,7 +404,7 @@
           "variant_hover_text_color": "#000000",
           "variant_hover_border_color": "#000000",
           "selected_variant_background_color": "#000000",
-          "selected_variant_text_color": "#ffffff",
+          "selected_variant_text_color": "#D90000",
           "selected_variant_border_color": "#000000",
           "selected_variant_hover_background_color": "#1a1a1a",
           "selected_variant_hover_text_color": "#ffffff",
