@@ -298,21 +298,26 @@
     background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
   }
 
-  /* Grid-density switch (desktop): keeps the theme's original colours
-     (dark icon on a faint highlight) but slides the highlight between the
-     two icons instead of snapping it. */
+  /* Grid-density switch (desktop): sized to match the SORT pill (same height,
+     1px border, 100px radius, hover) and keeps the theme's original colours
+     (dark icon on a faint highlight) sliding between the two icons. */
   .column-switch {
-    --switch-cell: calc(1rem + var(--padding-2xs) * 2);
+    --switch-inset: var(--padding-2xs);
+    --switch-cell: 1.625rem;
 
     display: none;
     position: relative;
     align-items: center;
     gap: 0;
-    padding: 0;
+    height: var(--minimum-touch-target);
+    padding-inline: var(--switch-inset);
+    padding-block: 0;
     background: transparent;
-    border: none;
+    border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+    border-radius: 100px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
   }
 
   @media screen and (min-width: 750px) {
@@ -321,28 +326,32 @@
     }
   }
 
+  .column-switch:hover {
+    border-color: color-mix(in srgb, currentColor 48%, transparent);
+    background: color-mix(in srgb, currentColor 5%, transparent);
+  }
+
   .column-switch:focus-visible {
-    outline: 2px solid rgb(var(--color-foreground-rgb));
-    outline-offset: 2px;
-    border-radius: var(--style-border-radius-xs);
+    outline: var(--focus-outline-width, 2px) solid currentColor;
+    outline-offset: var(--focus-outline-offset, 2px);
   }
 
   /* The sliding highlight matches the theme's original checked background. */
   .column-switch__thumb {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%;
+    left: var(--switch-inset);
     width: var(--switch-cell);
-    height: 100%;
+    height: calc(var(--minimum-touch-target) - var(--padding-xs) * 2);
     border-radius: var(--style-border-radius-xs);
     background: rgb(var(--color-foreground-rgb) / var(--opacity-5));
-    transform: translateX(0);
+    transform: translate(0, -50%);
     transition: transform var(--animation-speed) var(--animation-easing, ease);
     z-index: 0;
   }
 
   .column-switch[data-view='zoom-out'] .column-switch__thumb {
-    transform: translateX(100%);
+    transform: translate(100%, -50%);
   }
 
   .column-switch__icon {
@@ -352,7 +361,7 @@
     align-items: center;
     justify-content: center;
     width: var(--switch-cell);
-    height: var(--switch-cell);
+    height: 100%;
     padding: 0;
     color: rgb(var(--color-foreground-rgb) / var(--opacity-50));
     transition: color var(--animation-speed) ease;
