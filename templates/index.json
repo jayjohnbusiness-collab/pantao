@@ -12,9 +12,10 @@
     "arrival": {
       "type": "arrival-hero",
       "settings": {
-        "media_type": "image",
+        "media_type": "video",
         "image": "shopify://shop_images/hf_20260504_193859_117d50ac-42f3-4be9-be0e-5b9a554db20c2.png",
         "image_position_fit": "cover",
+        "video": "shopify://files/videos/igexport-Dch6atIJkTG.mp4",
         "video_position": "cover",
         "show_overlay": false,
         "overlay_opacity": 25,
