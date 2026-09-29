@@ -298,26 +298,25 @@
     background-color: rgb(var(--color-foreground-rgb) / var(--opacity-5));
   }
 
-  /* Grid-density switch (desktop): sized to match the SORT pill (same height,
-     1px border, 100px radius, hover) and keeps the theme's original colours
-     (dark icon on a faint highlight) sliding between the two icons. */
+  /* Grid-density switch (desktop): iOS-style pill — a filled grey track with a
+     raised white thumb that slides behind the active icon. Height matches the
+     SORT pill so the two controls line up in the toolbar. */
   .column-switch {
-    --switch-inset: var(--padding-2xs);
-    --switch-cell: 1.625rem;
+    --switch-inset: 5px;
+    --switch-cell: 2.125rem;
 
     display: none;
     position: relative;
     align-items: center;
     gap: 0;
     height: var(--minimum-touch-target);
-    padding-inline: var(--switch-inset);
-    padding-block: 0;
-    background: transparent;
-    border: 1px solid color-mix(in srgb, currentColor 22%, transparent);
+    padding: var(--switch-inset);
+    background: rgb(var(--color-foreground-rgb) / 0.09);
+    border: none;
     border-radius: 100px;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
-    transition: border-color 0.3s ease, background-color 0.3s ease;
+    transition: background-color 0.3s ease;
   }
 
   @media screen and (min-width: 750px) {
@@ -327,8 +326,7 @@
   }
 
   .column-switch:hover {
-    border-color: color-mix(in srgb, currentColor 48%, transparent);
-    background: color-mix(in srgb, currentColor 5%, transparent);
+    background: rgb(var(--color-foreground-rgb) / 0.13);
   }
 
   .column-switch:focus-visible {
@@ -336,22 +334,23 @@
     outline-offset: var(--focus-outline-offset, 2px);
   }
 
-  /* The sliding highlight matches the theme's original checked background. */
+  /* Raised white thumb that slides beneath the active icon. */
   .column-switch__thumb {
     position: absolute;
-    top: 50%;
+    top: var(--switch-inset);
     left: var(--switch-inset);
     width: var(--switch-cell);
-    height: calc(var(--minimum-touch-target) - var(--padding-xs) * 2);
-    border-radius: var(--style-border-radius-xs);
-    background: rgb(var(--color-foreground-rgb) / var(--opacity-5));
-    transform: translate(0, -50%);
+    height: calc(var(--minimum-touch-target) - var(--switch-inset) * 2);
+    border-radius: 10px;
+    background: rgb(var(--color-background-rgb));
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.16), 0 0 1px rgb(0 0 0 / 0.1);
+    transform: translateX(0);
     transition: transform var(--animation-speed) var(--animation-easing, ease);
     z-index: 0;
   }
 
   .column-switch[data-view='zoom-out'] .column-switch__thumb {
-    transform: translate(100%, -50%);
+    transform: translateX(100%);
   }
 
   .column-switch__icon {
