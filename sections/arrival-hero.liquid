@@ -85,6 +85,18 @@
 
   <div class="arrival-hero__content arrival-hero__content--{{ s.content_position }} arrival-hero__content--align-{{ s.content_alignment | default: 'auto' }}">
     <div class="arrival-hero__inner">
+      {%- if s.logo != blank -%}
+        <img
+          class="arrival-hero__logo"
+          src="{{ s.logo | image_url: width: 900 }}"
+          alt="{{ s.logo.alt | default: shop.name | escape }}"
+          width="{{ s.logo.width }}"
+          height="{{ s.logo.height }}"
+          loading="eager"
+          style="width: min({{ s.logo_width }}px, 72vw);"
+        >
+      {%- endif -%}
+
       {%- if s.eyebrow != blank -%}
         <p class="arrival-hero__eyebrow">{{ s.eyebrow | escape }}</p>
       {%- endif -%}
@@ -282,6 +294,15 @@
     color: #f4f5f5;
   }
 
+  .arrival-hero__logo {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 0 0 2rem 0;
+    opacity: 0;
+    animation: arrival-fade 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.02s forwards;
+  }
+
   .arrival-hero__eyebrow {
     font-family: var(--font-body--family);
     font-size: var(--font-size--3xs);
@@ -368,6 +389,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .arrival-hero__tline-i,
+    .arrival-hero__logo,
     .arrival-hero__eyebrow,
     .arrival-hero__lede,
     .arrival-hero__cta {
@@ -467,6 +489,7 @@
     transform: translateY(calc((1 - var(--reveal-hero, 1)) * -30px));
   }
 
+  html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__logo,
   html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__eyebrow,
   html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__lede,
   html.pantao-reveal-on .arrival-hero--reveal .arrival-hero__cta {
@@ -657,6 +680,31 @@
         { "value": "right",  "label": "Right" }
       ],
       "default": "auto"
+    },
+
+    {
+      "type": "header",
+      "content": "Logo"
+    },
+    {
+      "type": "paragraph",
+      "content": "Optional. Shows above the copy. Leave the headline lines blank to use the logo on its own."
+    },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo image"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 80,
+      "max": 480,
+      "step": 10,
+      "unit": "px",
+      "default": 200,
+      "visible_if": "{{ section.settings.logo != blank }}"
     },
 
     {
