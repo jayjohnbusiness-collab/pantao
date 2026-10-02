@@ -83,7 +83,7 @@
     {%- endif -%}
   </div>
 
-  <div class="arrival-hero__content arrival-hero__content--{{ s.content_position }}">
+  <div class="arrival-hero__content arrival-hero__content--{{ s.content_position }} arrival-hero__content--align-{{ s.content_alignment | default: 'auto' }}">
     <div class="arrival-hero__inner">
       {%- if s.eyebrow != blank -%}
         <p class="arrival-hero__eyebrow">{{ s.eyebrow | escape }}</p>
@@ -241,6 +241,35 @@
     align-items: flex-end;
     justify-content: center;
     text-align: center;
+  }
+
+  /* ---------- Text alignment (independent of content position) ----------
+     'auto' adds no rule, so the alignment implied by the content position
+     above is preserved. Left / Center / Right override the text alignment
+     and the inner column's cross-axis alignment without moving the block.
+     Declared after the position rules so they win on equal specificity. */
+  .arrival-hero__content--align-left {
+    text-align: left;
+  }
+
+  .arrival-hero__content--align-left .arrival-hero__inner {
+    align-items: flex-start;
+  }
+
+  .arrival-hero__content--align-center {
+    text-align: center;
+  }
+
+  .arrival-hero__content--align-center .arrival-hero__inner {
+    align-items: center;
+  }
+
+  .arrival-hero__content--align-right {
+    text-align: right;
+  }
+
+  .arrival-hero__content--align-right .arrival-hero__inner {
+    align-items: flex-end;
   }
 
   /* content sits over the photo — light, fixed, scheme-independent */
@@ -615,6 +644,19 @@
         { "value": "bottom-center", "label": "Bottom center" }
       ],
       "default": "bottom-left"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Text alignment",
+      "info": "Aligns the eyebrow, headline, lede and button. 'Auto' follows the content position.",
+      "options": [
+        { "value": "auto",   "label": "Auto (follow position)" },
+        { "value": "left",   "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right",  "label": "Right" }
+      ],
+      "default": "auto"
     },
 
     {
