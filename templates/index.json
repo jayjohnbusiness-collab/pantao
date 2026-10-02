@@ -16,7 +16,7 @@
         "image": "shopify://shop_images/hf_20260504_193859_117d50ac-42f3-4be9-be0e-5b9a554db20c2.png",
         "image_position_fit": "cover",
         "video": "shopify://files/videos/hf_20260929_232507_fadbaf1f-09c6-4ffa-b596-a504fbf1a9d3.mp4",
-        "video_position": "contain",
+        "video_position": "cover",
         "show_overlay": true,
         "overlay_opacity": 0,
         "height": "full",
