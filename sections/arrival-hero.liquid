@@ -88,12 +88,12 @@
       {%- if s.logo != blank -%}
         <img
           class="arrival-hero__logo"
-          src="{{ s.logo | image_url: width: 1800 }}"
+          src="{{ s.logo | image_url: width: 2600 }}"
           alt="{{ s.logo.alt | default: shop.name | escape }}"
           width="{{ s.logo.width }}"
           height="{{ s.logo.height }}"
           loading="eager"
-          style="width: min({{ s.logo_width }}px, 90vw);"
+          style="width: min({{ s.logo_width }}px, 92vw);"
         >
       {%- endif -%}
 
@@ -296,7 +296,8 @@
 
   .arrival-hero__logo {
     display: block;
-    max-width: 100%;
+    /* Allowed to grow past the text block's max-width; only the viewport caps it. */
+    max-width: 92vw;
     height: auto;
     margin: 0 0 2rem 0;
     opacity: 0;
@@ -700,8 +701,8 @@
       "id": "logo_width",
       "label": "Logo width",
       "min": 80,
-      "max": 900,
-      "step": 10,
+      "max": 1600,
+      "step": 20,
       "unit": "px",
       "default": 200,
       "visible_if": "{{ section.settings.logo != blank }}"
