@@ -88,12 +88,12 @@
       {%- if s.logo != blank -%}
         <img
           class="arrival-hero__logo"
-          src="{{ s.logo | image_url: width: 900 }}"
+          src="{{ s.logo | image_url: width: 1800 }}"
           alt="{{ s.logo.alt | default: shop.name | escape }}"
           width="{{ s.logo.width }}"
           height="{{ s.logo.height }}"
           loading="eager"
-          style="width: min({{ s.logo_width }}px, 72vw);"
+          style="width: min({{ s.logo_width }}px, 90vw);"
         >
       {%- endif -%}
 
@@ -700,7 +700,7 @@
       "id": "logo_width",
       "label": "Logo width",
       "min": 80,
-      "max": 480,
+      "max": 900,
       "step": 10,
       "unit": "px",
       "default": 200,
