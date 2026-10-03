@@ -36,6 +36,53 @@
         "color_scheme": "scheme-f7a8828d-05ad-4191-bd0e-8b244e3a9af2"
       }
     },
+    "pantao_showcase_MHGHBy": {
+      "type": "pantao-showcase",
+      "blocks": {
+        "card_PbCR3M": {
+          "type": "card",
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/IMG_2961.jpg",
+            "label": "THE EDITION",
+            "link": "",
+            "aria_label": "",
+            "label_position": "top-left",
+            "label_color": "auto"
+          }
+        },
+        "card_gK4dGK": {
+          "type": "card",
+          "settings": {
+            "media_type": "image",
+            "image": "shopify://shop_images/Untitled_design_21.png",
+            "label": "ACCESSORIES",
+            "link": "",
+            "aria_label": "",
+            "label_position": "auto",
+            "label_color": "auto"
+          }
+        }
+      },
+      "block_order": [
+        "card_PbCR3M",
+        "card_gK4dGK"
+      ],
+      "name": "Showcase",
+      "settings": {
+        "eyebrow": "",
+        "heading": "",
+        "columns_desktop": 2,
+        "columns_mobile": "1",
+        "gap": 0,
+        "full_width": true,
+        "aspect_ratio": "3 / 4",
+        "label_position": "top-left",
+        "label_color": "light",
+        "label_size": 12,
+        "color_scheme": ""
+      }
+    },
     "pantao_collection_row_8DcKwU": {
       "type": "pantao-collection-row",
       "name": "PANTAO Collection row",
@@ -113,39 +160,6 @@
         "color_scheme": "scheme-1"
       }
     },
-    "pantao_showcase": {
-      "type": "pantao-showcase",
-      "blocks": {
-        "card-1": {
-          "type": "card",
-          "settings": {
-            "media_type": "image",
-            "label": "THE EDITION",
-            "link": "/collections/all"
-          }
-        },
-        "card-2": {
-          "type": "card",
-          "settings": {
-            "media_type": "image",
-            "label": "ACCESSORIES",
-            "link": "/collections/accessories"
-          }
-        }
-      },
-      "block_order": ["card-1", "card-2"],
-      "settings": {
-        "columns_desktop": 2,
-        "columns_mobile": 1,
-        "gap": 0,
-        "full_width": true,
-        "aspect_ratio": "3 / 4",
-        "label_position": "top-left",
-        "label_color": "light",
-        "label_size": 12,
-        "color_scheme": "scheme-1"
-      }
-    },
     "pantao_manifesto_Fh8hpC": {
       "type": "pantao-manifesto",
       "disabled": true,
@@ -173,9 +187,9 @@
   },
   "order": [
     "arrival",
+    "pantao_showcase_MHGHBy",
     "pantao_collection_row_8DcKwU",
     "piece",
-    "pantao_showcase",
     "pantao_manifesto_Fh8hpC",
     "pantao_list_BNPFzm"
   ]
