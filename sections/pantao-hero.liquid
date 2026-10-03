@@ -1,101 +1,82 @@
 {%- comment -%}
   Pantao Hero banner
   --------------------------------------------------------
-  A single full-bleed image/video banner with a small eyebrow label, an
-  optional display heading, subtext and CTA. The whole banner can link
-  somewhere (stretched overlay link) OR use a CTA button — not both nested.
-  Shares the Showcase/editorial language: minimal, corner-or-centered type.
+  A full-width, hero-height version of a Showcase card: full-bleed image/video
+  with a small corner label, and the whole banner links to a collection/page.
+  Same label settings as the Showcase cards (position, color, size, edge
+  spacing); a Height control stands in for the card's tile shape.
 {%- endcomment -%}
 
 {%- liquid
   assign s = section.settings
-  assign has_cta = false
-  if s.cta_label != blank and s.cta_link != blank
-    assign has_cta = true
-  endif
-  assign whole_link = false
-  if has_cta == false and s.link != blank
-    assign whole_link = true
-  endif
 -%}
 
 <div
-  class="pantao-hero color-{{ s.color_scheme }} pantao-hero--{{ s.height }} pantao-hero--text-{{ s.text_color }}{% if whole_link %} pantao-hero--link{% endif %}"
-  style="--ph-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};"
+  class="pantao-hero pantao-hero--{{ s.height }} pantao-hero--label-{{ s.label_color }}{% if s.link != blank %} pantao-hero--link{% endif %}"
+  style="
+    --ph-label-size: {{ s.label_size }}px;
+    --ph-label-inset: {{ s.label_inset }}px;
+  "
 >
-  <div class="pantao-hero__media">
-    {%- if s.media_type == 'video' and s.video != blank -%}
-      {%- liquid
-        assign poster = ''
-        if s.video.preview_image != blank
-          assign poster = s.video.preview_image | image_url: width: 2400
-        endif
-      -%}
-      <video
-        class="pantao-hero__video"
-        muted
-        playsinline
-        autoplay
-        loop
-        preload="metadata"
-        disablepictureinpicture
-        {% if poster != blank %}poster="{{ poster }}"{% endif %}
-        data-hero-video
-      >
-        {%- for source in s.video.sources -%}
-          <source src="{{ source.url }}" type="{{ source.mime_type }}">
-        {%- endfor -%}
-      </video>
-      {%- if poster != blank -%}
-        <img class="pantao-hero__video-fallback" src="{{ poster }}" alt="{{ s.heading | default: s.eyebrow | escape }}" loading="lazy" width="2400" height="1350">
-      {%- endif -%}
-    {%- elsif s.image != blank -%}
-      {{
-        s.image
-        | image_url: width: 2400
-        | image_tag:
-          loading: 'eager',
-          fetchpriority: 'high',
-          class: 'pantao-hero__img',
-          widths: '600, 900, 1200, 1600, 2000, 2400, 3000',
-          sizes: '100vw',
-          alt: s.heading | default: s.eyebrow
-      }}
-    {%- else -%}
-      <div class="pantao-hero__ph">
-        {{ 'lifestyle-2' | placeholder_svg_tag: 'pantao-hero__ph-svg' }}
-      </div>
-    {%- endif -%}
-
-    {%- if s.show_scrim -%}<div class="pantao-hero__scrim pantao-hero__scrim--{{ s.content_position }}" aria-hidden="true"></div>{%- endif -%}
-    {%- if s.overlay_opacity > 0 -%}<div class="pantao-hero__overlay" aria-hidden="true"></div>{%- endif -%}
-  </div>
-
-  <div class="pantao-hero__content pantao-hero__content--{{ s.content_position }} pantao-hero__content--align-{{ s.content_alignment }}">
-    <div class="pantao-hero__inner">
-      {%- if s.eyebrow != blank -%}
-        <p class="pantao-hero__eyebrow">{{ s.eyebrow | escape }}</p>
-      {%- endif -%}
-      {%- if s.heading != blank -%}
-        <h2 class="pantao-hero__heading">{{ s.heading | escape }}</h2>
-      {%- endif -%}
-      {%- if s.subheading != blank -%}
-        <p class="pantao-hero__sub">{{ s.subheading | escape }}</p>
-      {%- endif -%}
-      {%- if has_cta -%}
-        <div class="pantao-hero__cta">
-          <a class="pantao-hero__btn" href="{{ s.cta_link }}">{{ s.cta_label | escape }}</a>
+  {%- capture hero_inner -%}
+    <div class="pantao-hero__media">
+      {%- if s.media_type == 'video' and s.video != blank -%}
+        {%- liquid
+          assign poster = ''
+          if s.video.preview_image != blank
+            assign poster = s.video.preview_image | image_url: width: 2400
+          endif
+        -%}
+        <video
+          class="pantao-hero__video"
+          muted
+          playsinline
+          autoplay
+          loop
+          preload="metadata"
+          disablepictureinpicture
+          {% if poster != blank %}poster="{{ poster }}"{% endif %}
+          data-hero-video
+        >
+          {%- for source in s.video.sources -%}
+            <source src="{{ source.url }}" type="{{ source.mime_type }}">
+          {%- endfor -%}
+        </video>
+        {%- if poster != blank -%}
+          <img class="pantao-hero__video-fallback" src="{{ poster }}" alt="{{ s.label | escape }}" loading="lazy" width="2400" height="1350">
+        {%- endif -%}
+      {%- elsif s.image != blank -%}
+        {{
+          s.image
+          | image_url: width: 2400
+          | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            class: 'pantao-hero__img',
+            widths: '600, 900, 1200, 1600, 2000, 2400, 3000',
+            sizes: '100vw',
+            alt: s.label
+        }}
+      {%- else -%}
+        <div class="pantao-hero__ph">
+          {{ 'lifestyle-2' | placeholder_svg_tag: 'pantao-hero__ph-svg' }}
         </div>
       {%- endif -%}
     </div>
-  </div>
 
-  {%- if whole_link -%}
+    {%- if s.label != blank -%}
+      <span class="pantao-hero__label pantao-hero__label--{{ s.label_position }}">{{ s.label | escape }}</span>
+    {%- endif -%}
+  {%- endcapture -%}
+
+  {%- if s.link != blank -%}
     <a
-      class="pantao-hero__fulllink"
+      class="pantao-hero__wrap pantao-hero__wrap--link"
       href="{{ s.link }}"
-      aria-label="{{ s.heading | default: s.eyebrow | default: 'View' | escape }}"
-    ></a>
+      {% if s.aria_label != blank %}aria-label="{{ s.aria_label | escape }}"{% elsif s.label != blank %}aria-label="{{ s.label | escape }}"{% endif %}
+    >{{ hero_inner }}</a>
+  {%- else -%}
+    <div class="pantao-hero__wrap">{{ hero_inner }}</div>
   {%- endif -%}
 </div>
 
@@ -113,11 +94,23 @@
   .pantao-hero--medium  { height: 60svh;  min-height: 440px; }
   .pantao-hero--compact { height: 46svh;  min-height: 340px; }
 
+  .pantao-hero__wrap {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .pantao-hero__wrap--link { cursor: pointer; }
+
   /* ---------- Media ---------- */
   .pantao-hero__media {
     position: absolute;
     inset: 0;
     z-index: 0;
+    overflow: hidden;
   }
 
   .pantao-hero__img,
@@ -140,178 +133,6 @@
     .pantao-hero__video { display: none; }
   }
 
-  .pantao-hero__overlay {
-    position: absolute;
-    inset: 0;
-    background: #000;
-    opacity: var(--ph-overlay, 0);
-    pointer-events: none;
-    z-index: 2;
-  }
-
-  /* Directional scrim keeps type legible; biases toward where the content sits. */
-  .pantao-hero__scrim {
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    pointer-events: none;
-    background:
-      linear-gradient(180deg, rgba(12,14,17,0.30) 0%, rgba(12,14,17,0.04) 32%, rgba(12,14,17,0.06) 60%, rgba(12,14,17,0.46) 100%);
-  }
-
-  .pantao-hero__scrim--top-left,
-  .pantao-hero__scrim--center-left,
-  .pantao-hero__scrim--bottom-left {
-    background:
-      linear-gradient(90deg, rgba(12,14,17,0.46) 0%, rgba(12,14,17,0.12) 44%, transparent 72%),
-      linear-gradient(180deg, rgba(12,14,17,0.22) 0%, transparent 34%, transparent 66%, rgba(12,14,17,0.34) 100%);
-  }
-
-  .pantao-hero__scrim--top-right,
-  .pantao-hero__scrim--center-right,
-  .pantao-hero__scrim--bottom-right {
-    background:
-      linear-gradient(270deg, rgba(12,14,17,0.46) 0%, rgba(12,14,17,0.12) 44%, transparent 72%),
-      linear-gradient(180deg, rgba(12,14,17,0.22) 0%, transparent 34%, transparent 66%, rgba(12,14,17,0.34) 100%);
-  }
-
-  .pantao-hero__scrim--center {
-    background: radial-gradient(120% 120% at 50% 50%, rgba(12,14,17,0.46) 0%, rgba(12,14,17,0.12) 48%, transparent 78%);
-  }
-
-  /* ---------- Content ---------- */
-  .pantao-hero__content {
-    position: relative;
-    z-index: 3;
-    height: 100%;
-    display: flex;
-    padding: 2.5rem 1.5rem;
-    pointer-events: none;
-  }
-
-  @media (min-width: 750px) {
-    .pantao-hero__content { padding: 3.5rem 3rem; }
-  }
-
-  @media (min-width: 1200px) {
-    .pantao-hero__content { padding: 4rem 4.5rem; }
-  }
-
-  /* vertical */
-  .pantao-hero__content--top-left,
-  .pantao-hero__content--top-center,
-  .pantao-hero__content--top-right    { align-items: flex-start; }
-  .pantao-hero__content--center-left,
-  .pantao-hero__content--center,
-  .pantao-hero__content--center-right { align-items: center; }
-  .pantao-hero__content--bottom-left,
-  .pantao-hero__content--bottom-center,
-  .pantao-hero__content--bottom-right { align-items: flex-end; }
-
-  /* horizontal */
-  .pantao-hero__content--top-left,
-  .pantao-hero__content--center-left,
-  .pantao-hero__content--bottom-left   { justify-content: flex-start; }
-  .pantao-hero__content--top-center,
-  .pantao-hero__content--center,
-  .pantao-hero__content--bottom-center { justify-content: center; }
-  .pantao-hero__content--top-right,
-  .pantao-hero__content--center-right,
-  .pantao-hero__content--bottom-right  { justify-content: flex-end; }
-
-  .pantao-hero__inner {
-    max-width: 44rem;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    pointer-events: auto;
-  }
-
-  /* text alignment */
-  .pantao-hero__content--align-center .pantao-hero__inner { align-items: center; text-align: center; }
-  .pantao-hero__content--align-right .pantao-hero__inner  { align-items: flex-end; text-align: right; }
-  .pantao-hero__content--align-left .pantao-hero__inner   { align-items: flex-start; text-align: left; }
-
-  /* text colors */
-  .pantao-hero--text-light .pantao-hero__eyebrow,
-  .pantao-hero--text-light .pantao-hero__heading,
-  .pantao-hero--text-light .pantao-hero__sub { color: #f4f5f5; }
-  .pantao-hero--text-light .pantao-hero__eyebrow,
-  .pantao-hero--text-light .pantao-hero__sub { text-shadow: 0 1px 16px rgba(0,0,0,0.4); }
-  .pantao-hero--text-light .pantao-hero__heading { text-shadow: 0 1px 18px rgba(0,0,0,0.3); }
-
-  .pantao-hero--text-dark .pantao-hero__eyebrow,
-  .pantao-hero--text-dark .pantao-hero__heading,
-  .pantao-hero--text-dark .pantao-hero__sub { color: #141414; }
-
-  .pantao-hero__eyebrow {
-    font-family: var(--font-body--family);
-    font-size: var(--font-size--3xs, 0.72rem);
-    letter-spacing: 0.26em;
-    text-transform: uppercase;
-    margin: 0 0 1.1rem 0;
-  }
-
-  .pantao-hero__heading {
-    font-family: var(--font-accent--family);
-    font-style: var(--font-accent--style, normal);
-    font-weight: var(--font-accent--weight, 500);
-    font-size: clamp(2.2rem, 6vw, 5.5rem);
-    line-height: 0.98;
-    letter-spacing: -0.01em;
-    margin: 0;
-    text-wrap: balance;
-  }
-
-  .pantao-hero__sub {
-    font-family: var(--font-body--family);
-    font-size: var(--font-size--md, 1rem);
-    line-height: 1.6;
-    max-width: 32rem;
-    margin: 1.4rem 0 0 0;
-    opacity: 0.92;
-  }
-
-  .pantao-hero__cta { margin-top: 1.8rem; }
-
-  .pantao-hero__btn {
-    display: inline-flex;
-    align-items: center;
-    font-family: var(--font-body--family);
-    font-size: var(--font-size--3xs, 0.72rem);
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    text-decoration: none;
-    padding: 0.95rem 2rem;
-    border-radius: 100px;
-    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease;
-  }
-
-  .pantao-hero--text-light .pantao-hero__btn {
-    color: #f4f5f5;
-    border: 1px solid rgba(245,245,245,0.5);
-  }
-  .pantao-hero--text-light .pantao-hero__btn:hover {
-    background: #f4f5f5; color: #14161a; border-color: #f4f5f5;
-  }
-  .pantao-hero--text-dark .pantao-hero__btn {
-    color: #141414;
-    border: 1px solid rgba(20,20,20,0.4);
-  }
-  .pantao-hero--text-dark .pantao-hero__btn:hover {
-    background: #141414; color: #f4f5f5; border-color: #141414;
-  }
-
-  /* Whole-banner link: stretched overlay above everything. */
-  .pantao-hero__fulllink {
-    position: absolute;
-    inset: 0;
-    z-index: 4;
-    display: block;
-  }
-
-  .pantao-hero--link { cursor: pointer; }
-
   @media (hover: hover) {
     .pantao-hero--link .pantao-hero__img,
     .pantao-hero--link .pantao-hero__video,
@@ -325,10 +146,38 @@
     }
   }
 
-  .pantao-hero__fulllink:focus-visible {
+  .pantao-hero__wrap--link:focus-visible {
     outline: 2px solid #f4f5f5;
     outline-offset: -4px;
   }
+
+  /* ---------- Label (same system as Showcase cards) ---------- */
+  .pantao-hero__label {
+    position: absolute;
+    z-index: 2;
+    font-family: var(--font-body--family);
+    font-size: var(--ph-label-size, 12px);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+    pointer-events: none;
+  }
+
+  .pantao-hero--label-light .pantao-hero__label {
+    color: #f4f5f5;
+    text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
+  }
+
+  .pantao-hero--label-dark .pantao-hero__label {
+    color: #141414;
+  }
+
+  .pantao-hero__label--top-left     { top: var(--ph-label-inset, 12px); left: var(--ph-label-inset, 12px); }
+  .pantao-hero__label--top-right    { top: var(--ph-label-inset, 12px); right: var(--ph-label-inset, 12px); }
+  .pantao-hero__label--bottom-left  { bottom: var(--ph-label-inset, 12px); left: var(--ph-label-inset, 12px); }
+  .pantao-hero__label--bottom-right { bottom: var(--ph-label-inset, 12px); right: var(--ph-label-inset, 12px); }
 {% endstylesheet %}
 
 {% javascript %}
@@ -387,21 +236,27 @@
       "visible_if": "{{ section.settings.media_type == 'video' }}"
     },
     {
-      "type": "checkbox",
-      "id": "show_scrim",
-      "label": "Legibility scrim",
-      "info": "Soft gradient behind the text, biased to its position.",
-      "default": true
+      "type": "header",
+      "content": "Content"
     },
     {
-      "type": "range",
-      "id": "overlay_opacity",
-      "label": "Extra darkening",
-      "min": 0,
-      "max": 80,
-      "step": 5,
-      "unit": "%",
-      "default": 0
+      "type": "text",
+      "id": "label",
+      "label": "Label",
+      "info": "Small category/collection label shown on the banner.",
+      "default": "FW26 SHOW COLLECTION"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link",
+      "info": "The whole banner (media + label) links here."
+    },
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Accessible link text",
+      "info": "Optional. Falls back to the label."
     },
     {
       "type": "header",
@@ -420,37 +275,25 @@
       "default": "large"
     },
     {
-      "type": "select",
-      "id": "content_position",
-      "label": "Content position",
-      "options": [
-        { "value": "top-left",      "label": "Top left" },
-        { "value": "top-center",    "label": "Top center" },
-        { "value": "top-right",     "label": "Top right" },
-        { "value": "center-left",   "label": "Center left" },
-        { "value": "center",        "label": "Center" },
-        { "value": "center-right",  "label": "Center right" },
-        { "value": "bottom-left",   "label": "Bottom left" },
-        { "value": "bottom-center", "label": "Bottom center" },
-        { "value": "bottom-right",  "label": "Bottom right" }
-      ],
-      "default": "bottom-left"
+      "type": "header",
+      "content": "Label"
     },
     {
       "type": "select",
-      "id": "content_alignment",
-      "label": "Text alignment",
+      "id": "label_position",
+      "label": "Label position",
       "options": [
-        { "value": "left",   "label": "Left" },
-        { "value": "center", "label": "Center" },
-        { "value": "right",  "label": "Right" }
+        { "value": "top-left",     "label": "Top left" },
+        { "value": "top-right",    "label": "Top right" },
+        { "value": "bottom-left",  "label": "Bottom left" },
+        { "value": "bottom-right", "label": "Bottom right" }
       ],
-      "default": "left"
+      "default": "top-left"
     },
     {
       "type": "select",
-      "id": "text_color",
-      "label": "Text color",
+      "id": "label_color",
+      "label": "Label color",
       "options": [
         { "value": "light", "label": "Light (for dark images)" },
         { "value": "dark",  "label": "Dark (for light images)" }
@@ -458,50 +301,25 @@
       "default": "light"
     },
     {
-      "type": "header",
-      "content": "Copy"
+      "type": "range",
+      "id": "label_size",
+      "label": "Label size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 12
     },
     {
-      "type": "text",
-      "id": "eyebrow",
-      "label": "Eyebrow",
-      "default": "FW26 SHOW COLLECTION"
-    },
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "The doors are open."
-    },
-    {
-      "type": "textarea",
-      "id": "subheading",
-      "label": "Subtext"
-    },
-    {
-      "type": "header",
-      "content": "Link"
-    },
-    {
-      "type": "paragraph",
-      "content": "Add a button, or leave the button blank and set a Banner link to make the whole hero clickable."
-    },
-    {
-      "type": "text",
-      "id": "cta_label",
-      "label": "Button label",
-      "info": "Leave blank to hide the button."
-    },
-    {
-      "type": "url",
-      "id": "cta_link",
-      "label": "Button link"
-    },
-    {
-      "type": "url",
-      "id": "link",
-      "label": "Banner link (whole hero)",
-      "info": "Used only when there is no button."
+      "type": "range",
+      "id": "label_inset",
+      "label": "Label edge spacing",
+      "info": "Distance from the banner corner. Lower = more flush.",
+      "min": 4,
+      "max": 48,
+      "step": 2,
+      "default": 12,
+      "unit": "px"
     },
     {
       "type": "header",
