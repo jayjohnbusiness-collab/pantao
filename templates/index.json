@@ -19,6 +19,9 @@
         "video_position": "cover",
         "show_overlay": false,
         "overlay_opacity": 0,
+        "enable_sound": true,
+        "sound_volume": 60,
+        "sound_button_position": "bottom-right",
         "height": "full",
         "content_position": "center",
         "content_alignment": "center",
@@ -90,8 +93,14 @@
       "settings": {
         "media_type": "image",
         "image": "shopify://shop_images/image-1786210672474.jpg",
+        "label": "FW26 SHOW COLLECTION",
         "link": "",
+        "aria_label": "",
         "height": "full",
+        "label_position": "top-left",
+        "label_color": "light",
+        "label_size": 12,
+        "label_inset": 12,
         "color_scheme": ""
       }
     },
