@@ -11,6 +11,7 @@
 {%- liquid
   assign s = section.settings
   assign colpct = 100 | divided_by: s.columns_desktop
+  assign sizes_attr = '(min-width: 750px) ' | append: colpct | append: 'vw, 100vw'
 -%}
 
 <div
@@ -91,7 +92,7 @@
                   loading: 'lazy',
                   class: 'pantao-card__img',
                   widths: '400, 600, 800, 1000, 1200, 1600, 2000',
-                  sizes: '(min-width: 750px) ' | append: colpct | append: 'vw, 100vw',
+                  sizes: sizes_attr,
                   alt: b.label
               }}
             {%- else -%}
