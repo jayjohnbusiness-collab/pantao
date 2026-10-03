@@ -113,6 +113,39 @@
         "color_scheme": "scheme-1"
       }
     },
+    "pantao_showcase": {
+      "type": "pantao-showcase",
+      "blocks": {
+        "card-1": {
+          "type": "card",
+          "settings": {
+            "media_type": "image",
+            "label": "THE EDITION",
+            "link": "/collections/all"
+          }
+        },
+        "card-2": {
+          "type": "card",
+          "settings": {
+            "media_type": "image",
+            "label": "ACCESSORIES",
+            "link": "/collections/accessories"
+          }
+        }
+      },
+      "block_order": ["card-1", "card-2"],
+      "settings": {
+        "columns_desktop": 2,
+        "columns_mobile": 1,
+        "gap": 0,
+        "full_width": true,
+        "aspect_ratio": "3 / 4",
+        "label_position": "top-left",
+        "label_color": "light",
+        "label_size": 12,
+        "color_scheme": "scheme-1"
+      }
+    },
     "pantao_manifesto_Fh8hpC": {
       "type": "pantao-manifesto",
       "disabled": true,
@@ -142,6 +175,7 @@
     "arrival",
     "pantao_collection_row_8DcKwU",
     "piece",
+    "pantao_showcase",
     "pantao_manifesto_Fh8hpC",
     "pantao_list_BNPFzm"
   ]
