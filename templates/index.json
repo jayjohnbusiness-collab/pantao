@@ -45,7 +45,7 @@
             "media_type": "image",
             "image": "shopify://shop_images/IMG_2961.jpg",
             "label": "THE EDITION",
-            "link": "",
+            "link": "shopify://collections/best-sellers",
             "aria_label": "",
             "label_position": "top-left",
             "label_color": "auto"
