@@ -17,7 +17,7 @@
         "image_position_fit": "cover",
         "video": "shopify://files/videos/hf_20260929_232507_fadbaf1f-09c6-4ffa-b596-a504fbf1a9d3.mp4",
         "video_position": "cover",
-        "show_overlay": true,
+        "show_overlay": false,
         "overlay_opacity": 0,
         "height": "full",
         "content_position": "center",
@@ -31,7 +31,7 @@
         "cta_label": "",
         "cta_link": "/collections/all",
         "show_scroll_hint": true,
-        "scroll_hint_text": "Scroll",
+        "scroll_hint_text": "Discover more",
         "enable_reveal": true,
         "color_scheme": "scheme-f7a8828d-05ad-4191-bd0e-8b244e3a9af2"
       }
