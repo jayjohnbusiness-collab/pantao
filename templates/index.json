@@ -148,6 +148,7 @@
           "block_order": []
         }
       },
+      "disabled": true,
       "settings": {
         "product": "distressed-logo-hoodie",
         "layout": "media-left",
