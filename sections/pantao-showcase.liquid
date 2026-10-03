@@ -22,6 +22,7 @@
     --ps-gap: {{ s.gap }}px;
     --ps-ratio: {{ s.aspect_ratio }};
     --ps-label-size: {{ s.label_size }}px;
+    --ps-label-inset: {{ s.label_inset }}px;
   "
 >
   {%- if s.eyebrow != blank or s.heading != blank -%}
@@ -254,17 +255,10 @@
     color: #141414;
   }
 
-  .pantao-card__label--top-left     { top: 1.1rem; left: 1.2rem; }
-  .pantao-card__label--top-right    { top: 1.1rem; right: 1.2rem; }
-  .pantao-card__label--bottom-left  { bottom: 1.1rem; left: 1.2rem; }
-  .pantao-card__label--bottom-right { bottom: 1.1rem; right: 1.2rem; }
-
-  @media screen and (min-width: 750px) {
-    .pantao-card__label--top-left     { top: 1.4rem; left: 1.6rem; }
-    .pantao-card__label--top-right    { top: 1.4rem; right: 1.6rem; }
-    .pantao-card__label--bottom-left  { bottom: 1.4rem; left: 1.6rem; }
-    .pantao-card__label--bottom-right { bottom: 1.4rem; right: 1.6rem; }
-  }
+  .pantao-card__label--top-left     { top: var(--ps-label-inset, 12px); left: var(--ps-label-inset, 12px); }
+  .pantao-card__label--top-right    { top: var(--ps-label-inset, 12px); right: var(--ps-label-inset, 12px); }
+  .pantao-card__label--bottom-left  { bottom: var(--ps-label-inset, 12px); left: var(--ps-label-inset, 12px); }
+  .pantao-card__label--bottom-right { bottom: var(--ps-label-inset, 12px); right: var(--ps-label-inset, 12px); }
 
   .pantao-showcase__empty {
     padding: 4rem var(--page-margin, 1.5rem);
@@ -416,6 +410,17 @@
       "min": 10,
       "max": 20,
       "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "label_inset",
+      "label": "Label edge spacing",
+      "info": "Distance from the tile corner. Lower = more flush.",
+      "min": 4,
+      "max": 40,
+      "step": 2,
       "unit": "px",
       "default": 12
     },
