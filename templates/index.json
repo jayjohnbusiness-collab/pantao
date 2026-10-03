@@ -84,6 +84,17 @@
         "color_scheme": ""
       }
     },
+    "pantao_hero_kTYdtL": {
+      "type": "pantao-hero",
+      "name": "Hero banner",
+      "settings": {
+        "media_type": "image",
+        "image": "shopify://shop_images/image-1786210672474.jpg",
+        "link": "",
+        "height": "full",
+        "color_scheme": ""
+      }
+    },
     "pantao_collection_row_8DcKwU": {
       "type": "pantao-collection-row",
       "name": "PANTAO Collection row",
@@ -175,24 +186,14 @@
         "enable_sound": true,
         "color_scheme": "scheme-1"
       }
-    },
-    "pantao_hero_kTYdtL": {
-      "type": "pantao-hero",
-      "name": "Hero banner",
-      "settings": {
-        "media_type": "image",
-        "link": "",
-        "height": "full",
-        "color_scheme": ""
-      }
     }
   },
   "order": [
     "arrival",
     "pantao_showcase_MHGHBy",
+    "pantao_hero_kTYdtL",
     "pantao_collection_row_8DcKwU",
     "pantao_list_BNPFzm",
-    "piece",
-    "pantao_hero_kTYdtL"
+    "piece"
   ]
 }
