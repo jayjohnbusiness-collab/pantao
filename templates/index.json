@@ -20,7 +20,7 @@
         "show_overlay": false,
         "overlay_opacity": 0,
         "enable_sound": true,
-        "sound_volume": 60,
+        "sound_volume": 100,
         "sound_button_position": "bottom-right",
         "height": "full",
         "content_position": "center",
