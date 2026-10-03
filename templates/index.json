@@ -175,6 +175,16 @@
         "enable_sound": true,
         "color_scheme": "scheme-1"
       }
+    },
+    "pantao_hero_kTYdtL": {
+      "type": "pantao-hero",
+      "name": "Hero banner",
+      "settings": {
+        "media_type": "image",
+        "link": "",
+        "height": "full",
+        "color_scheme": ""
+      }
     }
   },
   "order": [
@@ -182,6 +192,7 @@
     "pantao_showcase_MHGHBy",
     "pantao_collection_row_8DcKwU",
     "pantao_list_BNPFzm",
-    "piece"
+    "piece",
+    "pantao_hero_kTYdtL"
   ]
 }
