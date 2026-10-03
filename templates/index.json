@@ -57,7 +57,7 @@
             "media_type": "image",
             "image": "shopify://shop_images/Untitled_design_21.png",
             "label": "ACCESSORIES",
-            "link": "",
+            "link": "shopify://collections/archive-collection",
             "aria_label": "",
             "label_position": "auto",
             "label_color": "auto"
