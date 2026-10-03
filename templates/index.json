@@ -115,6 +115,7 @@
     },
     "pantao_manifesto_Fh8hpC": {
       "type": "pantao-manifesto",
+      "disabled": true,
       "name": "PANTAO Manifesto",
       "settings": {
         "eyebrow": "The House",
