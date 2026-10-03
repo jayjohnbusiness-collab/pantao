@@ -76,10 +76,11 @@
         "columns_mobile": "1",
         "gap": 0,
         "full_width": true,
-        "aspect_ratio": "3 / 4",
+        "aspect_ratio": "2 / 3",
         "label_position": "top-left",
         "label_color": "light",
         "label_size": 12,
+        "label_inset": 12,
         "color_scheme": ""
       }
     },
@@ -92,6 +93,20 @@
         "count": 4,
         "view_all_label": "View all",
         "view_all_link": ""
+      }
+    },
+    "pantao_list_BNPFzm": {
+      "type": "pantao-list",
+      "name": "PANTAO List (signup)",
+      "settings": {
+        "eyebrow": "The List",
+        "heading": "Be told when the doors open.",
+        "subtext": "One note a year, ahead of the edition. Nothing else.",
+        "placeholder": "Email address",
+        "button": "Join",
+        "note": "Once a year · Unsubscribe anytime",
+        "tag": "newsletter",
+        "success_text": "You're on the list. One note a year, ahead of the next edition."
       }
     },
     "piece": {
@@ -159,20 +174,6 @@
         "enable_reveal": false,
         "enable_sound": true,
         "color_scheme": "scheme-1"
-      }
-    },
-    "pantao_list_BNPFzm": {
-      "type": "pantao-list",
-      "name": "PANTAO List (signup)",
-      "settings": {
-        "eyebrow": "The List",
-        "heading": "Be told when the doors open.",
-        "subtext": "One note a year, ahead of the edition. Nothing else.",
-        "placeholder": "Email address",
-        "button": "Join",
-        "note": "Once a year · Unsubscribe anytime",
-        "tag": "newsletter",
-        "success_text": "You're on the list. One note a year, ahead of the next edition."
       }
     }
   },
