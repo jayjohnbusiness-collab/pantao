@@ -40,10 +40,6 @@
       {%- for block in section.blocks -%}
         {%- liquid
           assign b = block.settings
-          assign tag = 'div'
-          if b.link != blank
-            assign tag = 'a'
-          endif
           assign lcolor = b.label_color
           if lcolor == 'auto'
             assign lcolor = s.label_color
@@ -53,11 +49,7 @@
             assign lpos = s.label_position
           endif
         -%}
-        <{{ tag }}
-          class="pantao-card pantao-card--label-{{ lcolor }}{% if b.link != blank %} pantao-card--link{% endif %}"
-          {% if b.link != blank %}href="{{ b.link }}"{% if b.aria_label != blank %} aria-label="{{ b.aria_label | escape }}"{% elsif b.label != blank %} aria-label="{{ b.label | escape }}"{% endif %}{% endif %}
-          {{ block.shopify_attributes }}
-        >
+        {%- capture card_inner -%}
           <div class="pantao-card__media">
             {%- if b.media_type == 'video' and b.video != blank -%}
               {%- liquid
@@ -105,7 +97,18 @@
           {%- if b.label != blank -%}
             <span class="pantao-card__label pantao-card__label--{{ lpos }}">{{ b.label | escape }}</span>
           {%- endif -%}
-        </{{ tag }}>
+        {%- endcapture -%}
+
+        {%- if b.link != blank -%}
+          <a
+            class="pantao-card pantao-card--label-{{ lcolor }} pantao-card--link"
+            href="{{ b.link }}"
+            {% if b.aria_label != blank %}aria-label="{{ b.aria_label | escape }}"{% elsif b.label != blank %}aria-label="{{ b.label | escape }}"{% endif %}
+            {{ block.shopify_attributes }}
+          >{{ card_inner }}</a>
+        {%- else -%}
+          <div class="pantao-card pantao-card--label-{{ lcolor }}" {{ block.shopify_attributes }}>{{ card_inner }}</div>
+        {%- endif -%}
       {%- endfor -%}
     </div>
   {%- else -%}
