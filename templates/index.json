@@ -105,95 +105,12 @@
         "view_all_label": "View all",
         "view_all_link": ""
       }
-    },
-    "pantao_list_BNPFzm": {
-      "type": "pantao-list",
-      "name": "PANTAO List (signup)",
-      "settings": {
-        "eyebrow": "The List",
-        "heading": "Be told when the doors open.",
-        "subtext": "One note a year, ahead of the edition. Nothing else.",
-        "placeholder": "Email address",
-        "button": "Join",
-        "note": "Once a year · Unsubscribe anytime",
-        "tag": "newsletter",
-        "success_text": "You're on the list. One note a year, ahead of the next edition."
-      }
-    },
-    "piece": {
-      "type": "pantao-piece",
-      "blocks": {
-        "piece-variant-picker": {
-          "type": "variant-picker",
-          "static": true,
-          "settings": {
-            "variant_style": "buttons",
-            "show_swatches": true,
-            "alignment": "left",
-            "padding-block-start": 0,
-            "padding-block-end": 8,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "piece-buy-buttons": {
-          "type": "buy-buttons",
-          "static": true,
-          "settings": {
-            "stacking": false,
-            "show_pickup_availability": true,
-            "gift_card_form": true,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {
-            "quantity": {
-              "type": "quantity",
-              "static": true,
-              "settings": {},
-              "blocks": {}
-            },
-            "add-to-cart": {
-              "type": "add-to-cart",
-              "static": true,
-              "settings": {
-                "style_class": "button-secondary"
-              },
-              "blocks": {}
-            },
-            "accelerated-checkout": {
-              "type": "accelerated-checkout",
-              "static": true,
-              "settings": {},
-              "blocks": {}
-            }
-          },
-          "block_order": []
-        }
-      },
-      "disabled": true,
-      "settings": {
-        "product": "distressed-logo-hoodie",
-        "layout": "media-left",
-        "eyebrow": "The Piece · Edition V",
-        "story_heading": "The Story",
-        "story": "<p>Open-gauge merino, distressed by hand. The openwork is worked deliberately at the wrist and the throat, so a watch reads at the cuff and a chain sits clear at the collarbone. Made in a count we can name.</p>",
-        "reassurance": "Numbered · limited count · ships worldwide",
-        "enable_reveal": false,
-        "enable_sound": true,
-        "color_scheme": "scheme-1"
-      }
     }
   },
   "order": [
     "arrival",
     "pantao_showcase_MHGHBy",
     "pantao_hero_kTYdtL",
-    "pantao_collection_row_8DcKwU",
-    "pantao_list_BNPFzm",
-    "piece"
+    "pantao_collection_row_8DcKwU"
   ]
 }
