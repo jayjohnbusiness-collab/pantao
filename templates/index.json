@@ -161,16 +161,6 @@
         "color_scheme": "scheme-1"
       }
     },
-    "pantao_manifesto_Fh8hpC": {
-      "type": "pantao-manifesto",
-      "disabled": true,
-      "name": "PANTAO Manifesto",
-      "settings": {
-        "eyebrow": "The House",
-        "statement": "<p>Pantao opens <em>once a year.</em> Then the doors close until the next.</p>",
-        "signature": "<p>- Pantao Galeriya</p>"
-      }
-    },
     "pantao_list_BNPFzm": {
       "type": "pantao-list",
       "name": "PANTAO List (signup)",
@@ -190,8 +180,7 @@
     "arrival",
     "pantao_showcase_MHGHBy",
     "pantao_collection_row_8DcKwU",
-    "piece",
-    "pantao_manifesto_Fh8hpC",
-    "pantao_list_BNPFzm"
+    "pantao_list_BNPFzm",
+    "piece"
   ]
 }
