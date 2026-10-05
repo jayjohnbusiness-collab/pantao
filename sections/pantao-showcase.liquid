@@ -49,6 +49,13 @@
           if lpos == 'auto'
             assign lpos = s.label_position
           endif
+          assign hover_cls = ''
+          if s.hover_image
+            assign hover_cls = hover_cls | append: ' pantao-card--hover-img'
+          endif
+          if s.hover_text
+            assign hover_cls = hover_cls | append: ' pantao-card--hover-text'
+          endif
         -%}
         {%- capture card_inner -%}
           <div class="pantao-card__media">
@@ -102,13 +109,13 @@
 
         {%- if b.link != blank -%}
           <a
-            class="pantao-card pantao-card--label-{{ lcolor }} pantao-card--link"
+            class="pantao-card pantao-card--label-{{ lcolor }} pantao-card--link{{ hover_cls }}"
             href="{{ b.link }}"
             {% if b.aria_label != blank %}aria-label="{{ b.aria_label | escape }}"{% elsif b.label != blank %}aria-label="{{ b.label | escape }}"{% endif %}
             {{ block.shopify_attributes }}
           >{{ card_inner }}</a>
         {%- else -%}
-          <div class="pantao-card pantao-card--label-{{ lcolor }}" {{ block.shopify_attributes }}>{{ card_inner }}</div>
+          <div class="pantao-card pantao-card--label-{{ lcolor }}{{ hover_cls }}" {{ block.shopify_attributes }}>{{ card_inner }}</div>
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -212,18 +219,54 @@
     }
   }
 
-  /* Hover: slow editorial zoom (only on linked, pointer devices) */
+  /* Hover: slow editorial zoom — only when the Image hover toggle is on,
+     on linked, pointer devices. */
   @media (hover: hover) {
-    .pantao-card--link .pantao-card__img,
-    .pantao-card--link .pantao-card__video,
-    .pantao-card--link .pantao-card__video-fallback {
+    .pantao-card--hover-img .pantao-card__img,
+    .pantao-card--hover-img .pantao-card__video,
+    .pantao-card--hover-img .pantao-card__video-fallback {
       transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .pantao-card--link:hover .pantao-card__img,
-    .pantao-card--link:hover .pantao-card__video,
-    .pantao-card--link:hover .pantao-card__video-fallback {
+    .pantao-card--hover-img.pantao-card--link:hover .pantao-card__img,
+    .pantao-card--hover-img.pantao-card--link:hover .pantao-card__video,
+    .pantao-card--hover-img.pantao-card--link:hover .pantao-card__video-fallback {
       transform: scale(1.04);
+    }
+  }
+
+  /* Label hover: underline wipes in from the label's edge — only when the
+     Text hover toggle is on, on linked, pointer devices. */
+  .pantao-card--hover-text .pantao-card__label::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -0.3em;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pantao-card--hover-text .pantao-card__label--top-right::after,
+  .pantao-card--hover-text .pantao-card__label--bottom-right::after {
+    transform-origin: right center;
+  }
+
+  @media (hover: hover) {
+    .pantao-card--hover-text.pantao-card--link:hover .pantao-card__label::after {
+      transform: scaleX(1);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pantao-card__img,
+    .pantao-card__video,
+    .pantao-card__video-fallback,
+    .pantao-card__label::after {
+      transition: none;
     }
   }
 
@@ -423,6 +466,22 @@
       "step": 2,
       "unit": "px",
       "default": 12
+    },
+    {
+      "type": "header",
+      "content": "Hover animation"
+    },
+    {
+      "type": "checkbox",
+      "id": "hover_image",
+      "label": "Image zoom on hover",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "hover_text",
+      "label": "Label underline on hover",
+      "default": true
     },
     {
       "type": "header",
