@@ -236,6 +236,9 @@
         {%- endif -%}
       {%- endform -%}
     </product-form-component>
+    {%- unless product.gift_card? -%}
+      {%- render 'pantao-notify-me', product: product, variant: variant -%}
+    {%- endunless -%}
   {%- else -%}
     <div class="product-form-buttons">
       <button

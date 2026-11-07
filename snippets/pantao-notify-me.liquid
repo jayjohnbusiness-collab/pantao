@@ -1,0 +1,211 @@
+{%- comment -%}
+  PANTAO — Notify me (back-in-stock email capture)
+
+  Shows a "Notify me" button under the buy buttons whenever the selected
+  variant is sold out. Clicking it opens a small dialog asking for the
+  client's email. The email is saved through Shopify's native
+  {% form 'customer' %}, so it lands in Admin → Customers, subscribed to
+  email marketing and tagged:
+    notify-me, restock-<product-handle>, variant-<variant-id>
+  Filter Customers by the "notify-me" tag to see who's waiting on what.
+
+  Usage: {% render 'pantao-notify-me', product: product, variant: variant %}
+{%- endcomment -%}
+
+{%- liquid
+  assign nm_id = 'pantao-notify-' | append: product.id
+  assign nm_tags = 'notify-me, restock-' | append: product.handle | append: ', variant-' | append: variant.id
+-%}
+
+<pantao-notify-me
+  class="pantao-notify"
+  data-product-id="{{ product.id }}"
+  data-product-handle="{{ product.handle }}"
+  {% if variant.available %}hidden{% endif %}
+>
+  <button type="button" class="pantao-notify__trigger" data-notify-open aria-haspopup="dialog" aria-controls="{{ nm_id }}">
+    Notify me when available
+  </button>
+
+  <dialog id="{{ nm_id }}" class="pantao-notify__dialog" aria-labelledby="{{ nm_id }}-title">
+    <button type="button" class="pantao-notify__close" data-notify-close aria-label="Close">&times;</button>
+
+    <div class="pantao-notify__panel" data-notify-panel>
+      <p class="pantao-notify__eyebrow">Back in stock</p>
+      <h2 class="pantao-notify__title" id="{{ nm_id }}-title">{{ product.title }}</h2>
+      <p class="pantao-notify__variant" data-notify-variant>
+        {%- unless product.has_only_default_variant -%}{{ variant.title }}{%- endunless -%}
+      </p>
+      <p class="pantao-notify__copy">Leave your email and we'll let you know as soon as it's available again.</p>
+
+      {%- form 'customer', id: nm_id | append: '-form', class: 'pantao-notify__form', novalidate: 'novalidate' -%}
+        <input type="hidden" name="contact[tags]" value="{{ nm_tags }}" data-notify-tags>
+        <input type="hidden" name="contact[accepts_marketing]" value="true">
+        <label class="visually-hidden" for="{{ nm_id }}-email">Email</label>
+        <input
+          id="{{ nm_id }}-email"
+          class="pantao-notify__input"
+          type="email"
+          name="contact[email]"
+          placeholder="Email address"
+          autocomplete="email"
+          autocapitalize="off"
+          spellcheck="false"
+          required
+        >
+        <button type="submit" class="pantao-notify__submit" data-notify-submit>Notify me</button>
+        <p class="pantao-notify__error" data-notify-error role="alert" hidden></p>
+      {%- endform -%}
+    </div>
+
+    <div class="pantao-notify__success" data-notify-success hidden role="status">
+      <p class="pantao-notify__eyebrow">You're on the list</p>
+      <p class="pantao-notify__copy">We'll email you the moment it's back.</p>
+      <button type="button" class="pantao-notify__submit" data-notify-close>Close</button>
+    </div>
+  </dialog>
+</pantao-notify-me>
+
+<style>
+  .pantao-notify[hidden] { display: none !important; }
+  .pantao-notify { display: block; margin-top: 10px; }
+  .pantao-notify__trigger,
+  .pantao-notify__submit {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 18px;
+    border: 1px solid #0a0a0a;
+    border-radius: 0;
+    background: #0a0a0a;
+    color: #fff;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color .2s ease, color .2s ease;
+  }
+  .pantao-notify__trigger { background: #fff; color: #0a0a0a; }
+  .pantao-notify__trigger:hover { background: #0a0a0a; color: #fff; }
+  .pantao-notify__submit:hover { background: #2a2a2a; }
+  .pantao-notify__submit[disabled] { opacity: .6; cursor: progress; }
+
+  .pantao-notify__dialog {
+    width: min(420px, calc(100vw - 32px));
+    padding: 40px 32px 32px;
+    border: 0;
+    border-radius: 0;
+    background: #fff;
+    color: #0a0a0a;
+    text-align: center;
+  }
+  .pantao-notify__dialog::backdrop { background: rgba(0, 0, 0, .55); }
+  .pantao-notify__close {
+    position: absolute; top: 10px; right: 14px;
+    border: 0; background: none; color: #0a0a0a;
+    font-size: 26px; line-height: 1; cursor: pointer;
+  }
+  .pantao-notify__eyebrow {
+    margin: 0 0 10px; font-size: 10px; font-weight: 600;
+    letter-spacing: .18em; text-transform: uppercase; color: #6b6b6b;
+  }
+  .pantao-notify__title { margin: 0; font-size: 20px; font-weight: 700; letter-spacing: -.01em; text-transform: uppercase; }
+  .pantao-notify__variant { margin: 6px 0 0; font-size: 12px; color: #6b6b6b; }
+  .pantao-notify__variant:empty { display: none; }
+  .pantao-notify__copy { margin: 16px 0 20px; font-size: 13px; line-height: 1.5; color: #333; }
+  .pantao-notify__form { display: grid; gap: 10px; }
+  .pantao-notify__input {
+    width: 100%; min-height: 46px; padding: 12px 14px;
+    border: 1px solid #c9c9c9; border-radius: 0; background: #fff; color: #0a0a0a;
+    font: inherit; font-size: 14px;
+  }
+  .pantao-notify__input:focus { outline: none; border-color: #0a0a0a; }
+  .pantao-notify__error { margin: 0; font-size: 12px; color: #b00020; }
+</style>
+
+<script>
+  if (!customElements.get('pantao-notify-me')) {
+    customElements.define('pantao-notify-me', class extends HTMLElement {
+      connectedCallback() {
+        this.dialog = this.querySelector('dialog');
+        this.form = this.querySelector('form');
+        this.input = this.querySelector('input[type="email"]');
+        this.tags = this.querySelector('[data-notify-tags]');
+        this.variantLabel = this.querySelector('[data-notify-variant]');
+        this.error = this.querySelector('[data-notify-error]');
+        this.submitBtn = this.querySelector('[data-notify-submit]');
+        this.panel = this.querySelector('[data-notify-panel]');
+        this.success = this.querySelector('[data-notify-success]');
+
+        this.querySelector('[data-notify-open]').addEventListener('click', () => this.open());
+        this.querySelectorAll('[data-notify-close]').forEach((b) => b.addEventListener('click', () => this.dialog.close()));
+        this.dialog.addEventListener('click', (e) => { if (e.target === this.dialog) this.dialog.close(); });
+        this.form.addEventListener('submit', (e) => this.submit(e));
+
+        this.onVariant = (e) => {
+          const d = e.detail || {};
+          if (!d.resource || String(d.data && d.data.productId) !== this.dataset.productId) return;
+          this.setVariant(d.resource);
+        };
+        document.addEventListener('variant:update', this.onVariant);
+      }
+
+      disconnectedCallback() {
+        document.removeEventListener('variant:update', this.onVariant);
+      }
+
+      setVariant(v) {
+        this.hidden = !!v.available;
+        this.tags.value = `notify-me, restock-${this.dataset.productHandle}, variant-${v.id}`;
+        const title = v.title && v.title !== 'Default Title' ? v.title : '';
+        this.variantLabel.textContent = title;
+      }
+
+      open() {
+        this.error.hidden = true;
+        this.panel.hidden = false;
+        this.success.hidden = true;
+        this.dialog.showModal();
+        this.input.focus();
+      }
+
+      showError(msg) {
+        this.error.textContent = msg;
+        this.error.hidden = false;
+      }
+
+      async submit(e) {
+        e.preventDefault();
+        const email = this.input.value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          this.showError('Please enter a valid email address.');
+          this.input.focus();
+          return;
+        }
+        this.error.hidden = true;
+        this.submitBtn.disabled = true;
+        try {
+          const res = await fetch(this.form.action, {
+            method: 'POST',
+            body: new FormData(this.form),
+            headers: { Accept: 'text/html' },
+          });
+          // Shopify may ask for a bot check; fall back to a normal submit so the client can complete it.
+          if (res.url.includes('/challenge')) {
+            this.form.submit();
+            return;
+          }
+          if (!res.ok) throw new Error(String(res.status));
+          this.panel.hidden = true;
+          this.success.hidden = false;
+          this.form.reset();
+        } catch (err) {
+          this.showError('Something went wrong. Please try again.');
+        } finally {
+          this.submitBtn.disabled = false;
+        }
+      }
+    });
+  }
+</script>
