@@ -106,7 +106,7 @@
     "blocks": {
       "144831480468751239": {
         "type": "shopify://apps/essential-upsell/blocks/app-embed/50627fd9-24fd-4250-8614-accc12826d80",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       },
       "855628211100114053": {
@@ -131,7 +131,7 @@
       },
       "18228966181090706294": {
         "type": "shopify://apps/selleasy/blocks/app-embed/790c1a03-a71f-4bc1-9869-00dad526d3c2",
-        "disabled": false,
+        "disabled": true,
         "settings": {
           "storefrontAccessToken": ""
         }

@@ -271,10 +271,6 @@
               },
               "blocks": {}
             },
-            "selleasy_lb_upsell_widget_bac_6b3C89": {
-              "type": "shopify://apps/selleasy/blocks/lb-upsell-widget-bac/790c1a03-a71f-4bc1-9869-00dad526d3c2",
-              "settings": {}
-            },
             "accordion_NKWPiW": {
               "type": "accordion",
               "name": "t:names.accordion",
@@ -459,10 +455,6 @@
                 "accordion_row_iJM37V",
                 "accordion_row_DwLkNP"
               ]
-            },
-            "essential_upsell_app_block_6QjTfj": {
-              "type": "shopify://apps/essential-upsell/blocks/app-block/50627fd9-24fd-4250-8614-accc12826d80",
-              "settings": {}
             }
           },
           "block_order": [
@@ -475,9 +467,7 @@
             "buy_buttons_eYQEYi",
             "text_EDxHd4",
             "text_QjXexy",
-            "selleasy_lb_upsell_widget_bac_6b3C89",
-            "accordion_NKWPiW",
-            "essential_upsell_app_block_6QjTfj"
+            "accordion_NKWPiW"
           ]
         }
       },
