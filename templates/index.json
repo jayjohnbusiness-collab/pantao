@@ -48,7 +48,7 @@
             "media_type": "image",
             "image": "shopify://shop_images/Untitled_design_21.png",
             "label": "ARCHIVE COLLECTION",
-            "link": "shopify://collections/best-sellers",
+            "link": "shopify://collections/archive-collection",
             "aria_label": "",
             "label_position": "top-left",
             "label_color": "auto"
@@ -60,7 +60,7 @@
             "media_type": "image",
             "image": "shopify://shop_images/IMG_2978.jpg",
             "label": "CORE COLLECTION",
-            "link": "shopify://collections/archive-collection",
+            "link": "shopify://collections/best-sellers",
             "aria_label": "",
             "label_position": "auto",
             "label_color": "auto"
