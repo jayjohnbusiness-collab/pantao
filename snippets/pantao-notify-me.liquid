@@ -4,7 +4,7 @@
   Shows a "Notify me" button under the buy buttons whenever the selected
   variant is sold out. Clicking it opens a small dialog asking for the
   client's email. The email is saved through Shopify's native
-  {% form 'customer' %}, so it lands in Admin → Customers, subscribed to
+  customer form, so it lands in Admin → Customers, subscribed to
   email marketing and tagged:
     notify-me, restock-<product-handle>, variant-<variant-id>
   Filter Customers by the "notify-me" tag to see who's waiting on what.
@@ -14,6 +14,7 @@
 
 {%- liquid
   assign nm_id = 'pantao-notify-' | append: product.id
+  assign nm_form_id = nm_id | append: '-form'
   assign nm_tags = 'notify-me, restock-' | append: product.handle | append: ', variant-' | append: variant.id
 -%}
 
@@ -38,7 +39,7 @@
       </p>
       <p class="pantao-notify__copy">Leave your email and we'll let you know as soon as it's available again.</p>
 
-      {%- form 'customer', id: nm_id | append: '-form', class: 'pantao-notify__form', novalidate: 'novalidate' -%}
+      {%- form 'customer', id: nm_form_id, class: 'pantao-notify__form', novalidate: 'novalidate' -%}
         <input type="hidden" name="contact[tags]" value="{{ nm_tags }}" data-notify-tags>
         <input type="hidden" name="contact[accepts_marketing]" value="true">
         <label class="visually-hidden" for="{{ nm_id }}-email">Email</label>
