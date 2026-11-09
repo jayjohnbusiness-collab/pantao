@@ -35,7 +35,7 @@
     }
   }
 
-  /* Typography: quiet, editorial. Title in body face, price muted. */
+  /* Typography: quiet, editorial. Title left, price right on one line, same ink (Acne-style). */
   .product-card .product-title,
   .product-card [class*="product-title"] {
     font-family: var(--font-body--family);
@@ -44,7 +44,7 @@
   }
   .product-card .price,
   .product-card [class*="price"] {
-    color: var(--color-foreground-muted, rgb(var(--color-foreground-rgb) / 0.6));
+    color: var(--color-foreground-heading, var(--color-foreground));
   }
 
   @media (prefers-reduced-motion: reduce) {
