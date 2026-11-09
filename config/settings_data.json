@@ -567,7 +567,8 @@
           "selected_variant_hover_border_color": "#1a1a1a"
         }
       }
-    }
+    },
+    "auto_open_cart_drawer": true
   },
   "presets": {
     "Atelier": {

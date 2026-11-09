@@ -324,16 +324,16 @@
                   "type": "_accordion-row",
                   "name": "t:names.accordion_row",
                   "settings": {
-                    "heading": "Shipping",
+                    "heading": "SHIPPING",
                     "open_by_default": false,
-                    "icon": "box",
+                    "icon": "truck",
                     "width": 20
                   },
                   "blocks": {
                     "text_PffJ4i": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>On average, orders will take 3-5 days to arrive after purchase. Please refer to our <a href=\"/policies/shipping-policy\" target=\"_blank\" title=\"Shipping Policy\">shipping policy</a> for finer details.</p>",
+                        "text": "<p>Free shipping on all U.S. orders. Orders typically arrive within 3–5 business days after purchase. See our <a href=\"/policies/shipping-policy\" title=\"Shipping Policy\">shipping policy</a> for international rates and details.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -438,11 +438,52 @@
                   "block_order": [
                     "text_rTjaEd"
                   ]
+                },
+                "accordion_row_returns": {
+                  "type": "_accordion-row",
+                  "name": "t:names.accordion_row",
+                  "settings": {
+                    "heading": "RETURNS",
+                    "open_by_default": false,
+                    "icon": "return",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_returns": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Returns are accepted within 14 days of delivery. We don’t offer exchanges, so please check the size chart before ordering. See our <a href=\"/policies/refund-policy\" title=\"Return Policy\">return policy</a> for details.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_returns"
+                  ]
                 }
               },
               "block_order": [
                 "accordion_row_JcFBVp",
                 "accordion_row_HpeKRd",
+                "accordion_row_returns",
                 "accordion_row_iJM37V",
                 "accordion_row_r33xk9"
               ]

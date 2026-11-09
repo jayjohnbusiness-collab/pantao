@@ -257,14 +257,14 @@
                   "settings": {
                     "heading": "SHIPPING",
                     "open_by_default": false,
-                    "icon": "box",
+                    "icon": "truck",
                     "width": 20
                   },
                   "blocks": {
                     "text_n7A9da": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>On average, orders will take 3-5 days to arrive after purchase. Please refer to our <a href=\"https://pantaoclothing.com/policies/shipping-policy\" target=\"_blank\" title=\"Shipping Policy\">shipping policy </a>for finer details.</p>",
+                        "text": "<p>Free shipping on all U.S. orders. Orders typically arrive within 3–5 business days after purchase. See our <a href=\"/policies/shipping-policy\" title=\"Shipping Policy\">shipping policy</a> for international rates and details.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -368,10 +368,50 @@
                   "block_order": [
                     "text_qLGEN9"
                   ]
+                },
+                "accordion_row_returns": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "RETURNS",
+                    "open_by_default": false,
+                    "icon": "return",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_returns": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Returns are accepted within 14 days of delivery. We don’t offer exchanges, so please check the size chart before ordering. See our <a href=\"/policies/refund-policy\" title=\"Return Policy\">return policy</a> for details.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "custom",
+                        "font": "var(--font-secondary--family)",
+                        "font_size": "var(--font-size--body-lg)",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 12,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_returns"
+                  ]
                 }
               },
               "block_order": [
                 "accordion_row_NdBezV",
+                "accordion_row_returns",
                 "accordion_row_iJM37V",
                 "accordion_row_pLFDcD"
               ]
