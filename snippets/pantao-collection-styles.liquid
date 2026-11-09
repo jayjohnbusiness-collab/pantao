@@ -47,6 +47,9 @@
     color: rgb(var(--color-foreground-rgb));
   }
 
+  /* In-stock pieces first: sold-out cards move to the end of the grid. */
+  .product-grid__item:has(.pantao-stock.is-out) { order: 1; }
+
   @media (prefers-reduced-motion: reduce) {
     .product-card .card-gallery img,
     .product-card:hover .card-gallery img { transition: none; transform: none; }
