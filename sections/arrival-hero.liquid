@@ -93,7 +93,7 @@
           width="{{ s.logo.width }}"
           height="{{ s.logo.height }}"
           loading="eager"
-          style="width: min({{ s.logo_width }}px, 92vw);"
+          style="width: min({{ s.logo_width }}px, 92vw, calc((100svh - var(--header-height, 0px) - 19rem) * {{ s.logo.aspect_ratio | default: 2 }}));"
         >
       {%- endif -%}
 
