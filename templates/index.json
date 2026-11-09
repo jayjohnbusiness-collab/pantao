@@ -81,9 +81,9 @@
         "full_width": true,
         "aspect_ratio": "2 / 3",
         "label_position": "top-left",
-        "label_color": "light",
-        "label_size": 12,
-        "label_inset": 12,
+        "label_color": "dark",
+        "label_size": 14,
+        "label_inset": 24,
         "color_scheme": ""
       }
     },
