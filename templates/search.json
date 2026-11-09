@@ -276,7 +276,8 @@
                         "product_swatches_padding_left": 0,
                         "product_swatches_padding_right": 0
                       },
-                      "blocks": {}
+                      "blocks": {},
+                      "disabled": true
                     }
                   },
                   "block_order": [
