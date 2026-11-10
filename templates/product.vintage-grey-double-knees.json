@@ -17,9 +17,9 @@
           "static": true,
           "settings": {
             "media_presentation": "grid",
-            "media_columns": "two",
-            "image_gap": 4,
-            "large_first_image": true,
+            "media_columns": "one",
+            "image_gap": 0,
+            "large_first_image": false,
             "icons_style": "arrow",
             "slideshow_controls_style": "counter",
             "slideshow_mobile_controls_style": "counter",
@@ -74,13 +74,13 @@
                 "text": "<h1>{{ closest.product.title }}</h1>",
                 "width": "100%",
                 "max_width": "normal",
-                "alignment": "center",
+                "alignment": "left",
                 "type_preset": "custom",
-                "font": "var(--font-heading--family)",
-                "font_size": "2rem",
+                "font": "var(--font-body--family)",
+                "font_size": "0.75rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
-                "case": "none",
+                "case": "uppercase",
                 "wrap": "pretty",
                 "color": "",
                 "background": false,
@@ -101,9 +101,9 @@
                 "show_tax_info": false,
                 "type_preset": "custom",
                 "width": "100%",
-                "alignment": "center",
+                "alignment": "left",
                 "font": "var(--font-body--family)",
-                "font_size": "1.125rem",
+                "font_size": "0.75rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -131,9 +131,9 @@
             "variant_picker_R3rGDr": {
               "type": "variant-picker",
               "settings": {
-                "variant_style": "dropdowns",
+                "variant_style": "buttons",
                 "show_swatches": true,
-                "alignment": "center",
+                "alignment": "left",
                 "padding-block-start": 10,
                 "padding-block-end": 40,
                 "padding-inline-start": 0,
@@ -180,7 +180,8 @@
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
               },
-              "blocks": {}
+              "blocks": {},
+              "disabled": true
             },
             "buy_buttons_eYQEYi": {
               "type": "buy-buttons",
@@ -226,7 +227,7 @@
                 "text": "<p>Secure checkout · Ships from Washington</p>",
                 "width": "100%",
                 "max_width": "normal",
-                "alignment": "center",
+                "alignment": "left",
                 "type_preset": "rte",
                 "font": "var(--font-body--family)",
                 "font_size": "1rem",
@@ -252,7 +253,7 @@
                 "text": "{{ closest.product.description }}",
                 "width": "100%",
                 "max_width": "normal",
-                "alignment": "center",
+                "alignment": "left",
                 "type_preset": "custom",
                 "font": "var(--font-accent--family)",
                 "font_size": "0.875rem",
@@ -296,7 +297,7 @@
                   "settings": {
                     "heading": "MODEL",
                     "open_by_default": true,
-                    "icon": "silhouette",
+                    "icon": "none",
                     "width": 20
                   },
                   "blocks": {
@@ -335,7 +336,7 @@
                   "settings": {
                     "heading": "SHIPPING",
                     "open_by_default": false,
-                    "icon": "truck",
+                    "icon": "none",
                     "width": 20
                   },
                   "blocks": {
@@ -374,7 +375,7 @@
                   "settings": {
                     "heading": "CARE",
                     "open_by_default": false,
-                    "icon": "washing",
+                    "icon": "none",
                     "width": 20
                   },
                   "blocks": {
@@ -414,7 +415,7 @@
                   "settings": {
                     "heading": "WARRANTY",
                     "open_by_default": false,
-                    "icon": "lock",
+                    "icon": "none",
                     "width": 20
                   },
                   "blocks": {
@@ -453,7 +454,7 @@
                   "settings": {
                     "heading": "RETURNS",
                     "open_by_default": false,
-                    "icon": "return",
+                    "icon": "none",
                     "width": 20
                   },
                   "blocks": {
@@ -514,7 +515,7 @@
       "settings": {
         "content_width": "content-full-width",
         "desktop_media_position": "left",
-        "equal_columns": true,
+        "equal_columns": false,
         "limit_details_width": true,
         "gap": 0,
         "enable_sticky_add_to_cart": true,
