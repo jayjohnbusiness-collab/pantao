@@ -320,7 +320,8 @@
                   },
                   "block_order": [
                     "text_wUwLeP"
-                  ]
+                  ],
+                  "disabled": true
                 },
                 "accordion_row_nDEaD3": {
                   "type": "_accordion-row",
