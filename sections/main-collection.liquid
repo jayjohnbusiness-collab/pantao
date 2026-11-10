@@ -46,6 +46,19 @@
       <p class="pantao-collection-head__count">
         {{- collection.products_count }} {% if collection.products_count == 1 %}item{% else %}items{% endif -%}
       </p>
+      {%- comment -%} Collection links (Acne-style row): switch collections without the menu. {%- endcomment -%}
+      {%- liquid
+        assign nav_handles = 'all,tops,bottoms,accessories,archive-collection,best-sellers' | split: ','
+        assign nav_labels = 'All,Tops,Bottoms,Accessories,Archive,Core' | split: ','
+      -%}
+      <nav class="pantao-collection-nav" aria-label="Collections">
+        {%- for h in nav_handles -%}
+          {%- assign c = collections[h] -%}
+          {%- if h == 'all' or c.products_count > 0 -%}
+            <a href="{% if h == 'all' %}/collections/all{% else %}{{ c.url }}{% endif %}"{% if collection.handle == h %} aria-current="page"{% endif %}>{{ nav_labels[forloop.index0] }}</a>
+          {%- endif -%}
+        {%- endfor -%}
+      </nav>
     </div>
     <style>
       /* Acne-style header row: page name + count on the left, a single
@@ -53,6 +66,11 @@
       results-list.product-grid-container{ position:relative; }
       .pantao-collection-head{ grid-column:1/-1; padding:28px 40px 18px; }
       .pantao-collection-head__title{ margin:0; font-family:var(--font-body--family); font-size:12px; font-weight:400; letter-spacing:.02em; text-transform:uppercase; line-height:1.4; color:rgb(var(--color-foreground-rgb)); }
+      .pantao-collection-nav{ display:flex; gap:22px; margin-top:16px; overflow-x:auto; scrollbar-width:none; white-space:nowrap; }
+      .pantao-collection-nav::-webkit-scrollbar{ display:none; }
+      .pantao-collection-nav a{ font-size:11px; letter-spacing:.02em; text-transform:uppercase; color:rgb(var(--color-foreground-rgb) / .55); text-decoration:none; padding-bottom:3px; border-bottom:1px solid transparent; }
+      .pantao-collection-nav a:hover{ color:rgb(var(--color-foreground-rgb)); }
+      .pantao-collection-nav a[aria-current='page']{ color:rgb(var(--color-foreground-rgb)); border-bottom-color:currentColor; }
       .pantao-collection-head__count{ margin:2px 0 0; font-size:11px; letter-spacing:.02em; color:rgb(var(--color-foreground-rgb) / .55); }
       .product-grid-container .facets.facets--horizontal{ display:none !important; }
       .product-grid-container .facets-toggle{ display:flex !important; position:absolute; top:28px; right:40px; padding:0 !important; margin:0 !important; z-index:2; background:none; }

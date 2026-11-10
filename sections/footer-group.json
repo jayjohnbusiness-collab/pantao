@@ -20,7 +20,8 @@
         "color_scheme": "scheme-5",
         "padding-block-start": 80,
         "padding-block-end": 32
-      }
+      },
+      "disabled": true
     },
     "footer_utilities_hLXtPk": {
       "type": "footer-utilities",
@@ -77,9 +78,16 @@
         "padding-block-start": 20,
         "padding-block-end": 20
       }
+    },
+    "pantao_footer": {
+      "type": "pantao-footer",
+      "settings": {
+        "newsletter_text": "Be first to know about new drops, restocks and events."
+      }
     }
   },
   "order": [
+    "pantao_footer",
     "footer_custom_aXzVbr",
     "footer_utilities_hLXtPk"
   ]

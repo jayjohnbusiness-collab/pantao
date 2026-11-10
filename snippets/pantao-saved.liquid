@@ -89,6 +89,7 @@
     .pantao-toast { left: 0; right: 0; bottom: 0; width: 100%; border-width: 1px 0 0; padding: 16px 44px calc(16px + env(safe-area-inset-bottom)) 16px; }
   }
 
+  .pantao-help-link,
   .pantao-saved-link {
     font-family: var(--font-body--family);
     font-size: 12px;
@@ -101,7 +102,7 @@
     padding-inline: 6px;
   }
   .pantao-saved-link[hidden] { display: none !important; }
-  @media screen and (max-width: 749px) { .pantao-saved-link { display: none !important; } }
+  @media screen and (max-width: 749px) { .pantao-saved-link, .pantao-help-link { display: none !important; } }
 
   /* Product lists (Saved page, Recently viewed) — same look as the collection grid. */
   .pantao-plist-wrap { padding: 56px 0 72px; }

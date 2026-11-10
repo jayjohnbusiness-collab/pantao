@@ -23,6 +23,39 @@
 >
 
 {%- liquid
+  # PANTAO: cleaner titles and fallback descriptions for search results.
+  assign brand_line = 'Small-batch luxury streetwear: heavyweight hoodies, denim and leather goods. Free U.S. shipping.'
+  assign pantao_title = page_title
+  assign pantao_desc = page_description
+  case request.page_type
+    when 'index'
+      assign pantao_title = 'PANTAO | Small-batch luxury streetwear'
+      if pantao_desc == blank
+        assign pantao_desc = brand_line
+      endif
+    when 'collection'
+      if collection.handle == 'all'
+        assign pantao_title = 'Clothing'
+      endif
+      if pantao_desc == blank
+        assign pantao_desc = 'Shop ' | append: pantao_title | append: ' from PANTAO. ' | append: brand_line
+      endif
+    when 'product'
+      if pantao_desc == blank
+        assign pantao_desc = product.description | strip_html | strip_newlines | truncate: 155
+      endif
+    when 'page'
+      if page.handle == 'saved'
+        assign pantao_desc = 'Your saved pieces from PANTAO.'
+      endif
+  endcase
+  if pantao_desc == blank
+    assign pantao_desc = brand_line
+  endif
+  assign page_title = pantao_title
+  assign page_description = pantao_desc
+-%}
+{%- liquid
   assign og_title = page_title | default: shop.name
   assign og_url = canonical_url | default: request.origin
   assign og_type = 'website'
@@ -111,7 +144,7 @@
   {{ page_title }}
   {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
   {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
-  {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+  {%- unless page_title contains shop.name %} | {{ shop.name }}{% endunless -%}
 </title>
 
 <link

@@ -1,0 +1,141 @@
+{
+  "sections": {
+    "main": {
+      "type": "pantao-faq",
+      "blocks": {
+        "g1": {
+          "type": "group",
+          "settings": {
+            "title": "Shipping"
+          }
+        },
+        "q1": {
+          "type": "question",
+          "settings": {
+            "question": "Do you offer free shipping?",
+            "answer": "<p>Yes. Shipping is free to all 50 states, unless a product says otherwise.</p>"
+          }
+        },
+        "q2": {
+          "type": "question",
+          "settings": {
+            "question": "When will my order ship?",
+            "answer": "<p>U.S. orders are processed within 1–3 business days. During drops, please allow 6–7 days because of the volume of orders. You’ll receive a tracking number once your order ships.</p>"
+          }
+        },
+        "q3": {
+          "type": "question",
+          "settings": {
+            "question": "Do you ship internationally?",
+            "answer": "<p>Yes. International orders are processed within 5–10 business days and ship via DHL Express, UPS or USPS. Shipping rates are calculated at checkout, and for most countries duties and import taxes are included in the price shown at checkout. Full details are in our <a href=\"/policies/shipping-policy\">shipping policy</a>.</p>"
+          }
+        },
+        "g2": {
+          "type": "group",
+          "settings": {
+            "title": "Returns"
+          }
+        },
+        "q4": {
+          "type": "question",
+          "settings": {
+            "question": "What is your return policy?",
+            "answer": "<p>You can request a return within 14 days of delivery. Items must be unworn and unused, with tags, in their original packaging. Some items are final sale. See our <a href=\"/policies/refund-policy\">return policy</a>.</p>"
+          }
+        },
+        "q5": {
+          "type": "question",
+          "settings": {
+            "question": "How do I start a return?",
+            "answer": "<p>Contact us before sending anything back. If your return is approved, we’ll send you instructions on how and where to ship it. Returns sent without approval can’t be accepted, and return shipping is arranged by you.</p>"
+          }
+        },
+        "g3": {
+          "type": "group",
+          "settings": {
+            "title": "Products"
+          }
+        },
+        "q6": {
+          "type": "question",
+          "settings": {
+            "question": "How do I find my size?",
+            "answer": "<p>Every product page has a size chart, and the Model section lists the model’s height and the size they’re wearing.</p>"
+          }
+        },
+        "q7": {
+          "type": "question",
+          "settings": {
+            "question": "A piece I want is sold out. Will it restock?",
+            "answer": "<p>We make pieces in small batches. Tap “Notify me when available” on the product page and we’ll email you if it comes back.</p>"
+          }
+        },
+        "q8": {
+          "type": "question",
+          "settings": {
+            "question": "How should I care for my pieces?",
+            "answer": "<p>Care instructions are listed under Care on each product page.</p>"
+          }
+        },
+        "g4": {
+          "type": "group",
+          "settings": {
+            "title": "Orders & account"
+          }
+        },
+        "q9": {
+          "type": "question",
+          "settings": {
+            "question": "Where is my order?",
+            "answer": "<p>Use the tracking link in your shipping confirmation email, or sign in to <a href=\"/account\">your account</a> to see your orders.</p>"
+          }
+        },
+        "q10": {
+          "type": "question",
+          "settings": {
+            "question": "Can I save pieces for later?",
+            "answer": "<p>Yes. Tap Save on any product page and find everything on your <a href=\"/pages/saved\">Saved</a> page.</p>"
+          }
+        },
+        "g5": {
+          "type": "group",
+          "settings": {
+            "title": "Contact"
+          }
+        },
+        "q11": {
+          "type": "question",
+          "settings": {
+            "question": "How do I reach you?",
+            "answer": "<p>Send us a message through our <a href=\"/pages/contact\">contact page</a> or on Instagram at <a href=\"https://www.instagram.com/pantaogaleriya\" target=\"_blank\" rel=\"noopener\">@pantaogaleriya</a>.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "g1",
+        "q1",
+        "q2",
+        "q3",
+        "g2",
+        "q4",
+        "q5",
+        "g3",
+        "q6",
+        "q7",
+        "q8",
+        "g4",
+        "q9",
+        "q10",
+        "g5",
+        "q11"
+      ],
+      "settings": {
+        "heading": "Help",
+        "intro": "<p>Answers to common questions. Can’t find what you need? <a href=\"/pages/contact\">Contact us</a>.</p>"
+      }
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
