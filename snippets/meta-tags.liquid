@@ -38,7 +38,8 @@
         assign pantao_title = 'Clothing'
       endif
       if pantao_desc == blank
-        assign pantao_desc = 'Shop ' | append: pantao_title | append: ' from PANTAO. ' | append: brand_line
+        assign t_cap = pantao_title | downcase
+        assign pantao_desc = 'Shop ' | append: t_cap | append: ' from PANTAO. ' | append: brand_line
       endif
     when 'product'
       if pantao_desc == blank
