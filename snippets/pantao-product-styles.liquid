@@ -17,8 +17,11 @@
   }
 
   /* Name left, price right, same line. */
-  .product-information .product-details .group-block-content > .text-block:first-of-type,
-  .product-information .product-details .group-block-content > .text-block:first-of-type :is(h1, h2, p) {
+  .product-information .product-details .group-block-content > .text-block:has(h1) {
+    padding-block-start: 0 !important;
+  }
+  .product-information .product-details .group-block-content > .text-block:has(h1),
+  .product-information .product-details .group-block-content > .text-block h1 {
     margin: 0;
     padding-right: 90px;
     font-size: 12px !important;
@@ -47,13 +50,13 @@
     letter-spacing: 0.02em;
     text-transform: uppercase;
   }
-  .product-information .variant-option--buttons {
+  .product-information .variant-option--buttons:not(.variant-option--swatches) {
     display: grid !important;
     grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 0 !important;
   }
-  .product-information .variant-option--buttons legend { grid-column: 1 / -1; margin-bottom: 8px; }
-  .product-information .variant-option__button-label {
+  .product-information .variant-option--buttons:not(.variant-option--swatches) legend { grid-column: 1 / -1; margin-bottom: 8px; }
+  .product-information .variant-option__button-label:not(.variant-option__button-label--has-swatch) {
     border-radius: 0 !important;
     min-width: 0 !important;
     height: 40px;
@@ -76,11 +79,12 @@
   }
 
   /* Body copy small and quiet. */
-  .product-information .product-details .text-block:not(:first-of-type),
-  .product-information .product-details .text-block:not(:first-of-type) * {
+  .product-information .product-details .text-block:not(:has(h1)),
+  .product-information .product-details .text-block:not(:has(h1)) * {
     font-size: 12px !important;
     line-height: 1.55;
     text-align: left !important;
+    text-transform: none;
   }
 
   /* Accordion rows: plain small caps, thin dividers, no icons. */
