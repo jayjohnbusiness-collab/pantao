@@ -1,0 +1,23 @@
+{%- comment -%}
+  PANTAO monogram cursor (desktop / mouse only)
+  ----------------------------------------------------------------
+  Black monogram with a thin white edge so it reads on light and dark
+  photos. Hotspot is the mark's center. Text fields keep the normal
+  text cursor; touch devices are unaffected (no cursor there).
+  To turn it off, delete the render line in layout/theme.liquid.
+{%- endcomment -%}
+{%- assign cur1 = 'pantao-cursor-32.png' | asset_url -%}
+{%- assign cur2 = 'pantao-cursor-64.png' | asset_url -%}
+<style>
+  @media (hover: hover) and (pointer: fine) {
+    html, body, body * {
+      cursor: url('{{ cur1 }}') 16 16, auto;
+      cursor: -webkit-image-set(url('{{ cur1 }}') 1x, url('{{ cur2 }}') 2x) 16 16, auto;
+      cursor: image-set(url('{{ cur1 }}') 1x, url('{{ cur2 }}') 2x) 16 16, auto;
+    }
+    body :is(input:not([type='checkbox'], [type='radio'], [type='submit'], [type='button'], [type='range']), textarea, [contenteditable='true']) {
+      cursor: text;
+    }
+    body :is([disabled], [aria-disabled='true']) { cursor: not-allowed; }
+  }
+</style>
