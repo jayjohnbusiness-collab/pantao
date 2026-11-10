@@ -35,16 +35,42 @@
     letter-spacing: 0.02em;
   }
   .product-grid .product-card__content > .group-block { padding: 8px 10px 24px !important; }
-  .product-grid .product-card [class*='product-title'] *,
-  .product-grid .product-card [class*='price'] * { font-size: 11px !important; }
+  /* Card captions (Acne): small caps name, price in plain small type. */
+  .product-grid .product-card .text-block[class*='product_title'],
+  .product-grid .product-card .text-block[class*='product_title'] *,
+  .product-grid .product-card product-price,
+  .product-grid .product-card product-price * {
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    line-height: 1.35 !important;
+    letter-spacing: 0.02em;
+  }
+  .product-grid .product-card .text-block[class*='product_title'] * { text-transform: uppercase; }
+
   @media screen and (max-width: 749px) {
-    /* Phones: Acne-style 2-up grid, name left / price right on one line. */
-    .product-grid .product-card__content > .group-block { padding: 6px 8px 18px !important; flex-wrap: nowrap !important; gap: 8px; }
-    .product-grid .product-card__content > .group-block > * { min-width: 0; }
-    .product-grid .product-card [class*='product-title'],
-    .product-grid .product-card [class*='product-title'] *,
-    .product-grid .product-card [class*='price'],
-    .product-grid .product-card [class*='price'] * { font-size: 10px !important; line-height: 1.35; }
+    /* Phones, as on Acne: name on top, price right under it, both left-aligned,
+       full card width so names don't wrap into a narrow column. */
+    .product-grid .product-card__content > .group-block { padding: 8px 10px 22px !important; }
+    .product-grid .product-card__content > .group-block > .group-block-content {
+      flex-direction: column !important;
+      align-items: flex-start !important;
+      justify-content: flex-start !important;
+      gap: 3px !important;
+    }
+    .product-grid .product-card__content > .group-block > .group-block-content > .group-block {
+      width: 100% !important;
+      max-width: 100% !important;
+      --size-style-width-mobile: 100% !important;
+    }
+    .product-grid .product-card__content > .group-block > .group-block-content > .group-block > .group-block-content {
+      align-items: flex-start !important;
+    }
+    .product-grid .product-card product-price,
+    .product-grid .product-card product-price * { text-align: left !important; justify-content: flex-start !important; }
+    .product-grid .product-card .text-block[class*='product_title'],
+    .product-grid .product-card .text-block[class*='product_title'] *,
+    .product-grid .product-card product-price,
+    .product-grid .product-card product-price * { font-size: 11px !important; }
   }
 
   /* Round the media frame and clip the image to it. */
