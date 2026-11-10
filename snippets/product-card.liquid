@@ -108,6 +108,21 @@
     "
   >
     {{ children }}
+    {%- unless onboarding -%}
+      {%- liquid
+        assign pc_base = product.title | split: ' - ' | first | strip
+        assign pc_colors = 0
+        if product.title contains ' - '
+          for p in collections.all.products
+            assign p_base = p.title | split: ' - ' | first | strip
+            if p_base == pc_base
+              assign pc_colors = pc_colors | plus: 1
+            endif
+          endfor
+        endif
+      -%}
+      {%- if pc_colors > 1 -%}<span class="pantao-card-colors">{{ pc_colors }} colors</span>{%- endif -%}
+    {%- endunless -%}
   </div>
 </product-card>
 

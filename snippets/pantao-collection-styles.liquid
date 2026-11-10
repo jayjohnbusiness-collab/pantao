@@ -47,6 +47,11 @@
   }
   .product-grid .product-card .text-block[class*='product_title'] * { text-transform: uppercase; }
 
+  /* "3 colors" note under the price on pieces that come in several colorways. */
+  .pantao-card-colors { display: block; margin-top: -20px; padding: 0 10px 24px; font-size: 11px; letter-spacing: 0.02em; color: rgb(20 20 20 / 0.55); }
+  [product-grid-view='zoom-out'] .pantao-card-colors { display: none; }
+  @media screen and (max-width: 749px) { .pantao-card-colors { margin-top: -18px; padding: 0 9px 22px; font-size: 10px; } }
+
   /* Card photo indicators: thin dashes, phones only (Acne). Desktop uses hover-to-second-photo. */
   .pantao-card-dots { display: none !important; }
   @media screen and (max-width: 749px) {
