@@ -48,11 +48,22 @@
       </p>
     </div>
     <style>
-      .pantao-collection-head{ grid-column:1/-1; padding:28px 40px 6px; }
+      /* Acne-style header row: page name + count on the left, a single
+         "Filter" link on the right that opens the filter/sort drawer. */
+      results-list.product-grid-container{ position:relative; }
+      .pantao-collection-head{ grid-column:1/-1; padding:28px 40px 18px; }
       .pantao-collection-head__title{ margin:0; font-family:var(--font-body--family); font-size:12px; font-weight:400; letter-spacing:.02em; text-transform:uppercase; line-height:1.4; color:rgb(var(--color-foreground-rgb)); }
       .pantao-collection-head__count{ margin:2px 0 0; font-size:11px; letter-spacing:.02em; color:rgb(var(--color-foreground-rgb) / .55); }
-      .product-grid-container .products-count-wrapper{ visibility:hidden; width:0; overflow:hidden; padding:0; }
-      @media(max-width:749px){ .pantao-collection-head{ padding:20px 16px 4px; } }
+      .product-grid-container .facets.facets--horizontal{ display:none !important; }
+      .product-grid-container .facets-toggle{ display:flex !important; position:absolute; top:28px; right:40px; padding:0 !important; margin:0 !important; z-index:2; background:none; }
+      .product-grid-container .facets-toggle .facets-mobile-wrapper{ display:none !important; }
+      .product-grid-container .facets-toggle__button{ display:inline-flex !important; align-items:center; gap:6px; padding:0; font-family:var(--font-body--family); font-size:12px; font-weight:400; letter-spacing:.02em; text-transform:uppercase; color:rgb(var(--color-foreground-rgb)); }
+      .product-grid-container .facets-toggle__button .svg-wrapper{ width:14px; height:14px; }
+      .product-grid-container .facets-toggle__button:hover{ text-decoration:underline; text-underline-offset:3px; }
+      @media(max-width:749px){
+        .pantao-collection-head{ padding:20px 16px 14px; }
+        .product-grid-container .facets-toggle{ top:20px; right:16px; }
+      }
     </style>
 
     {% content_for 'block',
