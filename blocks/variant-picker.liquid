@@ -9,6 +9,7 @@
 
 {% unless product_resource == blank %}
   {% render 'variant-main-picker', product_resource: product_resource, section: section, product: product %}
+  {%- unless product_resource.gift_card? -%}{% render 'pantao-size-stock', product: product_resource %}{%- endunless -%}
 {% endunless %}
 
 {% schema %}

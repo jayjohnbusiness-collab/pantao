@@ -1,0 +1,106 @@
+{%- comment -%}
+  PANTAO size stock note (Acne Studios reference)
+  ----------------------------------------------------------------
+  After the shopper picks a size, a small pale bar under the size boxes
+  says "ONLY N LEFT" when that size is running low. Nothing shows while
+  stock is healthy, untracked, or before a size has been clicked.
+  @param {object} product
+  @param {number} [threshold] - show the note at or below this count (default 10)
+{%- endcomment -%}
+{%- liquid
+  assign low_at = threshold | default: 10
+  assign current = product.selected_or_first_available_variant
+-%}
+<pantao-size-stock
+  class="pantao-size-stock"
+  data-product-id="{{ product.id }}"
+  data-variant-id="{{ current.id }}"
+  data-threshold="{{ low_at }}"
+  hidden
+>
+  <span class="pantao-size-stock__text" role="status" aria-live="polite"></span>
+  <script type="application/json" data-stock>
+    {
+      {%- for v in product.variants -%}
+        {%- if v.inventory_management == 'shopify' and v.inventory_policy != 'continue' -%}
+          "{{ v.id }}": {{ v.inventory_quantity }}
+        {%- else -%}
+          "{{ v.id }}": null
+        {%- endif -%}
+        {%- unless forloop.last %},{% endunless -%}
+      {%- endfor -%}
+    }
+  </script>
+</pantao-size-stock>
+
+<style>
+  .pantao-size-stock {
+    display: block;
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #fbf9e6;
+    color: #141414;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .pantao-size-stock[hidden] { display: none; }
+</style>
+
+<script>
+  (() => {
+    if (customElements.get('pantao-size-stock')) return;
+    window.__pantaoSizeTouched = window.__pantaoSizeTouched || {};
+
+    class PantaoSizeStock extends HTMLElement {
+      connectedCallback() {
+        try {
+          this.stock = JSON.parse(this.querySelector('[data-stock]').textContent);
+        } catch (e) {
+          this.stock = {};
+        }
+        this.text = this.querySelector('.pantao-size-stock__text');
+        this.pid = this.dataset.productId;
+
+        // A size click (not page load) is what reveals the note.
+        this.onPick = (e) => {
+          const input = e.target;
+          if (!input || input.type !== 'radio') return;
+          const picker = input.closest('variant-picker, .variant-picker');
+          if (!picker || !picker.closest('.product-information, product-details, .product-details')) return;
+          window.__pantaoSizeTouched[this.pid] = true;
+        };
+        this.onVariant = (e) => {
+          const d = e.detail || {};
+          if (!d.resource || String(d.data && d.data.productId) !== this.pid) return;
+          this.render(d.resource.id);
+        };
+        document.addEventListener('change', this.onPick, true);
+        document.addEventListener('variant:update', this.onVariant);
+
+        // Re-rendered after a pick (the theme swaps the picker's HTML)? Show for the new size.
+        if (window.__pantaoSizeTouched[this.pid]) this.render(this.dataset.variantId);
+      }
+
+      disconnectedCallback() {
+        document.removeEventListener('change', this.onPick, true);
+        document.removeEventListener('variant:update', this.onVariant);
+      }
+
+      render(variantId) {
+        if (!window.__pantaoSizeTouched[this.pid]) return;
+        const qty = this.stock[String(variantId)];
+        const limit = Number(this.dataset.threshold) || 10;
+        if (typeof qty === 'number' && qty > 0 && qty <= limit) {
+          this.text.textContent = qty === 1 ? 'Only 1 left' : `Only ${qty} left`;
+          this.hidden = false;
+        } else {
+          this.hidden = true;
+        }
+      }
+    }
+    customElements.define('pantao-size-stock', PantaoSizeStock);
+  })();
+</script>
