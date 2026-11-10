@@ -99,4 +99,17 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
+
+  /* No dimming over the header while the menu is open; the white panel is enough. */
+  .menu-drawer__backdrop { backdrop-filter: none !important; background: transparent !important; }
+  /* Header already has its own bottom line: drop the extra one on top of the list. */
+  .menu-drawer .menu-drawer__menu > li:first-child .menu-drawer__menu-item--mainlist { border-top: 0 !important; }
+  /* Currency line on the same 20px edge as everything else. */
+  .menu-drawer .menu-drawer__localization,
+  .menu-drawer drawer-localization-component,
+  .menu-drawer .drawer-localization,
+  .menu-drawer .drawer-localization__button,
+  .menu-drawer .drawer-localization__button--label,
+  .menu-drawer .mobile-localization { margin: 0 !important; padding-inline: 0 !important; }
+  .menu-drawer .menu-drawer__utility-links { padding-inline: 20px !important; }
 </style>
