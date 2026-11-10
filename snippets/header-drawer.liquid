@@ -572,6 +572,17 @@
           {% endif %}
         </ul>
       </nav>
+      {%- comment -%} PANTAO: secondary links under the main list (Acne-style). {%- endcomment -%}
+      <ul class="pantao-drawer-secondary list-unstyled" aria-label="More">
+        {%- if shop.customer_accounts_enabled -%}
+          <li><a href="{{ routes.account_url }}">{% if customer %}Account{% else %}Log in{% endif %}</a></li>
+        {%- endif -%}
+        <li><a href="{{ routes.search_url }}">Search</a></li>
+        <li><a href="/policies/shipping-policy">Shipping</a></li>
+        <li><a href="/policies/refund-policy">Returns</a></li>
+        <li><a href="/pages/contact">Contact</a></li>
+        <li><a href="https://www.instagram.com/pantaogaleriya" target="_blank" rel="noopener">Instagram</a></li>
+      </ul>
       <div
         class="menu-drawer__utility-links menu-drawer__animated-element"
         style="--menu-drawer-animation-index: {{ linklist.links.size }};"
