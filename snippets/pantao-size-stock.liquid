@@ -12,13 +12,12 @@
   assign current = product.selected_or_first_available_variant
 -%}
 <pantao-size-stock
-  class="pantao-size-stock"
+  class="pantao-size-stock-ctrl"
   data-product-id="{{ product.id }}"
   data-variant-id="{{ current.id }}"
   data-threshold="{{ low_at }}"
   hidden
 >
-  <span class="pantao-size-stock__text" role="status" aria-live="polite"></span>
   <script type="application/json" data-stock>
     {
       {%- for v in product.variants -%}
@@ -47,7 +46,7 @@
     text-transform: uppercase;
     line-height: 1.2;
   }
-  .pantao-size-stock[hidden] { display: none; }
+  .pantao-size-stock[hidden], .pantao-size-stock-ctrl { display: none !important; }
 </style>
 
 <script>
@@ -62,16 +61,8 @@
         } catch (e) {
           this.stock = {};
         }
-        this.text = this.querySelector('.pantao-size-stock__text');
         this.pid = this.dataset.productId;
 
-        // Sit directly under the size boxes, like Acne (not below the color row).
-        const scope = this.closest('.product-information, product-details, .product-details') || document;
-        const sizeRow = scope.querySelector('.variant-option--buttons:not(.variant-option--swatches)');
-        if (sizeRow && sizeRow.nextElementSibling !== this) {
-          sizeRow.after(this);
-          return; // moving re-runs connectedCallback in the new spot
-        }
 
         // A size click (not page load) is what reveals the note.
         this.onPick = (e) => {
@@ -84,7 +75,8 @@
         this.onVariant = (e) => {
           const d = e.detail || {};
           if (!d.resource || String(d.data && d.data.productId) !== this.pid) return;
-          this.render(d.resource.id);
+          // The theme swaps the picker's HTML on change; draw after it settles.
+          [0, 80, 300].forEach((t) => setTimeout(() => this.render(d.resource.id), t));
         };
         document.addEventListener('change', this.onPick, true);
         document.addEventListener('variant:update', this.onVariant);
@@ -98,15 +90,33 @@
         document.removeEventListener('variant:update', this.onVariant);
       }
 
+      bar() {
+        const scope = this.closest('.product-information, .product-details') || document;
+        const sizeRow = scope.querySelector('.variant-option--buttons:not(.variant-option--swatches)');
+        if (!sizeRow) return null;
+        let bar = sizeRow.nextElementSibling;
+        if (!bar || !bar.classList.contains('pantao-size-stock')) {
+          bar = document.createElement('p');
+          bar.className = 'pantao-size-stock';
+          bar.setAttribute('role', 'status');
+          bar.setAttribute('aria-live', 'polite');
+          bar.hidden = true;
+          sizeRow.after(bar);
+        }
+        return bar;
+      }
+
       render(variantId) {
         if (!window.__pantaoSizeTouched[this.pid]) return;
+        const bar = this.bar();
+        if (!bar) return;
         const qty = this.stock[String(variantId)];
         const limit = Number(this.dataset.threshold) || 10;
         if (typeof qty === 'number' && qty > 0 && qty <= limit) {
-          this.text.textContent = qty === 1 ? 'Only 1 left' : `Only ${qty} left`;
-          this.hidden = false;
+          bar.textContent = qty === 1 ? 'Only 1 left' : `Only ${qty} left`;
+          bar.hidden = false;
         } else {
-          this.hidden = true;
+          bar.hidden = true;
         }
       }
     }
