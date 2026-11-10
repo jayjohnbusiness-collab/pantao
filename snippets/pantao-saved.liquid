@@ -54,6 +54,41 @@
   .pantao-save--product svg { width: 14px; height: 14px; }
   .pantao-save--product[aria-pressed='true'] .pantao-save__label::after { content: 'd'; }
 
+  /* Save confirmation pop-up (bottom-right on desktop, full-width bar on phones). */
+  .pantao-toast {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 2147483000;
+    width: min(340px, calc(100vw - 32px));
+    padding: 16px 40px 16px 16px;
+    background: #ffffff;
+    color: #141414;
+    border: 1px solid #141414;
+    font-family: var(--font-body--family);
+    font-size: 12px;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    pointer-events: none;
+  }
+  .pantao-toast.is-open { opacity: 1; transform: none; pointer-events: auto; }
+  .pantao-toast__title { margin: 0 0 4px; font-size: 12px; font-weight: 400; text-transform: uppercase; }
+  .pantao-toast__body { margin: 0; color: rgb(20 20 20 / 0.7); }
+  .pantao-toast__actions { display: flex; gap: 16px; margin-top: 12px; }
+  .pantao-toast__actions a { color: #141414; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; text-underline-offset: 3px; }
+  .pantao-toast__close {
+    position: absolute; top: 10px; right: 10px;
+    width: 24px; height: 24px; padding: 0; border: 0; background: none; color: #141414;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+  .pantao-toast__close svg { width: 12px; height: 12px; }
+  @media screen and (max-width: 749px) {
+    .pantao-toast { left: 0; right: 0; bottom: 0; width: 100%; border-width: 1px 0 0; padding: 16px 44px calc(16px + env(safe-area-inset-bottom)) 16px; }
+  }
+
   .pantao-saved-link {
     font-family: var(--font-body--family);
     font-size: 12px;
@@ -108,13 +143,42 @@
     };
     const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
     const root = (window.Shopify && Shopify.routes && Shopify.routes.root) || '/';
+    const SIGNED_IN = {% if customer %}true{% else %}false{% endif %};
+    const LOGIN_URL = {{ routes.account_login_url | json }};
+    const SAVED_URL = '/pages/saved';
+
+    let toastEl, toastTimer;
+    const toast = (saved) => {
+      if (!toastEl) {
+        toastEl = document.createElement('div');
+        toastEl.className = 'pantao-toast';
+        toastEl.setAttribute('role', 'status');
+        toastEl.setAttribute('aria-live', 'polite');
+        document.body.appendChild(toastEl);
+        toastEl.addEventListener('click', (e) => { if (e.target.closest('.pantao-toast__close')) hide(); });
+      }
+      const close = '<button type="button" class="pantao-toast__close" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 1l10 10M11 1 1 11" stroke="currentColor" stroke-width="1.2"/></svg></button>';
+      if (!saved) {
+        toastEl.innerHTML = close + '<p class="pantao-toast__title">Removed from saved</p>';
+      } else if (SIGNED_IN) {
+        toastEl.innerHTML = close + '<p class="pantao-toast__title">Saved</p><p class="pantao-toast__body">This piece is in your saved items.</p><div class="pantao-toast__actions"><a href="' + SAVED_URL + '">View saved</a></div>';
+      } else {
+        toastEl.innerHTML = close + '<p class="pantao-toast__title">Saved temporarily</p><p class="pantao-toast__body">You\u2019re not signed in, so this is only saved on this device for now. Sign in so you don\u2019t lose it.</p><div class="pantao-toast__actions"><a href="' + LOGIN_URL + '">Sign in</a><a href="' + SAVED_URL + '">View saved</a></div>';
+      }
+      requestAnimationFrame(() => toastEl.classList.add('is-open'));
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(hide, saved && !SIGNED_IN ? 8000 : 4000);
+    };
+    const hide = () => { if (toastEl) toastEl.classList.remove('is-open'); };
 
     const api = {
       saved: () => read(KEY_SAVED),
       isSaved: (h) => read(KEY_SAVED).includes(h),
       toggle(h) {
         let list = read(KEY_SAVED);
-        list = list.includes(h) ? list.filter((x) => x !== h) : [h, ...list];
+        const adding = !list.includes(h);
+        list = adding ? [h, ...list] : list.filter((x) => x !== h);
+        toast(adding);
         write(KEY_SAVED, list.slice(0, 60));
         api.sync();
         document.dispatchEvent(new CustomEvent('pantao:saved-change'));
