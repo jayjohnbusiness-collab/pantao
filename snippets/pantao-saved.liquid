@@ -1,0 +1,224 @@
+{%- comment -%}
+  PANTAO wishlist ("Saved") + recently viewed
+  ----------------------------------------------------------------
+  Both live in the shopper's own browser (localStorage), so they work
+  without an account and nothing is stored on Shopify.
+  - Hearts: snippets/pantao-save-button.liquid (cards + product page)
+  - Header link "SAVED (n)": snippets/header-actions.liquid (desktop),
+    drawer secondary list (phones)
+  - Lists: <pantao-product-list data-source="saved|viewed">, used on
+    the Saved page (sections/pantao-saved-page.liquid) and under product
+    pages (layout/theme.liquid).
+{%- endcomment -%}
+<style>
+  .pantao-save {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #141414;
+    font: inherit;
+    line-height: 1;
+  }
+  .pantao-save svg { width: 16px; height: 16px; display: block; }
+  .pantao-save[aria-pressed='true'] path { fill: currentColor; }
+  .pantao-save--card {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 3;
+    width: 32px;
+    height: 32px;
+    justify-content: center;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .pantao-save--card { opacity: 0; transition: opacity 0.2s ease; }
+    .card-gallery:hover .pantao-save--card,
+    .pantao-plist__media:hover .pantao-save--card,
+    .pantao-save--card[aria-pressed='true'],
+    .pantao-save--card:focus-visible { opacity: 1; }
+  }
+  [product-grid-view='zoom-out'] .pantao-save--card { display: none; }
+  .pantao-save--product {
+    align-self: flex-start;
+    margin-top: 2px;
+    padding: 6px 0;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .pantao-save--product svg { width: 14px; height: 14px; }
+  .pantao-save--product[aria-pressed='true'] .pantao-save__label::after { content: 'd'; }
+
+  .pantao-saved-link {
+    font-family: var(--font-body--family);
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+    align-self: center;
+    padding-inline: 6px;
+  }
+  .pantao-saved-link[hidden] { display: none !important; }
+  @media screen and (max-width: 749px) { .pantao-saved-link { display: none !important; } }
+
+  /* Product lists (Saved page, Recently viewed) — same look as the collection grid. */
+  .pantao-plist-wrap { padding: 56px 0 72px; }
+  .pantao-plist-wrap[hidden] { display: none; }
+  .pantao-plist__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 0 40px 18px;
+    font-size: 12px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+  .pantao-plist__head h2 { margin: 0; font: inherit; }
+  .pantao-plist__count { color: rgb(20 20 20 / 0.55); font-size: 11px; text-transform: none; }
+  .pantao-plist { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; margin: 0; padding: 0; list-style: none; }
+  .pantao-plist__item a { display: block; color: inherit; text-decoration: none; }
+  .pantao-plist__media { position: relative; aspect-ratio: 2 / 3; overflow: hidden; background: #e9e9e7; }
+  .pantao-plist__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .pantao-plist__info { display: flex; justify-content: space-between; gap: 12px; padding: 8px 10px 24px; font-size: 12px; letter-spacing: 0.02em; }
+  .pantao-plist__title { text-transform: uppercase; min-width: 0; }
+  .pantao-plist__empty { padding: 0 40px; font-size: 12px; color: rgb(20 20 20 / 0.6); }
+  .pantao-plist__empty a { color: inherit; }
+  @media screen and (max-width: 749px) {
+    .pantao-plist-wrap { padding: 36px 0 48px; }
+    .pantao-plist__head, .pantao-plist__empty { padding-inline: 16px; }
+    .pantao-plist { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pantao-plist__info { flex-direction: column; gap: 1px; padding: 4px 9px 22px; font-size: 10px; letter-spacing: 0.04em; }
+  }
+</style>
+
+<script>
+  (() => {
+    if (window.PantaoSaved) return;
+    const KEY_SAVED = 'pantao:saved';
+    const KEY_VIEWED = 'pantao:viewed';
+    const read = (k) => {
+      try { const v = JSON.parse(localStorage.getItem(k) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
+    };
+    const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+    const root = (window.Shopify && Shopify.routes && Shopify.routes.root) || '/';
+
+    const api = {
+      saved: () => read(KEY_SAVED),
+      isSaved: (h) => read(KEY_SAVED).includes(h),
+      toggle(h) {
+        let list = read(KEY_SAVED);
+        list = list.includes(h) ? list.filter((x) => x !== h) : [h, ...list];
+        write(KEY_SAVED, list.slice(0, 60));
+        api.sync();
+        document.dispatchEvent(new CustomEvent('pantao:saved-change'));
+      },
+      remove(h) { write(KEY_SAVED, read(KEY_SAVED).filter((x) => x !== h)); },
+      viewed: () => read(KEY_VIEWED),
+      addViewed(h) {
+        if (!h) return;
+        write(KEY_VIEWED, [h, ...read(KEY_VIEWED).filter((x) => x !== h)].slice(0, 12));
+      },
+      sync() {
+        const list = read(KEY_SAVED);
+        document.querySelectorAll('[data-pantao-save]').forEach((b) => {
+          const on = list.includes(b.dataset.pantaoSave);
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          const t = (b.getAttribute('aria-label') || '').replace(/^(Save|Remove) /, '');
+          b.setAttribute('aria-label', (on ? 'Remove ' : 'Save ') + t);
+        });
+        document.querySelectorAll('[data-pantao-saved-count]').forEach((n) => { n.textContent = list.length; });
+        document.querySelectorAll('[data-pantao-saved-link]').forEach((a) => { a.hidden = list.length === 0; });
+      },
+    };
+    window.PantaoSaved = api;
+
+    document.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-pantao-save]');
+      if (!b) return;
+      e.preventDefault();
+      e.stopPropagation();
+      api.toggle(b.dataset.pantaoSave);
+    }, true);
+
+    // Keep hearts right after the theme swaps HTML (filters, sorting, variant changes).
+    let t;
+    new MutationObserver(() => { clearTimeout(t); t = setTimeout(api.sync, 60); })
+      .observe(document.documentElement, { childList: true, subtree: true });
+    window.addEventListener('storage', api.sync);
+    document.addEventListener('DOMContentLoaded', api.sync);
+    api.sync();
+
+    const money = (cents, currency) => {
+      const whole = cents % 100 === 0;
+      try {
+        return new Intl.NumberFormat(document.documentElement.lang || 'en', {
+          style: 'currency', currency: currency || 'USD',
+          minimumFractionDigits: whole ? 0 : 2, maximumFractionDigits: whole ? 0 : 2,
+        }).format(cents / 100);
+      } catch (e) { return '$' + (cents / 100).toFixed(whole ? 0 : 2); }
+    };
+    const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const img = (src, w) => {
+      if (!src) return '';
+      const u = src.startsWith('//') ? 'https:' + src : src;
+      return u + (u.includes('?') ? '&' : '?') + 'width=' + w;
+    };
+
+    class PantaoProductList extends HTMLElement {
+      async connectedCallback() {
+        if (this._done) return;
+        this._done = true;
+        this.wrap = this.closest('.pantao-plist-wrap') || this;
+        document.addEventListener('pantao:saved-change', () => {
+          if (this.dataset.source === 'saved') this.render();
+        });
+        this.render();
+      }
+      async render() {
+        const source = this.dataset.source;
+        const exclude = this.dataset.exclude;
+        const limit = Number(this.dataset.limit) || 60;
+        let handles = (source === 'saved' ? api.saved() : api.viewed()).filter((h) => h !== exclude).slice(0, limit);
+        const count = this.wrap.querySelector('[data-pantao-list-count]');
+        const empty = this.wrap.querySelector('[data-pantao-list-empty]');
+        const results = await Promise.all(handles.map(async (h) => {
+          try {
+            const r = await fetch(root + 'products/' + encodeURIComponent(h) + '.js', { headers: { Accept: 'application/json' } });
+            if (!r.ok) { if (source === 'saved' && r.status === 404) api.remove(h); return null; }
+            return await r.json();
+          } catch (e) { return null; }
+        }));
+        const products = results.filter(Boolean);
+        const currency = window.Shopify && Shopify.currency && Shopify.currency.active;
+        this.innerHTML = products.length
+          ? '<ul class="pantao-plist">' + products.map((p) => `
+              <li class="pantao-plist__item">
+                <a href="${esc(p.url)}">
+                  <div class="pantao-plist__media">
+                    ${p.featured_image ? `<img src="${esc(img(p.featured_image, 720))}" srcset="${esc(img(p.featured_image, 480))} 480w, ${esc(img(p.featured_image, 720))} 720w, ${esc(img(p.featured_image, 1080))} 1080w" sizes="(max-width: 749px) 50vw, 25vw" alt="${esc(p.title)}" loading="lazy">` : ''}
+                    <button type="button" class="pantao-save pantao-save--card" data-pantao-save="${esc(p.handle)}" aria-pressed="false" aria-label="Save ${esc(p.title)}">
+                      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" focusable="false"><path d="M12 20.3 4.6 13a4.6 4.6 0 0 1 6.5-6.5l.9.9.9-.9a4.6 4.6 0 0 1 6.5 6.5Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                    </button>
+                  </div>
+                  <div class="pantao-plist__info">
+                    <span class="pantao-plist__title">${esc(p.title)}</span>
+                    <span>${p.available ? money(p.price, currency) : 'Sold out'}</span>
+                  </div>
+                </a>
+              </li>`).join('') + '</ul>'
+          : '';
+        if (count) count.textContent = products.length + (products.length === 1 ? ' item' : ' items');
+        if (empty) empty.hidden = products.length > 0;
+        if (this.dataset.hideWhenEmpty !== undefined) this.wrap.hidden = products.length === 0;
+        api.sync();
+      }
+    }
+    customElements.define('pantao-product-list', PantaoProductList);
+  })();
+</script>

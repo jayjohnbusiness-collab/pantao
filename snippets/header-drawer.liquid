@@ -577,6 +577,7 @@
         {%- if shop.customer_accounts_enabled -%}
           <li><a href="{{ routes.account_url }}">{% if customer %}Account{% else %}Log in{% endif %}</a></li>
         {%- endif -%}
+        <li><a href="/pages/saved">Saved (<span data-pantao-saved-count>0</span>)</a></li>
         <li><a href="{{ routes.search_url }}">Search</a></li>
         <li><a href="/policies/shipping-policy">Shipping</a></li>
         <li><a href="/policies/refund-policy">Returns</a></li>

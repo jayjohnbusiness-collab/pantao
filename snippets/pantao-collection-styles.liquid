@@ -47,6 +47,41 @@
   }
   .product-grid .product-card .text-block[class*='product_title'] * { text-transform: uppercase; }
 
+  /* Card photo indicators: thin dashes, phones only (Acne). Desktop uses hover-to-second-photo. */
+  .pantao-card-dots { display: none !important; }
+  @media screen and (max-width: 749px) {
+    slideshow-controls.pantao-card-dots {
+      display: flex !important;
+      position: absolute !important;
+      left: 10px !important;
+      right: auto !important;
+      bottom: 10px !important;
+      top: auto !important;
+      width: auto !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      background: none !important;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .pantao-card-dots .slideshow-controls__dots { display: flex; gap: 4px; margin: 0; padding: 0; background: none !important; }
+    .pantao-card-dots .slideshow-controls__dots li { display: block; }
+    .pantao-card-dots .slideshow-control {
+      width: 14px !important;
+      height: 1.5px !important;
+      min-width: 0 !important;
+      min-height: 0 !important;
+      padding: 0 !important;
+      border-radius: 0 !important;
+      font-size: 0 !important;
+      color: transparent !important;
+      background: #141414 !important;
+      opacity: 0.25;
+      box-shadow: none !important;
+    }
+    .pantao-card-dots .slideshow-control[aria-selected='true'] { opacity: 1; }
+    .pantao-card-dots .slideshow-control::before, .pantao-card-dots .slideshow-control::after { display: none !important; }
+  }
   html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   @media screen and (max-width: 749px) {
     /* Phones, as on Acne: name on top, price right under it, both left-aligned,

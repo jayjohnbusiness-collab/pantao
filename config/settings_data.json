@@ -66,7 +66,7 @@
     "popover_border": "none",
     "currency_code_enabled_product_pages": false,
     "currency_code_enabled_product_cards": false,
-    "show_second_image_on_hover": false,
+    "show_second_image_on_hover": true,
     "product_card_carousel": true,
     "product_corner_radius": 0,
     "card_corner_radius": 0,

@@ -34,6 +34,7 @@
     {%- render 'pantao-collection-styles' -%}
     {%- render 'pantao-acne-global' -%}
     {%- render 'pantao-cursor' -%}
+    {%- render 'pantao-saved' -%}
     {%- if template.name == 'product' -%}{%- render 'pantao-product-styles' -%}{%- endif -%}
 
     {% if request.design_mode %}
@@ -127,6 +128,19 @@
       data-template="{{ template }}"
     >
       {{ content_for_layout }}
+      {%- if template.name == 'product' -%}
+        <section class="pantao-plist-wrap" hidden aria-label="Recently viewed">
+          <div class="pantao-plist__head"><h2>Recently viewed</h2></div>
+          <pantao-product-list data-source="viewed" data-exclude="{{ product.handle }}" data-limit="4" data-hide-when-empty></pantao-product-list>
+        </section>
+        <script>
+          (function () {
+            var add = function () { window.PantaoSaved && window.PantaoSaved.addViewed({{ product.handle | json }}); };
+            // Record after the list has rendered so the current piece isn't in its own "recently viewed".
+            setTimeout(add, 1500);
+          })();
+        </script>
+      {%- endif -%}
     </main>
 
     <footer>
