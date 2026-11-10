@@ -66,6 +66,16 @@
     padding: 0 10px !important;
   }
 
+  .product-information .variant-option__button-label:not(.variant-option__button-label--has-swatch):has(input:checked) {
+    background: #141414 !important;
+    color: #fff !important;
+    border-color: #141414 !important;
+  }
+  .product-information .variant-option__button-label:has(input:checked) .variant-option__button-label__text,
+  .product-information .variant-option__button-label:has(input:checked) span { color: #fff !important; }
+  .product-information .variant-option__button-label::before,
+  .product-information .variant-option__button-label::after { border-radius: 0 !important; }
+
   /* Square primary button, small caps label. */
   .product-information :is(.add-to-cart-button, .button, button[name='add'], .shopify-payment-button__button) {
     border-radius: 0 !important;
