@@ -48,7 +48,7 @@
         assign current_name = product.title | split: ' - ' | last | strip
       -%}
       <div class="pantao-colors">
-        <p class="pantao-colors__label">Colour <span>{{ current_name | capitalize }}</span></p>
+        <p class="pantao-colors__label">Color <span>{{ current_name | capitalize }}</span></p>
         <ul class="pantao-colors__list" role="list">
           {%- for p in collections.all.products -%}
             {%- assign p_base = p.title | split: ' - ' | first | strip -%}
