@@ -64,33 +64,30 @@
       justify-content: center;
     }
 
-    /* Clean at rest — transparent border reserves the 1px so the hover
-       outline never nudges the row. Compact (override theme height:100%). */
+    /* Acne-style: plain text links, underline on hover and on the current page. */
     #header-component .header-menu .menu-list__link {
       height: auto;
       align-self: center;
       line-height: 1;
-      border: 1px solid transparent;
-      border-radius: 100px;
+      border: 0;
+      border-radius: 0;
       padding: 0.5rem {{ pill_pad }}px;
       background-color: transparent;
-      transition: border-color 0.3s ease, background-color 0.3s ease;
     }
 
     #header-component .header-menu .menu-list__link-title {
       padding-inline: 0;
+      text-decoration: underline;
+      text-decoration-color: transparent;
+      text-underline-offset: 4px;
+      text-decoration-thickness: 1px;
+      transition: text-decoration-color 0.2s ease;
     }
 
-    /* Hover / focus: a pill outline and a faint fill fade in. */
-    #header-component .header-menu .menu-list__link:hover,
-    #header-component .header-menu .menu-list__link:focus-visible {
-      border-color: color-mix(in srgb, currentColor 24%, transparent);
-      background-color: color-mix(in srgb, currentColor 5%, transparent);
-    }
-
-    /* Current page: a quiet resting outline. */
-    #header-component .header-menu .menu-list__link--active {
-      border-color: color-mix(in srgb, currentColor 22%, transparent);
+    #header-component .header-menu .menu-list__link:hover .menu-list__link-title,
+    #header-component .header-menu .menu-list__link:focus-visible .menu-list__link-title,
+    #header-component .header-menu .menu-list__link--active .menu-list__link-title {
+      text-decoration-color: currentColor;
     }
 
     @media (prefers-reduced-motion: reduce) {

@@ -1,0 +1,31 @@
+{%- comment -%}
+  PANTAO site-wide Acne Studios finish
+  ----------------------------------------------------------------
+  Square corners everywhere (buttons, tiles, inputs, drawers, popups) and one
+  quiet heading scale: small 12px caps instead of large bold display type.
+  Round things that must stay round (count bubbles, status dots, spinners,
+  the cart badge) are excluded.
+{%- endcomment -%}
+<style>
+  body *:not(.cart-bubble, .cart-bubble *, .filter-count-bubble, .filter-count-bubble *, [class*='spinner'], [class*='loading'], [class*='__dot'], .pantao-stock__dot, input[type='radio'], .swatch--round) {
+    border-radius: 0 !important;
+  }
+  body *::before, body *::after { border-radius: 0 !important; }
+
+  /* Small caps headings: page titles, section titles, drawers, dialogs. */
+  :is(main, .cart-drawer, cart-drawer-component, dialog, .search-modal) :is(h1, h2, h3, .h1, .h2, .h3, .h4):not(.pantao-keep-size):not([class*='arrival-hero']):not([class*='pantao-name']) {
+    font-family: var(--font-body--family) !important;
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.02em !important;
+    line-height: 1.4 !important;
+    text-transform: uppercase;
+  }
+
+  /* Buttons: small caps label to match. */
+  :is(main, .cart-drawer, cart-drawer-component, dialog) :is(.button, button.button, a.button, .button-secondary) {
+    font-size: 11px !important;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+</style>
