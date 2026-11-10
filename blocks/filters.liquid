@@ -266,9 +266,6 @@
                 %}
               {% endif %}
 
-              {% if block_settings.enable_grid_density %}
-                {% render 'grid-density-controls', viewport: 'desktop' %}
-              {% endif %}
             {% endif %}
           {% endif %}
         </form>
@@ -315,6 +312,10 @@
             </div>
           {% endif %}
         </button>
+        {%- comment -%} PANTAO: grid density switch sits beside "Filter" in the header row. {%- endcomment -%}
+        {% if block_settings.enable_grid_density %}
+          <div class="pantao-grid-toggle">{% render 'grid-density-controls', viewport: 'desktop' %}</div>
+        {% endif %}
       </div>
     {% endif %}
 

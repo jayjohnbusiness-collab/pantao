@@ -56,10 +56,24 @@
       .pantao-collection-head__count{ margin:2px 0 0; font-size:11px; letter-spacing:.02em; color:rgb(var(--color-foreground-rgb) / .55); }
       .product-grid-container .facets.facets--horizontal{ display:none !important; }
       .product-grid-container .facets-toggle{ display:flex !important; position:absolute; top:28px; right:40px; padding:0 !important; margin:0 !important; z-index:2; background:none; }
-      .product-grid-container .facets-toggle .facets-mobile-wrapper{ display:none !important; }
+      @media(min-width:750px){ .product-grid-container .facets-toggle .facets-mobile-wrapper{ display:none !important; } }
       .product-grid-container .facets-toggle__button{ display:inline-flex !important; align-items:center; gap:6px; padding:0; font-family:var(--font-body--family); font-size:12px; font-weight:400; letter-spacing:.02em; text-transform:uppercase; color:rgb(var(--color-foreground-rgb)); }
       .product-grid-container .facets-toggle__button .svg-wrapper{ width:14px; height:14px; }
       .product-grid-container .facets-toggle__button:hover{ text-decoration:underline; text-underline-offset:3px; }
+      /* Grid switch: two small outline icons, active one solid ink, no pill (Acne-quiet). */
+      .product-grid-container .facets-toggle__wrapper{ display:flex; align-items:center; gap:22px; flex-direction:row-reverse; }
+      .pantao-grid-toggle .column-options-wrapper{ height:auto; margin:0; }
+      .pantao-grid-toggle .column-switch{ background:none !important; border:0 !important; box-shadow:none !important; padding:0 !important; width:auto !important; height:auto !important; display:inline-flex !important; gap:10px; align-items:center; cursor:pointer; }
+      .pantao-grid-toggle .column-switch__thumb{ display:none !important; }
+      .pantao-grid-toggle .column-switch__icon{ position:static !important; inset:auto !important; transform:none !important; display:inline-flex !important; width:13px; height:13px; opacity:.3 !important; color:rgb(var(--color-foreground-rgb)) !important; transition:opacity .2s; }
+      .pantao-grid-toggle .column-switch__icon svg{ width:13px !important; height:13px !important; }
+      .pantao-grid-toggle .column-switch[data-view='default'] .column-switch__icon--default,
+      .pantao-grid-toggle .column-switch[data-view='zoom-out'] .column-switch__icon--zoom-out{ opacity:1 !important; }
+      .pantao-grid-toggle .column-switch:hover .column-switch__icon{ opacity:.7 !important; }
+      @media(max-width:749px){
+        .pantao-grid-toggle{ display:none; }
+        .product-grid-container .facets-toggle .facets-mobile-wrapper{ display:flex !important; }
+      }
       /* Filter drawer: slides in from the right, small editorial type (Acne). */
       .product-grid-container dialog.facets--drawer{ margin:0 0 0 auto !important; inset-inline:auto 0 !important; width:min(420px,100vw) !important; max-width:100vw; }
       .product-grid-container dialog.facets--drawer[open]{ --start-x:100%; }
