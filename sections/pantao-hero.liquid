@@ -78,6 +78,57 @@
   {%- else -%}
     <div class="pantao-hero__wrap">{{ hero_inner }}</div>
   {%- endif -%}
+
+  {%- liquid
+    assign spot_count = 0
+    for block in section.blocks
+      if block.type == 'hotspot' and block.settings.product != blank
+        assign spot_count = spot_count | plus: 1
+      endif
+    endfor
+  -%}
+  {%- if spot_count > 0 -%}
+    <pantao-hero-spots class="pantao-hero__spots" data-nw="{{ s.image.width | default: 1920 }}" data-nh="{{ s.image.height | default: 1080 }}">
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'hotspot' and block.settings.product != blank -%}
+          {%- assign p = block.settings.product -%}
+          <div class="pantao-hero__spot" data-x="{{ block.settings.x }}" data-y="{{ block.settings.y }}" {{ block.shopify_attributes }}>
+            <button type="button" class="pantao-hero__dot" aria-expanded="false" aria-label="Shop {{ p.title | escape }}">
+              <span aria-hidden="true">+</span>
+            </button>
+            <a class="pantao-hero__card" href="{{ p.url }}" hidden>
+              {%- if p.featured_image -%}
+                {{ p.featured_image | image_url: width: 160 | image_tag: class: 'pantao-hero__card-img', loading: 'lazy', alt: p.title }}
+              {%- endif -%}
+              <span class="pantao-hero__card-text">
+                <span class="pantao-hero__card-title">{{ p.title }}</span>
+                <span class="pantao-hero__card-price">{{ p.price | money_without_trailing_zeros }}</span>
+                <span class="pantao-hero__card-cta">View</span>
+              </span>
+            </a>
+          </div>
+        {%- endif -%}
+      {%- endfor -%}
+
+      <div class="pantao-hero__look">
+        <button type="button" class="pantao-hero__look-btn" aria-expanded="false">{{ s.look_label | default: 'Shop the look' }} ({{ spot_count }})</button>
+        <div class="pantao-hero__look-panel" hidden>
+          {%- for block in section.blocks -%}
+            {%- if block.type == 'hotspot' and block.settings.product != blank -%}
+              {%- assign p = block.settings.product -%}
+              <a class="pantao-hero__look-item" href="{{ p.url }}">
+                {%- if p.featured_image -%}
+                  {{ p.featured_image | image_url: width: 120 | image_tag: class: 'pantao-hero__look-img', loading: 'lazy', alt: p.title }}
+                {%- endif -%}
+                <span class="pantao-hero__look-title">{{ p.title }}</span>
+                <span class="pantao-hero__look-price">{{ p.price | money_without_trailing_zeros }}</span>
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </div>
+    </pantao-hero-spots>
+  {%- endif -%}
 </div>
 
 {% stylesheet %}
@@ -178,6 +229,110 @@
   .pantao-hero__label--top-right    { top: var(--ph-label-inset, 12px); right: var(--ph-label-inset, 12px); }
   .pantao-hero__label--bottom-left  { bottom: var(--ph-label-inset, 12px); left: var(--ph-label-inset, 12px); }
   .pantao-hero__label--bottom-right { bottom: var(--ph-label-inset, 12px); right: var(--ph-label-inset, 12px); }
+
+  /* ---------- Shop the look: hotspots ---------- */
+  .pantao-hero__spots {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    display: block;
+  }
+  .pantao-hero__spot {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+  }
+  .pantao-hero__spot.is-off { display: none; }
+  .pantao-hero__dot {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid rgba(20, 20, 20, 0.85);
+    background: rgba(244, 245, 245, 0.92);
+    color: #141414;
+    font: 400 15px/1 var(--font-body--family);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    cursor: pointer;
+    box-shadow: 0 0 0 0 rgba(244, 245, 245, 0.6);
+    animation: pantaoSpotPulse 2.4s ease-out infinite;
+  }
+  .pantao-hero__dot[aria-expanded='true'] { background: #141414; color: #f4f5f5; animation: none; }
+  .pantao-hero__dot[aria-expanded='true'] span { transform: rotate(45deg); }
+  .pantao-hero__dot span { display: block; transition: transform 0.2s ease; }
+  @keyframes pantaoSpotPulse {
+    0% { box-shadow: 0 0 0 0 rgba(244, 245, 245, 0.55); }
+    70% { box-shadow: 0 0 0 12px rgba(244, 245, 245, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(244, 245, 245, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .pantao-hero__dot { animation: none; } }
+
+  .pantao-hero__card {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 10px);
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    width: 230px;
+    padding: 8px;
+    background: #fff;
+    color: #141414;
+    text-decoration: none;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+  }
+  .pantao-hero__card[hidden] { display: none; }
+  .pantao-hero__card-img { width: 54px; height: 72px; object-fit: cover; flex: none; background: #eee; }
+  .pantao-hero__card-text { display: flex; flex-direction: column; gap: 4px; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.3; }
+  .pantao-hero__card-price { color: #555; }
+  .pantao-hero__card-cta { margin-top: auto; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---------- Shop the look: list button ---------- */
+  .pantao-hero__look {
+    position: absolute;
+    left: var(--ph-label-inset, 12px);
+    bottom: var(--ph-label-inset, 12px);
+    pointer-events: auto;
+  }
+  .pantao-hero__look-btn {
+    background: #f4f5f5;
+    color: #141414;
+    border: 0;
+    padding: 9px 12px;
+    font: 400 11px/1 var(--font-body--family);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .pantao-hero__look-btn[aria-expanded='true'] { background: #141414; color: #f4f5f5; }
+  .pantao-hero__look-panel {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 6px);
+    width: 280px;
+    background: #fff;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    padding: 6px 0;
+  }
+  .pantao-hero__look-panel[hidden] { display: none; }
+  .pantao-hero__look-item {
+    display: grid;
+    grid-template-columns: 42px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    padding: 6px 10px;
+    color: #141414;
+    text-decoration: none;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .pantao-hero__look-item:hover { background: #f4f4f2; }
+  .pantao-hero__look-img { width: 42px; height: 56px; object-fit: cover; background: #eee; }
+  .pantao-hero__look-price { color: #555; }
 {% endstylesheet %}
 
 {% javascript %}
@@ -195,6 +350,72 @@
         v.addEventListener('canplay', play, { once: true });
       }
     }
+    if (!customElements.get('pantao-hero-spots')) {
+      customElements.define('pantao-hero-spots', class extends HTMLElement {
+        connectedCallback() {
+          this.hero = this.closest('.pantao-hero');
+          this.spots = Array.from(this.querySelectorAll('.pantao-hero__spot'));
+          this.place = this.place.bind(this);
+          this.onDoc = this.onDoc.bind(this);
+          this.onKey = this.onKey.bind(this);
+          this.spots.forEach((spot) => {
+            const dot = spot.querySelector('.pantao-hero__dot');
+            dot.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const open = dot.getAttribute('aria-expanded') === 'true';
+              this.closeAll();
+              if (!open) this.open(dot, spot.querySelector('.pantao-hero__card'));
+            });
+          });
+          const btn = this.querySelector('.pantao-hero__look-btn');
+          const panel = this.querySelector('.pantao-hero__look-panel');
+          if (btn && panel) {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              const open = btn.getAttribute('aria-expanded') === 'true';
+              this.closeAll();
+              if (!open) this.open(btn, panel);
+            });
+          }
+          this.ro = new ResizeObserver(this.place);
+          this.ro.observe(this.hero);
+          this.place();
+          document.addEventListener('click', this.onDoc);
+          document.addEventListener('keydown', this.onKey);
+        }
+        disconnectedCallback() {
+          if (this.ro) this.ro.disconnect();
+          document.removeEventListener('click', this.onDoc);
+          document.removeEventListener('keydown', this.onKey);
+        }
+        open(trigger, el) {
+          trigger.setAttribute('aria-expanded', 'true');
+          el.hidden = false;
+        }
+        closeAll() {
+          this.querySelectorAll('[aria-expanded="true"]').forEach((b) => b.setAttribute('aria-expanded', 'false'));
+          this.querySelectorAll('.pantao-hero__card, .pantao-hero__look-panel').forEach((el) => (el.hidden = true));
+        }
+        onDoc(e) { if (!this.contains(e.target)) this.closeAll(); }
+        onKey(e) { if (e.key === 'Escape') this.closeAll(); }
+        place() {
+          const W = this.hero.clientWidth, H = this.hero.clientHeight;
+          const nw = parseFloat(this.dataset.nw) || 1920, nh = parseFloat(this.dataset.nh) || 1080;
+          const s = Math.max(W / nw, H / nh);
+          const dw = nw * s, dh = nh * s, ox = (W - dw) / 2, oy = (H - dh) / 2;
+          this.spots.forEach((spot) => {
+            const x = ox + (parseFloat(spot.dataset.x) / 100) * dw;
+            const y = oy + (parseFloat(spot.dataset.y) / 100) * dh;
+            spot.style.left = x + 'px';
+            spot.style.top = y + 'px';
+            spot.classList.toggle('is-off', x < 16 || x > W - 16 || y < 16 || y > H - 16);
+          });
+        }
+      });
+    }
+
     function initAll() { document.querySelectorAll('[data-hero-video]').forEach(nudge); }
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initAll);
     else initAll();
@@ -330,6 +551,27 @@
       "id": "color_scheme",
       "label": "Color scheme",
       "default": "scheme-1"
+    },
+    {
+      "type": "header",
+      "content": "Shop the look"
+    },
+    {
+      "type": "text",
+      "id": "look_label",
+      "label": "Shop the look button text",
+      "default": "Shop the look"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "hotspot",
+      "name": "Product hotspot",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "range", "id": "x", "label": "Horizontal position", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50, "info": "Position on the image, left to right." },
+        { "type": "range", "id": "y", "label": "Vertical position", "min": 0, "max": 100, "step": 1, "unit": "%", "default": 50, "info": "Position on the image, top to bottom." }
+      ]
     }
   ],
   "presets": [

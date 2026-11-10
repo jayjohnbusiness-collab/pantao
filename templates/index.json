@@ -30,7 +30,7 @@
         "eyebrow": "",
         "heading_line_1": "",
         "heading_line_2": "",
-        "lede": "Small-batch luxury streetwear — heavyweight hoodies, denim and leather goods.",
+        "lede": "Small-batch luxury streetwear \u2014 heavyweight hoodies, denim and leather goods.",
         "cta_label": "Shop the collection",
         "cta_link": "shopify://collections/all",
         "show_scroll_hint": true,
@@ -101,8 +101,22 @@
         "label_color": "dark",
         "label_size": 12,
         "label_inset": 12,
-        "color_scheme": ""
-      }
+        "color_scheme": "",
+        "look_label": "Shop the look"
+      },
+      "blocks": {
+        "hotspot_jacket": {
+          "type": "hotspot",
+          "settings": {
+            "product": "fireman-clasp-jacket-vintage-black",
+            "x": 47,
+            "y": 58
+          }
+        }
+      },
+      "block_order": [
+        "hotspot_jacket"
+      ]
     },
     "pantao_collection_row_8DcKwU": {
       "type": "pantao-collection-row",
