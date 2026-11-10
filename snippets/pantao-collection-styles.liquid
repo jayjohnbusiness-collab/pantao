@@ -35,6 +35,17 @@
     letter-spacing: 0.02em;
   }
   .product-grid .product-card__content > .group-block { padding: 8px 10px 24px !important; }
+  .product-grid .product-card [class*='product-title'] *,
+  .product-grid .product-card [class*='price'] * { font-size: 11px !important; }
+  @media screen and (max-width: 749px) {
+    /* Phones: Acne-style 2-up grid, name left / price right on one line. */
+    .product-grid .product-card__content > .group-block { padding: 6px 8px 18px !important; flex-wrap: nowrap !important; gap: 8px; }
+    .product-grid .product-card__content > .group-block > * { min-width: 0; }
+    .product-grid .product-card [class*='product-title'],
+    .product-grid .product-card [class*='product-title'] *,
+    .product-grid .product-card [class*='price'],
+    .product-grid .product-card [class*='price'] * { font-size: 10px !important; line-height: 1.35; }
+  }
 
   /* Round the media frame and clip the image to it. */
   .product-card .card-gallery {
