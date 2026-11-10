@@ -39,10 +39,10 @@
             {%- else -%}
               <div class="pantao-collrow__ph">{{ 'product-1' | placeholder_svg_tag: 'pantao-collrow__ph-svg' }}</div>
             {%- endif -%}
-          </div>
-          <div class="pantao-collrow__info">
-            <p class="pantao-collrow__title">{{ product.title | escape }}</p>
-            <span class="pantao-collrow__price">{{ product.price | money }}</span>
+            <div class="pantao-collrow__info">
+              <p class="pantao-collrow__title">{{ product.title | escape }}</p>
+              <span class="pantao-collrow__price">{{ product.price | money }}</span>
+            </div>
           </div>
         </a>
       {%- else -%}
@@ -62,23 +62,27 @@
     --cr-sans: var(--font-body--family, -apple-system, system-ui, sans-serif);
     background: var(--color-background, #f4f4f2); color: var(--cr-ink); font-family: var(--cr-sans);
   }
-  .pantao-collrow__wrap{ max-width: 1440px; margin: 0 auto; padding: clamp(56px,8vw,110px) clamp(20px,5vw,64px); }
-  .pantao-collrow__head{ display:flex; align-items:baseline; justify-content:space-between; gap:20px; border-top:1px solid var(--cr-line); padding-top:18px; margin-bottom:clamp(28px,4vw,48px); }
-  .pantao-collrow__eyebrow{ font-size:11px; font-weight:500; letter-spacing:.26em; text-transform:uppercase; color:var(--cr-muted); }
-  .pantao-collrow__all{ font-size:11px; letter-spacing:.16em; text-transform:uppercase; color:var(--cr-ink); text-decoration:none; border-bottom:1px solid var(--cr-line); padding-bottom:3px; transition:color .25s, border-color .25s; }
-  .pantao-collrow__all:hover{ color:var(--manila,#b5271f); border-color:var(--manila,#b5271f); }
-  .pantao-collrow__grid{ display:grid; grid-template-columns:repeat(var(--collrow-count,4),1fr); gap:clamp(14px,1.8vw,22px); }
-  @media(max-width:860px){ .pantao-collrow__grid{ grid-template-columns:1fr 1fr; } }
-  @media(max-width:460px){ .pantao-collrow__grid{ grid-template-columns:1fr; } }
+  /* Acne "Discover more" layout: edge-to-edge row, 30px gutters, 10px gaps,
+     tall 2:3 tiles, small caps heading, labels set inside the tile bottom-left. */
+  .pantao-collrow__wrap{ padding: 60px 30px 90px; }
+  .pantao-collrow__head{ display:flex; align-items:baseline; justify-content:space-between; gap:20px; margin-bottom:18px; }
+  .pantao-collrow__eyebrow{ font-size:12px; font-weight:400; letter-spacing:.02em; text-transform:uppercase; color:var(--cr-ink); }
+  .pantao-collrow__all{ font-size:12px; letter-spacing:.02em; text-transform:uppercase; color:var(--cr-ink); text-decoration:none; }
+  .pantao-collrow__all:hover{ text-decoration:underline; text-underline-offset:3px; }
+  .pantao-collrow__grid{ display:grid; grid-template-columns:repeat(var(--collrow-count,4),1fr); gap:10px; }
+  @media(max-width:860px){
+    .pantao-collrow__wrap{ padding: 40px 10px 60px; }
+    .pantao-collrow__grid{ grid-template-columns:1fr 1fr; gap:6px; }
+  }
   .pantao-collrow__card{ text-decoration:none; color:inherit; display:block; }
-  .pantao-collrow__media{ position:relative; container:pantao-card / inline-size; aspect-ratio:4/5; border-radius:16px; overflow:hidden; background:var(--cr-surface); }
+  .pantao-collrow__media{ position:relative; container:pantao-card / inline-size; aspect-ratio:2/3; border-radius:0; overflow:hidden; background:var(--cr-surface); }
   .pantao-collrow__img, .pantao-collrow__ph{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .6s cubic-bezier(.22,1,.36,1); }
   .pantao-collrow__ph{ display:flex; }
   .pantao-collrow__ph-svg{ width:100%; height:100%; object-fit:cover; opacity:.4; }
-  @media(hover:hover){ .pantao-collrow__card:hover .pantao-collrow__img, .pantao-collrow__card:hover .pantao-collrow__ph{ transform:scale(1.04); } }
-  .pantao-collrow__info{ padding:12px 2px 0; display:flex; justify-content:space-between; align-items:baseline; gap:12px; }
-  .pantao-collrow__title{ font-size:.875rem; font-weight:500; letter-spacing:.01em; text-transform:uppercase; margin:0; min-width:0; }
-  .pantao-collrow__price{ font-size:.875rem; color:var(--cr-ink); white-space:nowrap; flex-shrink:0; }
+  @media(hover:hover){ .pantao-collrow__card:hover .pantao-collrow__img, .pantao-collrow__card:hover .pantao-collrow__ph{ transform:scale(1.03); } }
+  .pantao-collrow__info{ position:absolute; left:12px; right:12px; bottom:12px; z-index:2; display:flex; justify-content:space-between; align-items:baseline; gap:12px; color:#141414; pointer-events:none; }
+  .pantao-collrow__title{ font-size:11px; font-weight:400; letter-spacing:.02em; text-transform:uppercase; margin:0; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pantao-collrow__price{ font-size:11px; letter-spacing:.02em; white-space:nowrap; flex-shrink:0; }
   .pantao-collrow__empty{ color:var(--cr-muted); grid-column:1/-1; }
   @media(prefers-reduced-motion:reduce){ .pantao-collrow__img,.pantao-collrow__ph{ transition:none!important; } }
 </style>

@@ -112,7 +112,7 @@
         "collection": "general-store",
         "count": 4,
         "view_all_label": "View all",
-        "view_all_link": ""
+        "view_all_link": "shopify://collections/all"
       }
     }
   },
