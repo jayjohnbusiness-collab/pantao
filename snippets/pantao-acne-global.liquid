@@ -28,4 +28,15 @@
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
+
+  /* Product rows ("You may also like", recommendations): tight 10px gaps,
+     tall 2:3 photos, same as the homepage Collection row. */
+  .resource-list--grid { gap: 28px 10px !important; }
+  .resource-list .card-gallery { --gallery-aspect-ratio: 2 / 3 !important; }
+  .resource-list .product-card :is(.product-title, [class*='product-title'], .price, [class*='price']) {
+    font-size: 11px !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
 </style>
