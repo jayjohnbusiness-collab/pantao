@@ -71,6 +71,43 @@
           {%- endfor -%}
         </ul>
       </div>
+      <script>
+        // Level the swatches: each photo is framed a little differently, so find the
+        // model in each thumbnail and scale/position it to the same height and center.
+        (() => {
+          const level = (img) => {
+            try {
+              const W = 60, H = 80, c = document.createElement('canvas');
+              c.width = W; c.height = H;
+              const x = c.getContext('2d', { willReadFrequently: true });
+              x.drawImage(img, 0, 0, W, H);
+              const d = x.getImageData(0, 0, W, H).data;
+              const bg = [d[0], d[1], d[2]];
+              let t = H, b = 0, l = W, r = 0;
+              for (let y = 0; y < H; y++) for (let i = 0; i < W; i++) {
+                const k = (y * W + i) * 4;
+                if (Math.abs(d[k] - bg[0]) + Math.abs(d[k + 1] - bg[1]) + Math.abs(d[k + 2] - bg[2]) > 70) {
+                  if (y < t) t = y; if (y > b) b = y; if (i < l) l = i; if (i > r) r = i;
+                }
+              }
+              if (b - t < H * 0.3) return;
+              const box = img.parentElement.getBoundingClientRect();
+              const fh = (b - t + 1) / H, cx = (l + r + 1) / 2 / W, top = t / H;
+              const dispH = (box.height * 0.88) / fh;
+              const dispW = dispH * (img.naturalWidth / img.naturalHeight);
+              Object.assign(img.style, {
+                position: 'absolute', maxWidth: 'none', objectFit: 'fill',
+                width: dispW + 'px', height: dispH + 'px',
+                top: (box.height * 0.06 - top * dispH) + 'px',
+                left: (box.width / 2 - cx * dispW) + 'px',
+              });
+            } catch (e) {}
+          };
+          document.querySelectorAll('.pantao-colors__swatch img').forEach((img) => {
+            if (img.complete && img.naturalWidth) level(img); else img.addEventListener('load', () => level(img), { once: true });
+          });
+        })();
+      </script>
     {%- endif -%}
 
   {%- when 'details' -%}

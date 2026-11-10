@@ -123,10 +123,12 @@
   .pantao-colors__label { margin: 0 0 8px; font-size: 11px; letter-spacing: 0.02em; text-transform: uppercase; }
   .pantao-colors__label span { color: rgb(20 20 20 / 0.55); margin-left: 6px; }
   .pantao-colors__list { display: flex; gap: 6px; margin: 0; padding: 0; list-style: none; }
-  .pantao-colors__swatch { display: block; width: 40px; height: 60px; overflow: hidden; outline: 1px solid transparent; outline-offset: 2px; background: #e9e9e7; }
+  .pantao-colors__swatch { position: relative; display: block; width: 40px; height: 60px; overflow: hidden; background: #e9e9e7; }
+  .pantao-colors__list li { padding-bottom: 5px; border-bottom: 1px solid transparent; }
+  .pantao-colors__list li:has(.is-current) { border-bottom-color: #141414; }
+  .pantao-colors__list li:hover { border-bottom-color: rgb(20 20 20 / 0.35); }
   .pantao-colors__swatch img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .pantao-colors__swatch.is-current { outline-color: #141414; }
-  .pantao-colors__swatch:hover { outline-color: rgb(20 20 20 / 0.4); }
+
 
   /* Delivery lines under Add to cart (Acne). */
   .pantao-delivery { margin: 4px 0 0; padding: 0; list-style: none; display: grid; gap: 4px; font-size: 11px; line-height: 1.5; letter-spacing: 0.02em; color: rgb(20 20 20 / 0.7); }
