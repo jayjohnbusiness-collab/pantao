@@ -10,12 +10,20 @@
 {%- liquid
   assign low_at = threshold | default: 10
   assign current = product.selected_or_first_available_variant
+  assign has_size = false
+  for opt in product.options_with_values
+    assign opt_name = opt.name | downcase
+    if opt_name contains 'size'
+      assign has_size = true
+    endif
+  endfor
 -%}
 <pantao-size-stock
   class="pantao-size-stock-ctrl"
   data-product-id="{{ product.id }}"
   data-variant-id="{{ current.id }}"
   data-threshold="{{ low_at }}"
+  {% unless has_size %}data-auto{% endunless %}
   hidden
 >
   <script type="application/json" data-stock>
@@ -81,6 +89,9 @@
         document.addEventListener('change', this.onPick, true);
         document.addEventListener('variant:update', this.onVariant);
 
+        // One-size pieces (cap, card holder): no size to click, so show it right away.
+        if (this.hasAttribute('data-auto')) window.__pantaoSizeTouched[this.pid] = true;
+
         // Re-rendered after a pick (the theme swaps the picker's HTML)? Show for the new size.
         if (window.__pantaoSizeTouched[this.pid]) this.render(this.dataset.variantId);
       }
@@ -92,16 +103,18 @@
 
       bar() {
         const scope = this.closest('.product-information, .product-details') || document;
-        const sizeRow = scope.querySelector('.variant-option--buttons:not(.variant-option--swatches)');
-        if (!sizeRow) return null;
-        let bar = sizeRow.nextElementSibling;
+        const sizeRow = this.hasAttribute('data-auto')
+          ? null
+          : scope.querySelector('.variant-option--buttons:not(.variant-option--swatches)');
+        const anchor = sizeRow || this;
+        let bar = anchor.nextElementSibling;
         if (!bar || !bar.classList.contains('pantao-size-stock')) {
           bar = document.createElement('p');
           bar.className = 'pantao-size-stock';
           bar.setAttribute('role', 'status');
           bar.setAttribute('aria-live', 'polite');
           bar.hidden = true;
-          sizeRow.after(bar);
+          anchor.after(bar);
         }
         return bar;
       }

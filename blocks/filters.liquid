@@ -423,6 +423,18 @@
           <scroll-hint
             class="facets-drawer__filters"
           >
+            {%- comment -%} PANTAO: Sort first, then filters (Acne order). {%- endcomment -%}
+            {% if block_settings.enable_sorting %}
+              {% render 'sorting',
+                results: results,
+                sort_by: sort_by,
+                filter_style: block_settings.filter_style,
+                suffix: 'overflow',
+                should_use_select_on_mobile: should_use_select_on_mobile,
+                section_id: section.id
+              %}
+            {% endif %}
+
             {% if block_settings.enable_filtering %}
               {% render 'filter-remove-buttons',
                 filters: filters,
@@ -461,16 +473,6 @@
               </div>
             {% endif %}
 
-            {% if block_settings.enable_sorting %}
-              {% render 'sorting',
-                results: results,
-                sort_by: sort_by,
-                filter_style: block_settings.filter_style,
-                suffix: 'overflow',
-                should_use_select_on_mobile: should_use_select_on_mobile,
-                section_id: section.id
-              %}
-            {% endif %}
           </scroll-hint>
         </form>
       </facets-form-component>
