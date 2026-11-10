@@ -36,7 +36,8 @@
 <style>
   .pantao-size-stock {
     display: block;
-    margin-top: 10px;
+    margin: 10px 0 4px;
+    grid-column: 1 / -1;
     padding: 10px 12px;
     background: #fbf9e6;
     color: #141414;
@@ -63,6 +64,14 @@
         }
         this.text = this.querySelector('.pantao-size-stock__text');
         this.pid = this.dataset.productId;
+
+        // Sit directly under the size boxes, like Acne (not below the color row).
+        const scope = this.closest('.product-information, product-details, .product-details') || document;
+        const sizeRow = scope.querySelector('.variant-option--buttons:not(.variant-option--swatches)');
+        if (sizeRow && sizeRow.nextElementSibling !== this) {
+          sizeRow.after(this);
+          return; // moving re-runs connectedCallback in the new spot
+        }
 
         // A size click (not page load) is what reveals the note.
         this.onPick = (e) => {
