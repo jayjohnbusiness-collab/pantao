@@ -82,11 +82,12 @@
               const x = c.getContext('2d', { willReadFrequently: true });
               x.drawImage(img, 0, 0, W, H);
               const d = x.getImageData(0, 0, W, H).data;
-              const bg = [d[0], d[1], d[2]];
+              // Studio backdrops are light; hair, outfits and shoes are dark. Use the dark
+              // pixels to find the model from head to shoes.
               let t = H, b = 0, l = W, r = 0;
               for (let y = 0; y < H; y++) for (let i = 0; i < W; i++) {
                 const k = (y * W + i) * 4;
-                if (Math.abs(d[k] - bg[0]) + Math.abs(d[k + 1] - bg[1]) + Math.abs(d[k + 2] - bg[2]) > 70) {
+                if (0.299 * d[k] + 0.587 * d[k + 1] + 0.114 * d[k + 2] < 85) {
                   if (y < t) t = y; if (y > b) b = y; if (i < l) l = i; if (i > r) r = i;
                 }
               }
