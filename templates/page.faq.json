@@ -20,7 +20,7 @@
           "type": "question",
           "settings": {
             "question": "When will my order ship?",
-            "answer": "<p>U.S. orders are processed within 1–3 business days. During drops, please allow 6–7 days because of the volume of orders. You’ll receive a tracking number once your order ships.</p>"
+            "answer": "<p>U.S. orders ship within 3–5 business days. During drops, please allow 6–7 days because of the volume of orders. You’ll receive a tracking number once your order ships.</p>"
           }
         },
         "q3": {
