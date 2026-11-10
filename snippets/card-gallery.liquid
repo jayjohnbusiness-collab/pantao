@@ -209,9 +209,6 @@
       render 'slideshow', ref: 'slideshow', slides: placeholder_slide, slide_count: 1, attributes: 'disabled="true"'
     %}
   {%- endif -%}
-  {%- if product != blank -%}
-    {%- render 'pantao-save-button', product: product, context: 'card' -%}
-  {%- endif -%}
   {{ children }}
 </div>
 
