@@ -234,7 +234,8 @@
                 "padding-inline-start": 0,
                 "padding-inline-end": 0
               },
-              "blocks": {}
+              "blocks": {},
+              "disabled": true
             },
             "text_LUK3rB": {
               "type": "text",
@@ -488,18 +489,46 @@
                 "accordion_row_iJM37V",
                 "accordion_row_TVj9VV"
               ]
+            },
+            "pantao_crumb": {
+              "type": "custom-liquid",
+              "settings": {
+                "custom_liquid": "{% render 'pantao-pdp-extras', part: 'breadcrumb', product: closest.product %}"
+              }
+            },
+            "pantao_colors": {
+              "type": "custom-liquid",
+              "settings": {
+                "custom_liquid": "{% render 'pantao-pdp-extras', part: 'colors', product: closest.product %}"
+              }
+            },
+            "pantao_details": {
+              "type": "custom-liquid",
+              "settings": {
+                "custom_liquid": "{% render 'pantao-pdp-extras', part: 'details', product: closest.product %}"
+              }
+            },
+            "pantao_delivery": {
+              "type": "custom-liquid",
+              "settings": {
+                "custom_liquid": "{% render 'pantao-pdp-extras', part: 'delivery', product: closest.product %}"
+              }
             }
           },
           "block_order": [
+            "pantao_crumb",
             "heading_m7KmQQ",
             "price_a7krng",
             "divider_HrJgFt",
+            "pantao_colors",
             "variant_picker_R3rGDr",
             "ai_gen_block_856acef_cEcMen",
             "product_inventory_EHDTQV",
             "buy_buttons_eYQEYi",
+            "pantao_delivery",
             "text_iftULg",
             "text_LUK3rB",
+            "pantao_details",
             "accordion_NKWPiW"
           ]
         }

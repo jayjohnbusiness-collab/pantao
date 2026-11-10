@@ -1,0 +1,103 @@
+{%- comment -%}
+  PANTAO product page extras (Acne Studios reference)
+  ----------------------------------------------------------------
+  Rendered from Custom Liquid blocks in the product templates:
+    {% render 'pantao-pdp-extras', part: 'breadcrumb', product: product %}
+    part: 'breadcrumb' | 'colors' | 'details' | 'delivery'
+  Details bullets live in snippets/pantao-product-details-data.liquid
+  (one line per bullet, keyed by product handle).
+{%- endcomment -%}
+{%- liquid
+  if product == blank
+    assign product = closest.product
+  endif
+-%}
+
+{%- case part -%}
+  {%- when 'breadcrumb' -%}
+    {%- liquid
+      assign crumb_title = 'Clothing'
+      assign crumb_url = '/collections/all'
+      for c in product.collections
+        if c.handle == 'tops' or c.handle == 'bottoms' or c.handle == 'accessories'
+          assign crumb_title = c.title
+          assign crumb_url = c.url
+          break
+        endif
+      endfor
+    -%}
+    <nav class="pantao-crumbs" aria-label="Breadcrumb">
+      <a href="{{ crumb_url }}">{{ crumb_title | capitalize }}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ product.title | split: ' - ' | first | capitalize }}</span>
+    </nav>
+
+  {%- when 'colors' -%}
+    {%- liquid
+      assign base = product.title | split: ' - ' | first | strip
+      assign count = 0
+      for p in collections.all.products
+        assign p_base = p.title | split: ' - ' | first | strip
+        if p_base == base
+          assign count = count | plus: 1
+        endif
+      endfor
+    -%}
+    {%- if count > 1 -%}
+      {%- liquid
+        assign current_name = product.title | split: ' - ' | last | strip
+      -%}
+      <div class="pantao-colors">
+        <p class="pantao-colors__label">Colour <span>{{ current_name | capitalize }}</span></p>
+        <ul class="pantao-colors__list" role="list">
+          {%- for p in collections.all.products -%}
+            {%- assign p_base = p.title | split: ' - ' | first | strip -%}
+            {%- if p_base == base -%}
+              {%- assign p_name = p.title | split: ' - ' | last | strip | capitalize -%}
+              <li>
+                <a
+                  href="{{ p.url }}"
+                  class="pantao-colors__swatch{% if p.id == product.id %} is-current{% endif %}"
+                  {% if p.id == product.id %}aria-current="true"{% endif %}
+                  aria-label="{{ p_name | escape }}"
+                  title="{{ p_name | escape }}"
+                >
+                  {%- if p.featured_image -%}
+                    {{ p.featured_image | image_url: width: 120 | image_tag: alt: '', loading: 'lazy', width: 40, height: 60 }}
+                  {%- endif -%}
+                </a>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- endif -%}
+
+  {%- when 'details' -%}
+    {%- capture raw -%}{%- render 'pantao-product-details-data', handle: product.handle -%}{%- endcapture -%}
+    {%- assign lines = raw | strip | newline_to_br | split: '<br />' -%}
+    {%- assign shown = 0 -%}
+    {%- capture items -%}
+      {%- for l in lines -%}
+        {%- assign t = l | strip -%}
+        {%- if t != blank -%}{%- assign shown = shown | plus: 1 -%}<li>{{ t }}</li>{%- endif -%}
+      {%- endfor -%}
+    {%- endcapture -%}
+    {%- if shown > 0 -%}
+      <div class="pantao-details">
+        <p class="pantao-details__title">Product details</p>
+        <ul class="pantao-details__list" role="list">{{ items }}</ul>
+      </div>
+    {%- endif -%}
+
+  {%- when 'delivery' -%}
+    <ul class="pantao-delivery" role="list">
+      {%- if localization.country.iso_code == 'US' -%}
+        <li><a href="/policies/shipping-policy">Free U.S. shipping</a> · Ships in 3–5 business days</li>
+      {%- else -%}
+        <li><a href="/policies/shipping-policy">International shipping</a> · Calculated at checkout</li>
+      {%- endif -%}
+      <li><a href="/policies/refund-policy">14-day returns</a></li>
+      <li>Secure checkout · Ships from Washington</li>
+    </ul>
+{%- endcase -%}

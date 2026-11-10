@@ -129,6 +129,19 @@
     >
       {{ content_for_layout }}
       {%- if template.name == 'product' -%}
+        {%- liquid
+          assign rec_collection = ''
+          for c in product.collections
+            unless c.handle == 'all' or c.handle == 'frontpage' or c.handle == 'general-store'
+              assign rec_collection = c.handle
+              break
+            endunless
+          endfor
+        -%}
+        <section class="pantao-plist-wrap" hidden aria-label="Recommended">
+          <div class="pantao-plist__head"><h2>Recommended</h2></div>
+          <pantao-product-list data-source="recommended" data-product-id="{{ product.id }}" data-exclude="{{ product.handle }}" data-collection="{{ rec_collection }}" data-limit="4" data-hide-when-empty></pantao-product-list>
+        </section>
         <section class="pantao-plist-wrap" hidden aria-label="Recently viewed">
           <div class="pantao-plist__head"><h2>Recently viewed</h2></div>
           <pantao-product-list data-source="viewed" data-exclude="{{ product.handle }}" data-limit="4" data-hide-when-empty></pantao-product-list>
