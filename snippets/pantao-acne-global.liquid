@@ -112,4 +112,24 @@
   .menu-drawer .drawer-localization__button--label,
   .menu-drawer .mobile-localization { margin: 0 !important; padding-inline: 0 !important; }
   .menu-drawer .menu-drawer__utility-links { padding-inline: 20px !important; margin-inline: 0 !important; }
+
+  /* Header currency picker: same 12px caps as the menu links, and a quiet,
+     square dropdown with small type. */
+  #header-component .dropdown-localization__button,
+  #header-component .dropdown-localization__button *,
+  #header-component .localization-selector,
+  #header-component .currency-code {
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.02em !important;
+    text-transform: uppercase;
+    line-height: 1 !important;
+  }
+  #header-component .dropdown-localization__button .svg-wrapper,
+  #header-component .dropdown-localization__button svg { width: 10px !important; height: 10px !important; }
+  #header-component .localization-form,
+  #header-component .localization-form :is(input, button, li, span, a, label) {
+    font-size: 11px !important;
+    letter-spacing: 0.02em;
+  }
 </style>
