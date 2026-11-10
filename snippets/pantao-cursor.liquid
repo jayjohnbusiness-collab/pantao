@@ -15,9 +15,16 @@
       cursor: -webkit-image-set(url('{{ cur1 }}') 1x, url('{{ cur2 }}') 2x) 16 16, auto;
       cursor: image-set(url('{{ cur1 }}') 1x, url('{{ cur2 }}') 2x) 16 16, auto;
     }
-    body :is(input:not([type='checkbox'], [type='radio'], [type='submit'], [type='button'], [type='range']), textarea, [contenteditable='true']) {
-      cursor: text;
+    /* Links and buttons keep the monogram too (the theme would switch to the hand). */
+    body :is(a, button, summary, label, select, [role='button'], [on\:click]),
+    body :is(a, button, summary, label, select, [role='button']) * {
+      cursor: url('{{ cur1 }}') 16 16, pointer !important;
+      cursor: -webkit-image-set(url('{{ cur1 }}') 1x, url('{{ cur2 }}') 2x) 16 16, pointer !important;
+      cursor: image-set(url('{{ cur1 }}') 1x, url('{{ cur2 }}') 2x) 16 16, pointer !important;
     }
-    body :is([disabled], [aria-disabled='true']) { cursor: not-allowed; }
+    body :is(input:not([type='checkbox'], [type='radio'], [type='submit'], [type='button'], [type='range']), textarea, [contenteditable='true']) {
+      cursor: text !important;
+    }
+    body :is([disabled], [aria-disabled='true']) { cursor: not-allowed !important; }
   }
 </style>
