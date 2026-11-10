@@ -47,15 +47,17 @@
   }
   .product-grid .product-card .text-block[class*='product_title'] * { text-transform: uppercase; }
 
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
   @media screen and (max-width: 749px) {
     /* Phones, as on Acne: name on top, price right under it, both left-aligned,
        full card width so names don't wrap into a narrow column. */
-    .product-grid .product-card__content > .group-block { padding: 8px 10px 22px !important; }
+    .product-grid .product-card__content { gap: 0 !important; row-gap: 0 !important; }
+    .product-grid .product-card__content > .group-block { padding: 4px 9px 22px !important; margin: 0 !important; }
     .product-grid .product-card__content > .group-block > .group-block-content {
       flex-direction: column !important;
       align-items: flex-start !important;
       justify-content: flex-start !important;
-      gap: 3px !important;
+      gap: 1px !important;
     }
     .product-grid .product-card__content > .group-block > .group-block-content > .group-block {
       width: 100% !important;
@@ -70,7 +72,12 @@
     .product-grid .product-card .text-block[class*='product_title'],
     .product-grid .product-card .text-block[class*='product_title'] *,
     .product-grid .product-card product-price,
-    .product-grid .product-card product-price *, .product-grid .product-card product-price .price { font-size: 11px !important; }
+    .product-grid .product-card product-price *, .product-grid .product-card product-price .price {
+      font-size: 10px !important;
+      line-height: 1.4 !important;
+      letter-spacing: 0.04em !important;
+    }
+    .product-grid .product-card .text-block[class*='product_title'] { margin: 0 !important; padding: 0 !important; }
   }
 
   /* Round the media frame and clip the image to it. */
