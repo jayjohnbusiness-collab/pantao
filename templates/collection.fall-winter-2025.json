@@ -59,7 +59,8 @@
         "reflection_opacity": 75,
         "padding-block-start": 40,
         "padding-block-end": 40
-      }
+      },
+      "disabled": true
     },
     "main": {
       "type": "main-collection",
@@ -321,15 +322,17 @@
         "layout_type": "grid",
         "product_card_size": "extra-large",
         "mobile_product_card_size": "large",
-        "product_grid_width": "centered",
-        "full_width_on_mobile": false,
-        "columns_gap_horizontal": 16,
-        "columns_gap_vertical": 16,
+        "enable_infinite_scroll": true,
+        "products_per_page": 24,
+        "product_grid_width": "full-width",
+        "full_width_on_mobile": true,
+        "columns_gap_horizontal": 0,
+        "columns_gap_vertical": 0,
         "padding-inline-start": 0,
         "padding-inline-end": 0,
-        "color_scheme": "scheme-2",
+        "color_scheme": "scheme-1",
         "padding-block-start": 0,
-        "padding-block-end": 66
+        "padding-block-end": 40
       }
     }
   },

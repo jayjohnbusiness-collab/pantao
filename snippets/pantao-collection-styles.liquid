@@ -16,7 +16,25 @@
   /* ============================================================
      PRODUCT CARD — rounded media, hover zoom, refined type
      ============================================================ */
-  .product-card { --pantao-card-radius: 16px; }
+  .product-card { --pantao-card-radius: 0px; }
+
+  /* Acne-style listing: edge-to-edge 4-up grid, no gaps, tall 2:3 images,
+     small caps name left / price right under the image. */
+  .product-grid .card-gallery { --gallery-aspect-ratio: 2 / 3 !important; }
+  @media screen and (min-width: 990px) {
+    .product-grid--grid:not([product-grid-view='zoom-out']) {
+      --product-grid-columns-desktop: repeat(4, minmax(0, 1fr)) !important;
+    }
+  }
+  .product-grid .product-card .product-title,
+  .product-grid .product-card [class*="product-title"],
+  .product-grid .product-card .price,
+  .product-grid .product-card [class*="price"] {
+    font-size: 11px !important;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+  .product-grid .product-card .card-gallery + * { padding: 6px 10px 22px; }
 
   /* Round the media frame and clip the image to it. */
   .product-card .card-gallery {
@@ -48,7 +66,7 @@
   }
 
   /* In-stock pieces first: sold-out cards move to the end of the grid. */
-  .product-grid__item:has(.pantao-stock.is-out) { order: 1; }
+  .product-grid__item:has(.pantao-soldout-flag) { order: 1; }
 
   @media (prefers-reduced-motion: reduce) {
     .product-card .card-gallery img,

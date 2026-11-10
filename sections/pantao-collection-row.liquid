@@ -2,7 +2,7 @@
   PANTAO collection row
   ----------------------------------------------------------------
   A homepage product row from a chosen collection, using the house card
-  language (rounded media, hover zoom, the pantao-stock pill). Real products
+  language (hover zoom). Real products
   and images. Theme tokens for type/colour so it matches the site.
 {%- endcomment -%}
 
@@ -28,7 +28,6 @@
       {%- for product in coll.products limit: count -%}
         <a class="pantao-collrow__card" href="{{ product.url }}">
           <div class="pantao-collrow__media">
-            {% render 'pantao-stock', product: product %}
             {%- if product.featured_media != blank -%}
               <img class="pantao-collrow__img"
                 src="{{ product.featured_media | image_url: width: 700 }}"
