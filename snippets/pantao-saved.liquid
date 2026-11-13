@@ -166,11 +166,11 @@
       }
       const close = '<button type="button" class="pantao-toast__close" aria-label="Close"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 1l10 10M11 1 1 11" stroke="currentColor" stroke-width="1.2"/></svg></button>';
       if (!saved) {
-        toastEl.innerHTML = close + '<p class="pantao-toast__title">Removed from saved</p>';
+        toastEl.innerHTML = close + '<p class="pantao-toast__title">Removed</p>';
       } else if (SIGNED_IN) {
-        toastEl.innerHTML = close + '<p class="pantao-toast__title">Saved</p><p class="pantao-toast__body">This piece is in your saved items.</p><div class="pantao-toast__actions"><a href="' + SAVED_URL + '">View saved</a></div>';
+        toastEl.innerHTML = close + '<p class="pantao-toast__title">Saved</p><p class="pantao-toast__body">Find it under Saved anytime.</p><div class="pantao-toast__actions"><a href="' + SAVED_URL + '">View saved</a></div>';
       } else {
-        toastEl.innerHTML = close + '<p class="pantao-toast__title">Saved temporarily</p><p class="pantao-toast__body">You\u2019re not signed in, so this is only saved on this device for now. Sign in so you don\u2019t lose it.</p><div class="pantao-toast__actions"><a href="' + LOGIN_URL + '">Sign in</a><a href="' + SAVED_URL + '">View saved</a></div>';
+        toastEl.innerHTML = close + '<p class="pantao-toast__title">Saved to this device</p><p class="pantao-toast__body">Sign in to keep it across devices.</p><div class="pantao-toast__actions"><a href="' + LOGIN_URL + '">Sign in</a><a href="' + SAVED_URL + '">View saved</a></div>';
       }
       requestAnimationFrame(() => toastEl.classList.add('is-open'));
       clearTimeout(toastTimer);
