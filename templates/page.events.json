@@ -33,7 +33,7 @@
             "title": "PRIVATE WINE TASTING",
             "description": "<p>A private wine tasting hosted by Pantao staff at a prestigious wine vineyard.</p>",
             "link_label": "RSVP",
-            "link": "",
+            "link": "shopify://pages/wine-tasting-reservation",
             "featured": false,
             "spots": ""
           }

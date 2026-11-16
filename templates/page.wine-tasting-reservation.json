@@ -1,0 +1,22 @@
+{
+  "sections": {
+    "reserve": {
+      "type": "pantao-reserve",
+      "settings": {
+        "back_url": "/pages/events",
+        "back_label": "Back to events",
+        "eyebrow": "RSVP · Private Wine Tasting",
+        "title": "Hold your seat.",
+        "intro": "<p>A private tasting hosted by PANTAO at a vineyard, for a small table. Seats are confirmed by email in the order requested. This holds your place, but it isn't final until we write back.</p>",
+        "form_type": "tasting",
+        "event_name": "Private Wine Tasting",
+        "date": "",
+        "location": "",
+        "spots": "",
+        "success_heading": "You're on the list.",
+        "success_text": "We'll confirm your seat by email, along with the date and location. Seats are released in the order requested."
+      }
+    }
+  },
+  "order": ["reserve"]
+}

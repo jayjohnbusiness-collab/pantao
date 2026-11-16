@@ -54,6 +54,18 @@
               <div class="fld"><label for="rv-email">Email</label><input id="rv-email" name="contact[email]" type="email" required autocomplete="email"></div>
               <div class="fld"><label for="rv-phone">Phone</label><input id="rv-phone" name="contact[phone]" type="tel" autocomplete="tel"></div>
             </div>
+            {%- if s.form_type == 'tasting' -%}
+            <div class="fld--row">
+              <div class="fld"><label for="rv-guests">Guests (max 1)</label>
+                <select id="rv-guests" name="contact[Guests]"><option>0</option><option>1</option></select>
+              </div>
+              <div class="fld"><label for="rv-order">Edition order no.</label><input id="rv-order" name="contact[Edition order no.]" type="text" placeholder="Optional"></div>
+            </div>
+            <div class="fld"><label for="rv-diet">Dietary needs or allergies</label><input id="rv-diet" name="contact[Dietary needs]" type="text" placeholder="Optional"></div>
+            <div class="fld"><label for="rv-notes">Notes</label><textarea id="rv-notes" name="contact[body]" placeholder="Anything we should know."></textarea></div>
+            <label class="pantao-reserve__consent"><input type="checkbox" name="contact[Legal drinking age]" value="Confirmed" required> I'm of legal drinking age, and so is my guest.</label>
+            <label class="pantao-reserve__consent"><input type="checkbox" name="contact[Consent]" value="Understood" required> I understand spots are limited and my place is confirmed by email.</label>
+            {%- else -%}
             <div class="fld--row">
               <div class="fld"><label for="rv-session">Session</label>
                 <select id="rv-session" name="contact[Session]"><option>Morning (07:00)</option><option>Midday (11:00)</option></select>
@@ -70,7 +82,8 @@
             </div>
             <div class="fld"><label for="rv-notes">Notes</label><textarea id="rv-notes" name="contact[body]" placeholder="Anything we should know."></textarea></div>
             <label class="pantao-reserve__consent"><input type="checkbox" name="contact[Consent]" value="Understood" required> I understand spots are limited and my place is confirmed by email.</label>
-            <button type="submit" class="pantao-reserve__submit">Request your spot</button>
+            {%- endif -%}
+            <button type="submit" class="pantao-reserve__submit">{% if s.form_type == 'tasting' %}Request your seat{% else %}Request your spot{% endif %}</button>
           {%- endif -%}
         {%- endform -%}
       </div>
@@ -140,6 +153,7 @@
     { "type": "text", "id": "title", "label": "Title", "default": "Reserve your spot." },
     { "type": "richtext", "id": "intro", "label": "Intro", "default": "<p>Spots are limited and confirmed by email in the order requested. This holds your place — it isn't final until we write back.</p>" },
     { "type": "header", "content": "Summary" },
+    { "type": "select", "id": "form_type", "label": "Form fields", "options": [ { "value": "track", "label": "Track day" }, { "value": "tasting", "label": "Tasting / dinner" } ], "default": "track" },
     { "type": "text", "id": "event_name", "label": "Event name", "default": "Private Track Day" },
     { "type": "text", "id": "date", "label": "Date", "default": "07 Feb 2026" },
     { "type": "text", "id": "location", "label": "Location", "default": "Clark Int'l Speedway" },
