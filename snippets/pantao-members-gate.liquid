@@ -1,0 +1,44 @@
+{%- comment -%}
+  Members-only gate. Rendered by layout/theme.liquid in place of the page when
+  "Members only" is on and the visitor isn't signed in with a member-tagged account.
+{%- endcomment -%}
+{%- liquid
+  assign return_path = request.path | default: '/'
+  assign login_url = routes.account_login_url | append: '?return_url=' | append: return_path
+  assign contact = shop.email | default: 'info@pantaoclothing.com'
+-%}
+<div class="pantao-gate">
+  <div class="pantao-gate__inner">
+    <a class="pantao-gate__mark" href="{{ routes.root_url }}">PANTAO</a>
+    <div class="pantao-gate__rule" aria-hidden="true"></div>
+    <h1 class="pantao-gate__title">Members only</h1>
+    {%- if customer -%}
+      <p class="pantao-gate__text">You're signed in as {{ customer.email }}, but this email isn't on the member list yet.</p>
+      <p class="pantao-gate__text">If your invite went to a different email, sign out and use that one.</p>
+      <div class="pantao-gate__actions">
+        <a class="pantao-gate__btn" href="{{ routes.account_logout_url }}">Sign out</a>
+        <a class="pantao-gate__btn pantao-gate__btn--line" href="mailto:{{ contact }}?subject=PANTAO%20membership">Contact us</a>
+      </div>
+    {%- else -%}
+      <p class="pantao-gate__text">PANTAO is open to members by invitation. If you've been invited, sign in with the email your invite went to.</p>
+      <div class="pantao-gate__actions">
+        <a class="pantao-gate__btn" href="{{ login_url }}">Sign in</a>
+        <a class="pantao-gate__btn pantao-gate__btn--line" href="mailto:{{ contact }}?subject=PANTAO%20invitation">Request an invitation</a>
+      </div>
+    {%- endif -%}
+    <p class="pantao-gate__foot">Invite only &middot; Small runs, rarely repeated.</p>
+  </div>
+</div>
+<style>
+  .pantao-gate{min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;background:#f4f4f2;color:#141414;padding:48px 24px;box-sizing:border-box}
+  .pantao-gate__inner{width:100%;max-width:420px}
+  .pantao-gate__mark{display:inline-block;font-family:Menlo,Consolas,monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#141414;text-decoration:none}
+  .pantao-gate__rule{width:60px;border-top:1px dashed #b9bbb9;margin:28px 0 22px}
+  .pantao-gate__title{margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:30px;line-height:1.2;letter-spacing:0;text-transform:none}
+  .pantao-gate__text{margin:0 0 12px;font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.7;letter-spacing:.02em;color:#3a3a3a}
+  .pantao-gate__actions{display:flex;flex-direction:column;gap:10px;margin:28px 0 0}
+  .pantao-gate__btn{display:block;text-align:center;padding:15px 0;background:#141414;color:#fff;border:1px solid #141414;font-family:Menlo,Consolas,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
+  .pantao-gate__btn--line{background:transparent;color:#141414}
+  .pantao-gate__btn:hover{opacity:.85}
+  .pantao-gate__foot{margin:36px 0 0;font-family:Menlo,Consolas,monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8a8a88}
+</style>

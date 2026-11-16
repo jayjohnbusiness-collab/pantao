@@ -42,10 +42,37 @@
     {% endif %}
 
     {{ content_for_header }}
+    {%- if settings.members_only_enabled -%}<meta name="robots" content="noindex, nofollow">{%- endif -%}
     {% # theme-check-enable RemoteAsset %}
   </head>
 
+{%- liquid
+  assign pantao_gated = false
+  if settings.members_only_enabled and request.design_mode != true
+    assign member_tag = settings.members_tag | default: 'member' | strip
+    assign is_member = false
+    if customer
+      for t in customer.tags
+        assign tl = t | downcase | strip
+        assign ml = member_tag | downcase
+        if tl == ml
+          assign is_member = true
+          break
+        endif
+      endfor
+    endif
+    unless is_member
+      assign pantao_gated = true
+      if template.name == 'password' or request.path contains '/policies/'
+        assign pantao_gated = false
+      endif
+    endunless
+  endif
+-%}
   <body class="page-width-{{ settings.page_width }} card-hover-effect-{{ settings.card_hover_effect }}">
+    {%- if pantao_gated -%}
+    {%- render 'pantao-members-gate' -%}
+    {%- else -%}
     {% render 'skip-to-content-link', href: '#MainContent', text: 'accessibility.skip_to_text' %}
     <div id="header-group">
       {% sections 'header-group' %}
@@ -167,5 +194,6 @@
     {% endif %}
 
     {% section 'pantao-signup-popup' %}
+    {%- endif -%}
   </body>
 </html>

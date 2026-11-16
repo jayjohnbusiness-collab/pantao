@@ -2284,5 +2284,26 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Members access",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "When on, only signed-in customers with the member tag can see the store. Everyone else sees the members-only page with a sign-in button. Tag a customer in Customers to give them access."
+      },
+      {
+        "type": "checkbox",
+        "id": "members_only_enabled",
+        "label": "Members only",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "members_tag",
+        "label": "Member tag",
+        "default": "member"
+      }
+    ]
   }
 ]
