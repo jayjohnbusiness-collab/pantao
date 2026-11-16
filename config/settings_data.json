@@ -9,7 +9,7 @@
  */
 {
   "current": {
-    "members_only_enabled": true,
+    "members_only_enabled": false,
     "members_tag": "member",
     "logo": "shopify://shop_images/PANTAO_MONOGRAM.png",
     "logo_inverse": "shopify://shop_images/PANTAO_MONOGRAM.png",
