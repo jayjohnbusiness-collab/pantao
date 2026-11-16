@@ -4,7 +4,11 @@
 {%- endcomment -%}
 {%- liquid
   assign return_path = request.path | default: '/'
-  assign login_url = routes.account_login_url | append: '?return_url=' | append: return_path
+  if return_path contains '/account' or return_path contains '/customer_authentication'
+    assign return_path = '/'
+  endif
+  assign encoded_path = return_path | url_encode
+  assign login_url = '/customer_authentication/login?return_to=' | append: encoded_path
   assign contact = shop.email | default: 'info@pantaoclothing.com'
 -%}
 <div class="pantao-gate">
