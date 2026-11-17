@@ -405,7 +405,6 @@
                 },
                 "accordion_row_iJM37V": {
                   "type": "_accordion-row",
-                  "disabled": true,
                   "settings": {
                     "heading": "Care",
                     "open_by_default": false,
