@@ -6,7 +6,7 @@
     <a class="pantao-404__mark" href="{{ routes.root_url }}">PANTAO</a>
     <div class="pantao-404__rule" aria-hidden="true"></div>
     <p class="pantao-404__eyebrow">{{ section.settings.eyebrow | escape }}</p>
-    <h1 class="pantao-404__title">{{ section.settings.heading | escape }}</h1>
+    <h1 class="pantao-404__title pantao-keep-size">{{ section.settings.heading | escape }}</h1>
     <p class="pantao-404__text">{{ section.settings.text | escape }}</p>
     <div class="pantao-404__actions">
       <a class="pantao-404__btn" href="{{ section.settings.primary_link | default: routes.all_products_collection_url }}">{{ section.settings.primary_label | escape }}</a>
