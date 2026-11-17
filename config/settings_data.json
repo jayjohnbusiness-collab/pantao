@@ -570,7 +570,8 @@
         }
       }
     },
-    "auto_open_cart_drawer": true
+    "auto_open_cart_drawer": true,
+    "saved_sync_enabled": true
   },
   "presets": {
     "Atelier": {
