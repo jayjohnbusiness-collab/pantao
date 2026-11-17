@@ -43,10 +43,10 @@
                 <p class="pantao-gate__error" role="alert">{{ form.errors | default_errors }}</p>
               {%- endif -%}
               <input type="hidden" name="contact[tags]" value="invite-request" data-invite-tags>
-              <input type="hidden" name="contact[first_name]" data-invite-first>
-              <input type="hidden" name="contact[last_name]" data-invite-last>
-              <label class="pantao-gate__label" for="PantaoInviteName">Name</label>
-              <input class="pantao-gate__input" id="PantaoInviteName" type="text" autocomplete="name" required maxlength="80" data-invite-name>
+              <label class="pantao-gate__label" for="PantaoInviteFirst">First name</label>
+              <input class="pantao-gate__input" id="PantaoInviteFirst" type="text" name="contact[first_name]" autocomplete="given-name" required maxlength="50">
+              <label class="pantao-gate__label" for="PantaoInviteLast">Last name</label>
+              <input class="pantao-gate__input" id="PantaoInviteLast" type="text" name="contact[last_name]" autocomplete="family-name" required maxlength="50">
               <label class="pantao-gate__label" for="PantaoInviteEmail">Email</label>
               <input class="pantao-gate__input" id="PantaoInviteEmail" type="email" name="contact[email]" autocomplete="email" autocapitalize="off" spellcheck="false" required>
               <label class="pantao-gate__label" for="PantaoInviteIg">Instagram <span>(optional)</span></label>
@@ -72,10 +72,6 @@
           if (!f) return;
           f.addEventListener('submit', function () {
             var q = function (s) { return f.querySelector(s); };
-            var name = (q('[data-invite-name]').value || '').trim().replace(/\s+/g, ' ');
-            var parts = name.split(' ');
-            q('[data-invite-first]').value = parts.shift() || '';
-            q('[data-invite-last]').value = parts.join(' ');
             var tags = ['invite-request'];
             var ig = (q('[data-invite-ig]').value || '').trim().toLowerCase().replace(/^@+/, '').replace(/[^a-z0-9._]/g, '').slice(0, 30);
             if (ig) tags.push('ig-' + ig);
