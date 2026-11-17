@@ -49,8 +49,9 @@
               <input class="pantao-gate__input" id="PantaoInviteLast" type="text" name="contact[last_name]" autocomplete="family-name" required maxlength="50">
               <label class="pantao-gate__label" for="PantaoInviteEmail">Email</label>
               <input class="pantao-gate__input" id="PantaoInviteEmail" type="email" name="contact[email]" autocomplete="email" autocapitalize="off" spellcheck="false" required>
-              <label class="pantao-gate__label" for="PantaoInviteIg">Instagram <span>(optional)</span></label>
-              <input class="pantao-gate__input" id="PantaoInviteIg" type="text" placeholder="@handle" autocapitalize="off" spellcheck="false" maxlength="31" data-invite-ig>
+              <label class="pantao-gate__label" for="PantaoInviteIg">Instagram <span>(recommended)</span></label>
+              <input class="pantao-gate__input" id="PantaoInviteIg" type="text" placeholder="@handle" autocapitalize="off" spellcheck="false" maxlength="31" aria-describedby="PantaoInviteIgHint" data-invite-ig>
+              <p class="pantao-gate__hint" id="PantaoInviteIgHint">Requests with an Instagram are reviewed first. It helps us get to know you.</p>
               <label class="pantao-gate__label" for="PantaoInviteHeard">How did you hear about us?</label>
               <select class="pantao-gate__input" id="PantaoInviteHeard" data-invite-heard>
                 <option value="">Choose one</option>
@@ -74,7 +75,7 @@
             var q = function (s) { return f.querySelector(s); };
             var tags = ['invite-request'];
             var ig = (q('[data-invite-ig]').value || '').trim().toLowerCase().replace(/^@+/, '').replace(/[^a-z0-9._]/g, '').slice(0, 30);
-            if (ig) tags.push('ig-' + ig);
+            if (ig) tags.push('ig-provided', 'ig-' + ig);
             var heard = q('[data-invite-heard]').value;
             if (heard) tags.push('heard-' + heard);
             q('[data-invite-tags]').value = tags.join(', ');
@@ -108,6 +109,7 @@
   .pantao-gate__input:focus{outline:none;border-color:#141414}
   select.pantao-gate__input{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23141414'/%3E%3C/svg%3E") no-repeat right 12px center}
   .pantao-gate__fields .pantao-gate__btn{margin-top:22px;width:100%;cursor:pointer}
+  .pantao-gate__hint{margin:6px 0 0;font-family:Menlo,Consolas,monospace;font-size:10px;line-height:1.6;color:#8a8a88}
   .pantao-gate__small{margin:12px 0 0;font-family:Menlo,Consolas,monospace;font-size:10px;line-height:1.6;color:#8a8a88}
   .pantao-gate__error{margin:0 0 4px;font-family:Menlo,Consolas,monospace;font-size:11px;line-height:1.6;color:#9b1c1c}
   .pantao-gate__foot{margin:36px 0 0;font-family:Menlo,Consolas,monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8a8a88}
