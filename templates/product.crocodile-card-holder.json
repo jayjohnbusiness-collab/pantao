@@ -331,7 +331,7 @@
                   },
                   "blocks": {
                     "text_VdG98J": {
-                      "type": "text",
+                      "type": "pantao-care-text",
                       "settings": {
                         "text": "<p>Gently wipe your wallet with a soft cloth to lift dust and maintain its surface. Every few months, cleanse with a leather cleaner and nourish with a leather conditioner to preserve suppleness and prevent cracking. Avoid overfilling, prolonged exposure to direct sunlight, or pressure that could distort the shape. Handle with care—allow the leather to age gracefully, carrying its story with you.</p>",
                         "width": "100%",

@@ -414,7 +414,7 @@
                   },
                   "blocks": {
                     "text_VdG98J": {
-                      "type": "text",
+                      "type": "pantao-care-text",
                       "settings": {
                         "text": "<p>To preserve the quality of your purchase, follow the included care instructions and handle with care. Gentle washing and proper storage help ensure lasting wear.</p>",
                         "width": "100%",
