@@ -185,6 +185,11 @@
 
     <footer>
       {% sections 'footer-group' %}
+      {%- if customer and customer.metafields.custom.member_number != blank -%}
+        {%- assign pantao_no = customer.metafields.custom.member_number.value | prepend: '00' | slice: -3, 3 -%}
+        <p class="pantao-member-no">Member No. {{ pantao_no }}</p>
+        <style>.pantao-member-no{margin:0;padding:14px 24px 22px;text-align:center;font-family:Menlo,Consolas,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#8a8a88}</style>
+      {%- endif -%}
     </footer>
 
     {% render 'search-modal' %}
