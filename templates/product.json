@@ -176,7 +176,8 @@
                   "type": "accelerated-checkout",
                   "static": true,
                   "settings": {},
-                  "blocks": {}
+                  "blocks": {},
+                  "disabled": true
                 }
               },
               "block_order": []
@@ -203,7 +204,7 @@
                 "accordion_row_pLFDcD": {
                   "type": "_accordion-row",
                   "settings": {
-                    "heading": "Sizing",
+                    "heading": "FIT",
                     "open_by_default": true,
                     "icon": "none",
                     "width": 20
@@ -212,7 +213,7 @@
                     "text_qLGEN9": {
                       "type": "text",
                       "settings": {
-                        "text": "<p>Wallet Measurements:</p><p>2.95in x 3.93</p>",
+                        "text": "<p>Recommendation: Stick true-to-size for our standard oversized fit but size up for an extra oversized fit.</p>",
                         "width": "100%",
                         "max_width": "normal",
                         "alignment": "left",
@@ -277,45 +278,6 @@
                   },
                   "block_order": [
                     "text_BNqQRW"
-                  ]
-                },
-                "accordion_row_NdBezV": {
-                  "type": "_accordion-row",
-                  "settings": {
-                    "heading": "Description",
-                    "open_by_default": false,
-                    "icon": "none",
-                    "width": 20
-                  },
-                  "blocks": {
-                    "text_n7A9da": {
-                      "type": "text",
-                      "settings": {
-                        "text": "{{ closest.product.description }}",
-                        "width": "100%",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "custom",
-                        "font": "var(--font-secondary--family)",
-                        "font_size": "var(--font-size--body-lg)",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "color": "",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 12,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "text_n7A9da"
                   ]
                 },
                 "accordion_row_iJM37V": {
@@ -396,14 +358,54 @@
                   "block_order": [
                     "text_returns"
                   ]
+                },
+                "accordion_row_r33xk9": {
+                  "type": "_accordion-row",
+                  "name": "t:names.accordion_row",
+                  "settings": {
+                    "heading": "WARRANTY",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_rTjaEd": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p><strong>1-Year Craftsmanship Warranty</strong><br/><br/>Every Pantao piece is covered by our 12-month craftsmanship warranty. If stitching, hardware, or construction fails under normal use, we’ll repair or replace it at no cost. Please refer to our <a href=\"/pages/pantao-craftsmanship-warranty\" title=\"Pantao Craftsmanship Warranty\">warranty policy</a> for explicit details.<br/><br/><strong>Wear the Moment</strong></p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_rTjaEd"
+                  ]
                 }
               },
               "block_order": [
                 "accordion_row_pLFDcD",
                 "accordion_row_76zqKe",
                 "accordion_row_returns",
-                "accordion_row_NdBezV",
-                "accordion_row_iJM37V"
+                "accordion_row_iJM37V",
+                "accordion_row_r33xk9"
               ]
             },
             "pantao_crumb": {
@@ -429,6 +431,60 @@
               "settings": {
                 "custom_liquid": "{% render 'pantao-pdp-extras', part: 'delivery', product: closest.product %}"
               }
+            },
+            "ai_gen_block_856acef_yhGAGm": {
+              "type": "ai_gen_block_856acef",
+              "name": "Image popup link",
+              "settings": {
+                "link_text": "SIZE CHART",
+                "link_font": "sans_serif_n4",
+                "link_font_size": 10,
+                "link_color": "#000000",
+                "link_hover_color": "#666666",
+                "link_underline": "none",
+                "show_icon": true,
+                "icon_type": "ruler",
+                "icon_position": "right",
+                "icon_size": 16,
+                "icon_spacing": 8,
+                "popup_image": "shopify://shop_images/IMG-0192_2e3a7007-68fd-4937-b6ee-9bc473a1efb5.png",
+                "image_border_radius": 0,
+                "popup_max_width": 800,
+                "popup_padding": 10,
+                "popup_border_radius": 0,
+                "popup_bg_color": "#ffffff",
+                "overlay_color": "#000000b3",
+                "close_button_position": "right",
+                "close_button_size": 24,
+                "close_button_color": "#000000"
+              },
+              "blocks": {}
+            },
+            "text_4JUxcj": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "{{ closest.product.description }}",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "custom",
+                "font": "var(--font-accent--family)",
+                "font_size": "0.875rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "color": "var(--color-foreground)",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 20,
+                "padding-block-end": 20,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
             }
           },
           "block_order": [
@@ -438,9 +494,11 @@
             "divider_HrJgFt",
             "pantao_colors",
             "variant_picker_R3rGDr",
+            "ai_gen_block_856acef_yhGAGm",
             "product_inventory_hUqniw",
             "buy_buttons_eYQEYi",
             "pantao_delivery",
+            "text_4JUxcj",
             "pantao_details",
             "accordion_NKWPiW"
           ]

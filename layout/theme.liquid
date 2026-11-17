@@ -65,7 +65,7 @@
     {% endif %}
 
     {{ content_for_header }}
-    {%- if settings.members_only_enabled -%}<meta name="robots" content="noindex, nofollow">{%- endif -%}
+    {%- if settings.members_only_enabled -%}{%- if pantao_gated and request.page_type == 'index' -%}<meta name="robots" content="index, nofollow">{%- else -%}<meta name="robots" content="noindex, nofollow">{%- endif -%}{%- endif -%}
     {% # theme-check-enable RemoteAsset %}
   </head>
 
