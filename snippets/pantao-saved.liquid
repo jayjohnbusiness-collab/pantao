@@ -1,8 +1,11 @@
 {%- comment -%}
   PANTAO wishlist ("Saved") + recently viewed
   ----------------------------------------------------------------
-  Both live in the shopper's own browser (localStorage), so they work
-  without an account and nothing is stored on Shopify.
+  Guests: both live in the shopper's own browser (localStorage).
+  Signed-in members (when Theme settings > Saved items > Sync is on): the
+  saved list lives on their customer record (custom.saved_items) and is
+  updated through the private PANTAO Saved service at /apps/saved.
+  Recently viewed always stays in the browser.
   - Hearts: snippets/pantao-save-button.liquid (cards + product page)
   - Header link "SAVED (n)": snippets/header-actions.liquid (desktop),
     drawer secondary list (phones)
@@ -143,7 +146,7 @@
 <script>
   (() => {
     if (window.PantaoSaved) return;
-    const KEY_SAVED = 'pantao:saved';
+    const KEY_GUEST = 'pantao:saved';
     const KEY_VIEWED = 'pantao:viewed';
     const read = (k) => {
       try { const v = JSON.parse(localStorage.getItem(k) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; }
@@ -151,6 +154,50 @@
     const write = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
     const root = (window.Shopify && Shopify.routes && Shopify.routes.root) || '/';
     const SIGNED_IN = {% if customer %}true{% else %}false{% endif %};
+
+    // Account sync: signed-in members keep one list on their Shopify customer
+    // record (custom.saved_items), via the private PANTAO Saved service behind
+    // the app proxy at /apps/saved. Guests keep the list in this browser.
+    const SYNC = {% if customer and settings.saved_sync_enabled %}true{% else %}false{% endif %};
+    const SYNC_URL = root + 'apps/saved';
+    const KEY_SAVED = SYNC ? 'pantao:saved:acct:{{ customer.id }}' : KEY_GUEST;
+    const KEY_PENDING = 'pantao:saved:pending:{{ customer.id }}';
+    if (SYNC) {
+      const server = {{ customer.metafields.custom.saved_items.value | json | default: 'null' }};
+      // The account list rendered with this page is the source of truth.
+      write(KEY_SAVED, Array.isArray(server) ? server : []);
+    }
+    const push = async (action, handles) => {
+      const r = await fetch(SYNC_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ action, handles }),
+      });
+      if (!r.ok) throw new Error('sync ' + r.status);
+      const data = await r.json();
+      if (Array.isArray(data.items)) write(KEY_SAVED, data.items);
+      return data.items;
+    };
+    const queue = (op) => write(KEY_PENDING, [...read(KEY_PENDING), op].slice(-50));
+    const flush = async () => {
+      if (!SYNC) return;
+      // 1) Anything saved on this device before signing in joins the account.
+      const guest = read(KEY_GUEST);
+      if (guest.length) {
+        try { await push('merge', guest); localStorage.removeItem(KEY_GUEST); } catch (e) { return; }
+      }
+      // 2) Replay changes that failed to reach the account last time.
+      const ops = read(KEY_PENDING);
+      localStorage.removeItem(KEY_PENDING);
+      for (let i = 0; i < ops.length; i++) {
+        try { await push(ops[i].a, [ops[i].h]); } catch (e) { write(KEY_PENDING, ops.slice(i)); break; }
+      }
+      if (guest.length || ops.length) {
+        window.PantaoSaved && window.PantaoSaved.sync();
+        document.dispatchEvent(new CustomEvent('pantao:saved-change'));
+      }
+    };
     const LOGIN_URL = {{ routes.account_login_url | json }};
     const SAVED_URL = '/pages/saved';
 
@@ -189,8 +236,12 @@
         write(KEY_SAVED, list.slice(0, 60));
         api.sync();
         document.dispatchEvent(new CustomEvent('pantao:saved-change'));
+        if (SYNC) push(adding ? 'add' : 'remove', [h]).catch(() => queue({ a: adding ? 'add' : 'remove', h }));
       },
-      remove(h) { write(KEY_SAVED, read(KEY_SAVED).filter((x) => x !== h)); },
+      remove(h) {
+        write(KEY_SAVED, read(KEY_SAVED).filter((x) => x !== h));
+        if (SYNC) push('remove', [h]).catch(() => queue({ a: 'remove', h }));
+      },
       viewed: () => read(KEY_VIEWED),
       addViewed(h) {
         if (!h) return;
@@ -233,6 +284,7 @@
     window.addEventListener('storage', api.sync);
     document.addEventListener('DOMContentLoaded', api.sync);
     api.sync();
+    flush();
 
     const money = (cents, currency) => {
       const whole = cents % 100 === 0;

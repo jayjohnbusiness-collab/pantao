@@ -2305,5 +2305,20 @@
         "default": "member"
       }
     ]
+  },
+  {
+    "name": "Saved items",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "When on, signed-in members' saved items are kept on their account and follow them to any device. Needs the PANTAO Saved service connected at /apps/saved. Guests always save to their own browser."
+      },
+      {
+        "type": "checkbox",
+        "id": "saved_sync_enabled",
+        "label": "Sync saved items to member accounts",
+        "default": false
+      }
+    ]
   }
 ]
