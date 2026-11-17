@@ -24,11 +24,67 @@
         <a class="pantao-gate__btn pantao-gate__btn--line" href="mailto:{{ contact }}?subject=PANTAO%20membership">Contact us</a>
       </div>
     {%- else -%}
-      <p class="pantao-gate__text">PANTAO is open to members by invitation. If you've been invited, sign in with the email your invite went to.</p>
-      <div class="pantao-gate__actions">
-        <a class="pantao-gate__btn" href="{{ login_url }}">Sign in</a>
-        <a class="pantao-gate__btn pantao-gate__btn--line" href="mailto:{{ contact }}?subject=PANTAO%20invitation">Request an invitation</a>
-      </div>
+      {%- form 'customer', id: 'PantaoInviteForm', class: 'pantao-gate__form' -%}
+        {%- if form.posted_successfully? -%}
+          <p class="pantao-gate__text">Thank you. Your request is in.</p>
+          <p class="pantao-gate__text">We read every one personally. If there's a place for you, your invitation will arrive by email.</p>
+          <div class="pantao-gate__actions">
+            <a class="pantao-gate__btn pantao-gate__btn--line" href="{{ login_url }}">Already a member? Sign in</a>
+          </div>
+        {%- else -%}
+          <p class="pantao-gate__text">PANTAO is open to members by invitation. If you've been invited, sign in with the email your invite went to.</p>
+          <div class="pantao-gate__actions">
+            <a class="pantao-gate__btn" href="{{ login_url }}">Sign in</a>
+          </div>
+          <details class="pantao-gate__request"{% if form.errors %} open{% endif %}>
+            <summary class="pantao-gate__btn pantao-gate__btn--line">Request an invitation</summary>
+            <div class="pantao-gate__fields">
+              {%- if form.errors -%}
+                <p class="pantao-gate__error" role="alert">{{ form.errors | default_errors }}</p>
+              {%- endif -%}
+              <input type="hidden" name="contact[tags]" value="invite-request" data-invite-tags>
+              <input type="hidden" name="contact[first_name]" data-invite-first>
+              <input type="hidden" name="contact[last_name]" data-invite-last>
+              <label class="pantao-gate__label" for="PantaoInviteName">Name</label>
+              <input class="pantao-gate__input" id="PantaoInviteName" type="text" autocomplete="name" required maxlength="80" data-invite-name>
+              <label class="pantao-gate__label" for="PantaoInviteEmail">Email</label>
+              <input class="pantao-gate__input" id="PantaoInviteEmail" type="email" name="contact[email]" autocomplete="email" autocapitalize="off" spellcheck="false" required>
+              <label class="pantao-gate__label" for="PantaoInviteIg">Instagram <span>(optional)</span></label>
+              <input class="pantao-gate__input" id="PantaoInviteIg" type="text" placeholder="@handle" autocapitalize="off" spellcheck="false" maxlength="31" data-invite-ig>
+              <label class="pantao-gate__label" for="PantaoInviteHeard">How did you hear about us?</label>
+              <select class="pantao-gate__input" id="PantaoInviteHeard" data-invite-heard>
+                <option value="">Choose one</option>
+                <option value="member">A PANTAO member</option>
+                <option value="friend">A friend</option>
+                <option value="instagram">Instagram</option>
+                <option value="event">An event</option>
+                <option value="other">Other</option>
+              </select>
+              <button class="pantao-gate__btn" type="submit">Send request</button>
+              <p class="pantao-gate__small">We'll only use your email for PANTAO news and your invitation. Unsubscribe anytime.</p>
+            </div>
+          </details>
+        {%- endif -%}
+      {%- endform -%}
+      <script>
+        (function () {
+          var f = document.getElementById('PantaoInviteForm');
+          if (!f) return;
+          f.addEventListener('submit', function () {
+            var q = function (s) { return f.querySelector(s); };
+            var name = (q('[data-invite-name]').value || '').trim().replace(/\s+/g, ' ');
+            var parts = name.split(' ');
+            q('[data-invite-first]').value = parts.shift() || '';
+            q('[data-invite-last]').value = parts.join(' ');
+            var tags = ['invite-request'];
+            var ig = (q('[data-invite-ig]').value || '').trim().toLowerCase().replace(/^@+/, '').replace(/[^a-z0-9._]/g, '').slice(0, 30);
+            if (ig) tags.push('ig-' + ig);
+            var heard = q('[data-invite-heard]').value;
+            if (heard) tags.push('heard-' + heard);
+            q('[data-invite-tags]').value = tags.join(', ');
+          });
+        })();
+      </script>
     {%- endif -%}
     <p class="pantao-gate__foot">Invite only &middot; Small runs, rarely repeated.</p>
   </div>
@@ -44,5 +100,19 @@
   .pantao-gate__btn{display:block;text-align:center;padding:15px 0;background:#141414;color:#fff;border:1px solid #141414;font-family:Menlo,Consolas,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
   .pantao-gate__btn--line{background:transparent;color:#141414}
   .pantao-gate__btn:hover{opacity:.85}
+  .pantao-gate__form{margin:0}
+  .pantao-gate__request{margin:10px 0 0}
+  .pantao-gate__request > summary{list-style:none;cursor:pointer}
+  .pantao-gate__request > summary::-webkit-details-marker{display:none}
+  .pantao-gate__request[open] > summary{margin-bottom:22px}
+  .pantao-gate__fields{display:flex;flex-direction:column}
+  .pantao-gate__label{margin:14px 0 6px;font-family:Menlo,Consolas,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#3a3a3a}
+  .pantao-gate__label span{text-transform:none;letter-spacing:.02em;color:#8a8a88}
+  .pantao-gate__input{width:100%;box-sizing:border-box;padding:12px 12px;border:1px solid #c9cbc9;border-radius:0;background:#fff;color:#141414;font-family:Menlo,Consolas,monospace;font-size:16px;-webkit-appearance:none;appearance:none}
+  .pantao-gate__input:focus{outline:none;border-color:#141414}
+  select.pantao-gate__input{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23141414'/%3E%3C/svg%3E") no-repeat right 12px center}
+  .pantao-gate__fields .pantao-gate__btn{margin-top:22px;width:100%;cursor:pointer}
+  .pantao-gate__small{margin:12px 0 0;font-family:Menlo,Consolas,monospace;font-size:10px;line-height:1.6;color:#8a8a88}
+  .pantao-gate__error{margin:0 0 4px;font-family:Menlo,Consolas,monospace;font-size:11px;line-height:1.6;color:#9b1c1c}
   .pantao-gate__foot{margin:36px 0 0;font-family:Menlo,Consolas,monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8a8a88}
 </style>
