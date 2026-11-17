@@ -50,7 +50,10 @@
               <label class="pantao-gate__label" for="PantaoInviteEmail">Email</label>
               <input class="pantao-gate__input" id="PantaoInviteEmail" type="email" name="contact[email]" autocomplete="email" autocapitalize="off" spellcheck="false" required>
               <label class="pantao-gate__label" for="PantaoInviteIg">Instagram <span>(recommended)</span></label>
-              <input class="pantao-gate__input" id="PantaoInviteIg" type="text" placeholder="@handle" autocapitalize="off" spellcheck="false" maxlength="31" aria-describedby="PantaoInviteIgHint" data-invite-ig>
+              <div class="pantao-gate__at">
+                <span class="pantao-gate__at-sign" aria-hidden="true">@</span>
+                <input class="pantao-gate__input" id="PantaoInviteIg" type="text" placeholder="yourhandle" autocapitalize="off" autocorrect="off" spellcheck="false" maxlength="31" aria-describedby="PantaoInviteIgHint" data-invite-ig>
+              </div>
               <p class="pantao-gate__hint" id="PantaoInviteIgHint">Requests with an Instagram are reviewed first. It helps us get to know you.</p>
               <label class="pantao-gate__label" for="PantaoInviteHeard">How did you hear about us?</label>
               <select class="pantao-gate__input" id="PantaoInviteHeard" data-invite-heard>
@@ -71,6 +74,10 @@
         (function () {
           var f = document.getElementById('PantaoInviteForm');
           if (!f) return;
+          var igInput = f.querySelector('[data-invite-ig]');
+          if (igInput) igInput.addEventListener('input', function () {
+            if (igInput.value.indexOf('@') !== -1) igInput.value = igInput.value.replace(/@/g, '');
+          });
           f.addEventListener('submit', function () {
             var q = function (s) { return f.querySelector(s); };
             var tags = ['invite-request'];
@@ -109,6 +116,9 @@
   .pantao-gate__input:focus{outline:none;border-color:#141414}
   select.pantao-gate__input{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23141414'/%3E%3C/svg%3E") no-repeat right 12px center}
   .pantao-gate__fields .pantao-gate__btn{margin-top:22px;width:100%;cursor:pointer}
+  .pantao-gate__at{position:relative}
+  .pantao-gate__at-sign{position:absolute;left:12px;top:50%;transform:translateY(-50%);font-family:Menlo,Consolas,monospace;font-size:16px;color:#141414;pointer-events:none}
+  .pantao-gate__at .pantao-gate__input{padding-left:30px}
   .pantao-gate__hint{margin:6px 0 0;font-family:Menlo,Consolas,monospace;font-size:10px;line-height:1.6;color:#8a8a88}
   .pantao-gate__small{margin:12px 0 0;font-family:Menlo,Consolas,monospace;font-size:10px;line-height:1.6;color:#8a8a88}
   .pantao-gate__error{margin:0 0 4px;font-family:Menlo,Consolas,monospace;font-size:11px;line-height:1.6;color:#9b1c1c}
