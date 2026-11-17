@@ -1,0 +1,44 @@
+{%- comment -%}
+  PANTAO 404: same quiet style as the members gate and the PANTAO emails.
+{%- endcomment -%}
+<div class="pantao-404">
+  <div class="pantao-404__inner">
+    <a class="pantao-404__mark" href="{{ routes.root_url }}">PANTAO</a>
+    <div class="pantao-404__rule" aria-hidden="true"></div>
+    <p class="pantao-404__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <h1 class="pantao-404__title">{{ section.settings.heading | escape }}</h1>
+    <p class="pantao-404__text">{{ section.settings.text | escape }}</p>
+    <div class="pantao-404__actions">
+      <a class="pantao-404__btn" href="{{ section.settings.primary_link | default: routes.all_products_collection_url }}">{{ section.settings.primary_label | escape }}</a>
+      <a class="pantao-404__btn pantao-404__btn--line" href="{{ routes.root_url }}">Home</a>
+    </div>
+    <p class="pantao-404__foot">Small runs, rarely repeated.</p>
+  </div>
+</div>
+<style>
+  .pantao-404{min-height:70vh;min-height:70svh;display:flex;align-items:center;justify-content:center;background:#f4f4f2;color:#141414;padding:72px 24px;box-sizing:border-box}
+  .pantao-404__inner{width:100%;max-width:420px}
+  .pantao-404__mark{display:inline-block;font-family:Menlo,Consolas,monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:#141414;text-decoration:none}
+  .pantao-404__rule{width:60px;border-top:1px dashed #b9bbb9;margin:28px 0 22px}
+  .pantao-404__eyebrow{margin:0 0 10px;font-family:Menlo,Consolas,monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#8a8a88}
+  .pantao-404__title{margin:0 0 18px;font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:30px;line-height:1.2;letter-spacing:0;text-transform:none}
+  .pantao-404__text{margin:0;font-family:Menlo,Consolas,monospace;font-size:12px;line-height:1.7;letter-spacing:.02em;color:#3a3a3a}
+  .pantao-404__actions{display:flex;flex-direction:column;gap:10px;margin:28px 0 0}
+  .pantao-404__btn{display:block;text-align:center;padding:15px 0;background:#141414;color:#fff;border:1px solid #141414;font-family:Menlo,Consolas,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none}
+  .pantao-404__btn--line{background:transparent;color:#141414}
+  .pantao-404__btn:hover{opacity:.85}
+  .pantao-404__foot{margin:36px 0 0;font-family:Menlo,Consolas,monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#8a8a88}
+</style>
+{% schema %}
+{
+  "name": "PANTAO 404",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small label", "default": "Error 404" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "This page doesn't exist." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "The link may be old, or the piece may have moved on. Everything we're making now is in the store." },
+    { "type": "text", "id": "primary_label", "label": "Button label", "default": "Back to the store" },
+    { "type": "url", "id": "primary_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "PANTAO 404" }]
+}
+{% endschema %}
