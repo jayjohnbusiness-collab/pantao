@@ -9,6 +9,10 @@
     notify-me, restock-<product-handle>, variant-<variant-id>
   Filter Customers by the "notify-me" tag to see who's waiting on what.
 
+  Signed-in customers skip the email form: one tap saves the request to
+  their own account through the PANTAO Saved service (/apps/saved,
+  action "restock"), which adds the same three tags.
+
   Usage: {% render 'pantao-notify-me', product: product, variant: variant %}
 {%- endcomment -%}
 
@@ -22,11 +26,14 @@
   class="pantao-notify"
   data-product-id="{{ product.id }}"
   data-product-handle="{{ product.handle }}"
+  data-variant-id="{{ variant.id }}"
+  {% if customer %}data-signed-in{% endif %}
   {% if variant.available %}hidden{% endif %}
 >
-  <button type="button" class="pantao-notify__trigger" data-notify-open aria-haspopup="dialog" aria-controls="{{ nm_id }}">
-    Notify me when available
+  <button type="button" class="pantao-notify__trigger" data-notify-open {% unless customer %}aria-haspopup="dialog" aria-controls="{{ nm_id }}"{% endunless %}>
+    Notify me when it's back
   </button>
+  <p class="pantao-notify__note" data-notify-note hidden></p>
 
   <dialog id="{{ nm_id }}" class="pantao-notify__dialog" aria-labelledby="{{ nm_id }}-title">
     <button type="button" class="pantao-notify__close" data-notify-close aria-label="Close">&times;</button>
@@ -123,6 +130,8 @@
   }
   .pantao-notify__input:focus { outline: none; border-color: #0a0a0a; }
   .pantao-notify__error { margin: 0; font-size: 12px; color: #b00020; }
+  .pantao-notify__trigger[data-done] { background: #0a0a0a; color: #fff; cursor: default; }
+  .pantao-notify__note { margin: 8px 0 0; font-size: 11px; letter-spacing: .02em; color: #6b6b6b; text-align: center; }
 </style>
 
 <script>
@@ -139,7 +148,12 @@
         this.panel = this.querySelector('[data-notify-panel]');
         this.success = this.querySelector('[data-notify-success]');
 
-        this.querySelector('[data-notify-open]').addEventListener('click', () => this.open());
+        this.trigger = this.querySelector('[data-notify-open]');
+        this.note = this.querySelector('[data-notify-note]');
+        this.signedIn = this.hasAttribute('data-signed-in');
+        this.variantId = this.dataset.variantId;
+        this.trigger.addEventListener('click', () => (this.signedIn ? this.requestForMember() : this.open()));
+        this.refreshDone();
         this.querySelectorAll('[data-notify-close]').forEach((b) => b.addEventListener('click', () => this.dialog.close()));
         this.dialog.addEventListener('click', (e) => { if (e.target === this.dialog) this.dialog.close(); });
         this.form.addEventListener('submit', (e) => this.submit(e));
@@ -158,9 +172,48 @@
 
       setVariant(v) {
         this.hidden = !!v.available;
+        this.variantId = String(v.id);
+        this.refreshDone();
         this.tags.value = `notify-me, restock-${this.dataset.productHandle}, variant-${v.id}`;
         const title = v.title && v.title !== 'Default Title' ? v.title : '';
         this.variantLabel.textContent = title;
+      }
+
+      doneKey() { return 'pantao:notify:' + this.variantId; }
+
+      refreshDone() {
+        let done = false;
+        // Remembered for 30 days, so a size that sells out again can be requested again.
+        try { done = Date.now() - Number(localStorage.getItem(this.doneKey()) || 0) < 2592000000; } catch (e) {}
+        this.setDone(done);
+      }
+
+      setDone(done) {
+        this.trigger.toggleAttribute('data-done', done);
+        this.trigger.disabled = done;
+        this.trigger.textContent = done ? "We'll email you" : "Notify me when it's back";
+        this.note.hidden = !done;
+        this.note.textContent = done ? 'You\'ll get one email the moment this size returns.' : '';
+      }
+
+      async requestForMember() {
+        this.trigger.disabled = true;
+        const root = (window.Shopify && Shopify.routes && Shopify.routes.root) || '/';
+        try {
+          const r = await fetch(root + 'apps/saved', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ action: 'restock', variant: this.variantId, handle: this.dataset.productHandle }),
+          });
+          if (!r.ok) throw new Error(String(r.status));
+          try { localStorage.setItem(this.doneKey(), String(Date.now())); } catch (e) {}
+          this.setDone(true);
+        } catch (err) {
+          this.trigger.disabled = false;
+          this.note.hidden = false;
+          this.note.textContent = 'Something went wrong. Please try again.';
+        }
       }
 
       open() {
