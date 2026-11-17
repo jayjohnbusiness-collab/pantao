@@ -25,6 +25,27 @@
   if settings.quick_add and product.available
     assign has_quick_add = true
   endif
+  assign pantao_card_until = product.metafields.custom.members_until.value
+  if pantao_card_until != blank
+    assign pantao_card_now = 'now' | date: '%s' | plus: 0
+    assign pantao_card_end = pantao_card_until | date: '%s' | plus: 0
+    if pantao_card_end > pantao_card_now
+      assign pantao_card_member = false
+      if customer
+        assign pantao_card_tag = settings.members_tag | default: 'member' | downcase | strip
+        for t in customer.tags
+          assign tl = t | downcase | strip
+          if tl == pantao_card_tag
+            assign pantao_card_member = true
+            break
+          endif
+        endfor
+      endif
+      unless pantao_card_member
+        assign has_quick_add = false
+      endunless
+    endif
+  endif
 
   assign has_mobile_quick_add = false
   if has_quick_add and settings.mobile_quick_add

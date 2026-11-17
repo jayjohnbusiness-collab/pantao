@@ -35,6 +35,43 @@
   endif
 %}
 
+{%- liquid
+  assign pantao_mf_locked = false
+  assign pantao_mf_until = product.metafields.custom.members_until.value
+  if pantao_mf_until != blank
+    assign pantao_mf_now = 'now' | date: '%s' | plus: 0
+    assign pantao_mf_end = pantao_mf_until | date: '%s' | plus: 0
+    if pantao_mf_end > pantao_mf_now
+      assign pantao_mf_is_member = false
+      if customer
+        assign pantao_mf_tag = settings.members_tag | default: 'member' | downcase | strip
+        for t in customer.tags
+          assign tl = t | downcase | strip
+          if tl == pantao_mf_tag
+            assign pantao_mf_is_member = true
+            break
+          endif
+        endfor
+      endif
+      unless pantao_mf_is_member
+        assign pantao_mf_locked = true
+      endunless
+    endif
+  endif
+-%}
+{%- if pantao_mf_locked -%}
+<div class="pantao-members-first" {{ block.shopify_attributes }}>
+  <p class="pantao-members-first__label">Members first</p>
+  <p class="pantao-members-first__text">This piece opens to members before anyone else. It becomes available to everyone on {{ pantao_mf_until | date: '%B %-d at %-I:%M %p' }}.</p>
+  <a class="pantao-members-first__btn" href="/customer_authentication/login?return_to={{ product.url | url_encode }}">Member sign in</a>
+</div>
+<style>
+  .pantao-members-first{padding:18px 0 4px;border-top:1px dashed #b9bbb9}
+  .pantao-members-first__label{margin:0 0 8px;font-family:Menlo,Consolas,monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#6b6b6b}
+  .pantao-members-first__text{margin:0 0 16px;font-size:12px;line-height:1.6}
+  .pantao-members-first__btn{display:block;text-align:center;padding:15px 0;border:1px solid currentColor;font-family:Menlo,Consolas,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;color:inherit}
+</style>
+{%- else -%}
 <span
   class="buy-buttons-block buy-buttons-block--{{ block.id }}"
   {{ block.shopify_attributes }}
@@ -367,6 +404,8 @@
     {% endif %}
   </local-pickup>
 {% endif %}
+
+{%- endif -%}
 
 {% render 'buy-buttons-styles' %}
 
